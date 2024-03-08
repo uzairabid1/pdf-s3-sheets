@@ -9,4 +9,5 @@ COPY backend /opt/backend
 RUN pip3 install -r /opt/requirements.txt
 WORKDIR /opt/backend
 
-CMD ["gunicorn3", "-b", "0.0.0.0:5000", "wsgi:app", "--workers=5"]
+CMD ["gunicorn3", "-b", "0.0.0.0:5000", "wsgi:app", "--workers=5", "--timeout", "0"]
+
