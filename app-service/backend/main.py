@@ -137,13 +137,17 @@ def merge_pdf():
             last_name = row.get('Last Name')
             pdf_1_url = row.get('PDF 1')
             pdf_2_url = row.get('PDF 2')
+            merge1_value = row.get('Merge1')
+            merge2_value = row.get('Merge2')
+            output1_value = row.get('Output1')
+            output2_value = row.get('Output2')
 
             print(first_name)
             print(last_name)
             print(pdf_1_url)
             print(pdf_2_url)
 
-            if pdf_1_url:
+            if pdf_1_url and not merge1_value and not output1_value:
                 pdf_1 = BytesIO(requests.get(pdf_1_url).content)
                 merger = PdfFileMerger()
                 merger.append(BytesIO(requests.get(merge_url_1).content))
@@ -155,7 +159,7 @@ def merge_pdf():
                 sheet.update_cell(row_number, sheet.find('Output1').col, s3_url_1)
                 sheet.update_cell(row_number, sheet.find('Merge1').col, merge_url_1)
 
-            if pdf_2_url:
+            if pdf_2_url and not merge2_value and not output2_value:
                 pdf_2 = BytesIO(requests.get(pdf_2_url).content)
                 merger = PdfFileMerger()
                 merger.append(BytesIO(requests.get(merge_url_2).content))
