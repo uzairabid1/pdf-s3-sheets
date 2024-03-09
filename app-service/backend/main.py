@@ -118,54 +118,58 @@ def process_user():
 
 @app.route('/merge_pdf', methods=['POST'])
 def merge_pdf():
+
     try:
-        data = request.json
-    except:
-        return {"error": "no json found"}
+        try:
+            data = request.json
+        except:
+            return {"error": "no json found"}
 
-    merge_url_1 = data.get('merge_url_1')
-    merge_url_2 = data.get('merge_url_2')
-    sheet_name = data.get('sheet_name')
+        merge_url_1 = data.get('merge_url_1')
+        merge_url_2 = data.get('merge_url_2')
+        sheet_name = data.get('sheet_name')
 
-    sheet = gsheet_client.open(sheet_name).sheet1
+        sheet = gsheet_client.open(sheet_name).sheet1
 
-    row_number = 2
-    for row in sheet.get_all_records():
-        first_name = row.get('First Name')
-        last_name = row.get('Last Name')
-        pdf_1_url = row.get('PDF 1')
-        pdf_2_url = row.get('PDF 2')
+        row_number = 2
+        for row in sheet.get_all_records():
+            first_name = row.get('First Name')
+            last_name = row.get('Last Name')
+            pdf_1_url = row.get('PDF 1')
+            pdf_2_url = row.get('PDF 2')
 
-        print(first_name)
-        print(last_name)
-        print(pdf_1_url)
-        print(pdf_2_url)
+            print(first_name)
+            print(last_name)
+            print(pdf_1_url)
+            print(pdf_2_url)
 
-        if pdf_1_url:
-            pdf_1 = BytesIO(requests.get(pdf_1_url).content)
-            merger = PdfFileMerger()
-            merger.append(BytesIO(requests.get(merge_url_1).content))
-            merger.append(pdf_1)
-            merged_pdf_1_content = BytesIO()
-            merger.write(merged_pdf_1_content)
+            if pdf_1_url:
+                pdf_1 = BytesIO(requests.get(pdf_1_url).content)
+                merger = PdfFileMerger()
+                merger.append(BytesIO(requests.get(merge_url_1).content))
+                merger.append(pdf_1)
+                merged_pdf_1_content = BytesIO()
+                merger.write(merged_pdf_1_content)
 
-            s3_url_1 = upload_pdf_to_s3_2(merged_pdf_1_content.getvalue(), f"{first_name.replace(' ','_')}_{last_name.replace(' ','_')}_merged_pdf_1.pdf")
-            sheet.update_cell(row_number, sheet.find('Output1').col, s3_url_1)
-            sheet.update_cell(row_number, sheet.find('Merge1').col, merge_url_1)
+                s3_url_1 = upload_pdf_to_s3_2(merged_pdf_1_content.getvalue(), f"{first_name.replace(' ','_')}_{last_name.replace(' ','_')}_merged_pdf_1.pdf")
+                sheet.update_cell(row_number, sheet.find('Output1').col, s3_url_1)
+                sheet.update_cell(row_number, sheet.find('Merge1').col, merge_url_1)
 
-        if pdf_2_url:
-            pdf_2 = BytesIO(requests.get(pdf_2_url).content)
-            merger = PdfFileMerger()
-            merger.append(BytesIO(requests.get(merge_url_2).content))
-            merger.append(pdf_2)
-            merged_pdf_2_content = BytesIO()
-            merger.write(merged_pdf_2_content)
+            if pdf_2_url:
+                pdf_2 = BytesIO(requests.get(pdf_2_url).content)
+                merger = PdfFileMerger()
+                merger.append(BytesIO(requests.get(merge_url_2).content))
+                merger.append(pdf_2)
+                merged_pdf_2_content = BytesIO()
+                merger.write(merged_pdf_2_content)
 
-            s3_url_2 = upload_pdf_to_s3_2(merged_pdf_2_content.getvalue(), f"{first_name.replace(' ','_')}_{last_name.replace(' ','_')}_merged_pdf_2.pdf")
-            sheet.update_cell(row_number, sheet.find('Output2').col, s3_url_2)
-            sheet.update_cell(row_number, sheet.find('Merge2').col, merge_url_2)        
+                s3_url_2 = upload_pdf_to_s3_2(merged_pdf_2_content.getvalue(), f"{first_name.replace(' ','_')}_{last_name.replace(' ','_')}_merged_pdf_2.pdf")
+                sheet.update_cell(row_number, sheet.find('Output2').col, s3_url_2)
+                sheet.update_cell(row_number, sheet.find('Merge2').col, merge_url_2)        
 
-        row_number += 1
+            row_number += 1
+    except Exception as e:
+        return jsonify({"error":e})
 
     return jsonify({"message": "PDFs merged, uploaded to S3, and Google Sheet updated successfully."})
 
