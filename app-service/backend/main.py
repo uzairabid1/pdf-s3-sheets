@@ -58,7 +58,7 @@ def process_user():
     except:
         return jsonify({"error": "Invalid JSON format"},400)
 
-    for user in data["uniquePreQualifiedLeadsList"]:
+    for user in data.get("uniquePreQualifiedLeadsList",[]):
         try:
             email = user.get('Email', '')
             if email:
