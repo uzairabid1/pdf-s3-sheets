@@ -61,6 +61,11 @@ def process_user():
     for user in data.get("uniquePreQualifiedLeadsList",[]):
         try:
             email = user.get('Email', '')
+
+            if email in sheet.col_values(3):
+                print(f'{email} exists already')
+                continue
+
             if email:
                 api_url = f'http://ltt.aip.global.bizopsaip.com/flow/api/flow-rest-selfauth/getTaxCaculation?Email={email}'
                 response = requests.get(api_url)
