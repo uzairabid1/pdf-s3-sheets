@@ -54,12 +54,21 @@ def process_user():
     if sheet.row_count == 0:
         headers = ["First Name", "Last Name", "Email", "PDF 1", "PDF 2", "Refund 2020", "Refund 2021"]
         sheet.append_row(headers)  
+
     try:
         data = request.json
-    except:
-        return jsonify({"error": "Invalid JSON format"},400)
 
-    for user in data.get("uniquePreQualifiedLeadsList",[]):
+        if isinstance(data, dict):            
+            data_list = data.get("uniquePreQualifiedLeadsList", [])
+        elif isinstance(data, list):
+            data_list = data
+        else:
+            return jsonify({"error": "Invalid JSON format"}, 400)
+
+    except Exception as e:
+        return jsonify({"error": "Invalid JSON format", "message": str(e)}, 400)
+
+    for user in data_list:
         try:
             email = user.get('Email', '')
 
