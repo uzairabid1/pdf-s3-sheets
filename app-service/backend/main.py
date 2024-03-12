@@ -65,7 +65,7 @@ def process_user():
 
             if email in sheet.col_values(3):
                 print(f'{email} exists already')
-                time.sleep(5)
+                time.sleep(1.2)
                 continue
 
             if email:
