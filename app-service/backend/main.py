@@ -8,6 +8,7 @@ import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 from dotenv import load_dotenv
 from io import BytesIO
+import time
 from PyPDF2 import PdfFileMerger
 
 load_dotenv()
@@ -64,6 +65,7 @@ def process_user():
 
             if email in sheet.col_values(3):
                 print(f'{email} exists already')
+                time.sleep(5)
                 continue
 
             if email:
