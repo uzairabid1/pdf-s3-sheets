@@ -289,9 +289,9 @@ def process_taxStatus():
         if resolve_api_response.status_code == 200:
             data = resolve_api_response.json()
 
-            first_name = request_data['firstName']
-            last_name = request_data['lastName']
-            email = request_data['email']
+            first_name = request_data.get('firstName','')
+            last_name = request_data.get('lastName','')
+            email = request_data.get('email','')
             companyId = request_data['companyId']
             tin = data['ClientId']
 
