@@ -18,6 +18,12 @@ s3_secret_key = os.getenv('s3_secret_key')
 s3_bucket_name = os.getenv('s3_bucket_name')
 s3_bucket_region = os.getenv('s3_bucket_region')
 
+taxStatus_token_url = os.getenv('taxStatus_token_url')
+taxStatus_client_id = os.getenv('taxStatus_client_id')
+taxStatus_client_secret = os.getenv('taxStatus_client_secret')
+taxStatus_scope = os.getenv('taxStatus_scope')
+taxStatus_euid = os.getenv('taxStatus_euid')
+
 gsheet_scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
 gsheet_creds = ServiceAccountCredentials.from_json_keyfile_name("credentials.json", gsheet_scope)
 gsheet_client = gspread.authorize(gsheet_creds)
@@ -50,14 +56,9 @@ def upload_pdf_to_s3_2(pdf_content, pdf_file_name):
 
 @app.route('/process_users',methods=['POST'])
 def process_user():
-    sheet = gsheet_client.open("SETCPRO-D1-March").sheet1
-    if sheet.row_count == 0:
-        headers = ["First Name", "Last Name", "Email", "PDF 1", "PDF 2", "Refund 2020", "Refund 2021"]
-        sheet.append_row(headers)  
-
     try:
         data = request.json
-
+        sheet_name = data.get("sheet_name")
         if isinstance(data, dict):            
             data_list = data.get("uniquePreQualifiedLeadsList", [])
         elif isinstance(data, list):
@@ -67,6 +68,12 @@ def process_user():
 
     except Exception as e:
         return jsonify({"error": "Invalid JSON format", "message": str(e)}, 400)
+    
+
+    sheet = gsheet_client.open(sheet_name).sheet1
+    if sheet.row_count == 0:
+        headers = ["First Name", "Last Name", "Email", "PDF 1", "PDF 2", "Refund 2020", "Refund 2021","Status/Stage","Referral Source"]
+        sheet.append_row(headers)  
 
     for user in data_list:
         try:
@@ -86,6 +93,8 @@ def process_user():
         
                 first_name = user.get('First_Name', '')
                 last_name = user.get('Last_Name', '')
+                status = user.get('Stage','')
+                referral = user.get('Lead_Source','')
 
                 try:
                     pdf_file_name1 = email +  "_" + tax_data['UploadFile2020Local']["resources"][0]['fileName']
@@ -123,7 +132,7 @@ def process_user():
                 except:
                     refund_2021 = ''
                 
-                row_data = [first_name, last_name, email, s3_pdf1, s3_pdf2, refund_2020, refund_2021]
+                row_data = [first_name, last_name, email, s3_pdf1, s3_pdf2, refund_2020, refund_2021,status,referral]
                 sheet.append_row(row_data)
 
         except Exception as e:
@@ -192,6 +201,136 @@ def merge_pdf():
         return jsonify({"error":e})
 
     return jsonify({"message": "PDFs merged, uploaded to S3, and Google Sheet updated successfully."})
+
+
+@app.route('/update_status_if_empty', methods=['POST'])
+def update_status_if_empty_endpoint():
+    try:
+        data = request.json
+        if not data:
+            return jsonify({"error": "No data found in the request body"}), 400
+        
+
+        sheet_name = data.get('sheet_name')
+        sheet = gsheet_client.open(sheet_name).sheet1
+        status_column = sheet.find('Status/Stage')
+
+        for row_data in data['data']:
+            email = row_data.get('Email')
+            stage = row_data.get('Stage')
+
+            cell = sheet.find(email, in_column=sheet.find("Email").col)  # Find the cell containing the email
+            time.sleep(1)
+
+            if cell:  # If the email is found in the sheet
+                status_cell = sheet.cell(cell.row, status_column.col)
+                if not status_cell.value:  # Check if the 'Status' column is empty
+                    sheet.update_cell(cell.row, status_column.col, stage)
+
+
+        return jsonify({"message": "Status updated successfully."})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    
+
+@app.route('/update_referral_if_empty', methods=['POST'])
+def update_referral_if_empty_endpoint():
+    try:
+        data = request.json
+        if not data:
+            return jsonify({"error": "No data found in the request body"}), 400
+        
+
+        sheet_name = data.get('sheet_name')
+        sheet = gsheet_client.open(sheet_name).sheet1
+        referral_column = sheet.find('Referral Source')
+
+        for row_data in data['data']:
+            email = row_data.get('Email')
+            referral = row_data.get('Lead_Source','')
+
+            cell = sheet.find(email, in_column=sheet.find("Email").col)
+            time.sleep(1.3)
+
+            if cell:  
+                referral_cell = sheet.cell(cell.row, referral_column.col)
+                if not referral_cell.value: 
+                    sheet.update_cell(cell.row, referral_column.col, referral)
+
+
+        return jsonify({"message": "Status updated successfully."})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    
+
+@app.route('/process_taxStatus', methods=['POST'])
+def process_taxStatus():
+    token_response = requests.post(taxStatus_token_url, data={
+        'grant_type': 'client_credentials',
+        'client_id': taxStatus_client_id,
+        'client_secret': taxStatus_client_secret,
+        'scope': taxStatus_scope
+    })
+
+    if token_response.status_code == 200:
+        access_token = token_response.json().get('access_token')
+
+        resolve_api_url = 'https://api.taxstatus.net/api/taxdata/v1/resolvetp'
+        headers = {
+            'Authorization': 'Bearer ' + access_token,
+            'euid': taxStatus_euid,
+            'Content-Type': 'application/json'
+        }
+
+        request_data = request.json
+
+        resolve_api_response = requests.post(resolve_api_url, headers=headers, json=request_data)
+
+        if resolve_api_response.status_code == 200:
+            data = resolve_api_response.json()
+
+            first_name = request_data['firstName']
+            last_name = request_data['lastName']
+            email = request_data['email']
+            companyId = request_data['companyId']
+            tin = data['ClientId']
+
+            result = {}
+
+            year_transcript_data = {
+                "2019": ["ACTR", "RECA"],
+                "2020": ["ACTR", "RECA"],
+                "2021": ["ACTR", "RECA"]
+            }
+
+            transcript_api_url = 'https://api.taxstatus.net/api/taxdata/v1/transcriptdetail'
+
+            for year, transcript_types in year_transcript_data.items():
+                for transcript_type in transcript_types:
+                    data_year_transcript = {
+                        "companyId": companyId,
+                        "tin": tin,
+                        "transcriptType": transcript_type,
+                        "transcriptForm": "1040",
+                        "transcriptPeriod": year + "12"
+                    }
+
+                    transcript_api_response = requests.post(transcript_api_url, headers=headers, json=data_year_transcript)
+                    result[year + "_" + transcript_type] = transcript_api_response.json()
+
+            final_result = {
+                "First_Name": first_name,
+                "Last_Name": last_name,
+                "Email": email,
+                "result": result
+            }
+
+            return jsonify(final_result), resolve_api_response.status_code
+        else:
+            return jsonify({'error': 'Failed to resolve TP'}), resolve_api_response.status_code
+    else:
+        return jsonify({'error': 'Failed to obtain access token'}), token_response.status_code
+
 
 
 
