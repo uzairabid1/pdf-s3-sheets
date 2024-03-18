@@ -10,6 +10,8 @@ from dotenv import load_dotenv
 from io import BytesIO
 import time
 from PyPDF2 import PdfFileMerger
+import math
+from utility import *
 
 load_dotenv()
 
@@ -24,6 +26,16 @@ taxStatus_client_secret = os.getenv('taxStatus_client_secret')
 taxStatus_scope = os.getenv('taxStatus_scope')
 taxStatus_euid = os.getenv('taxStatus_euid')
 
+db_7202_20_url = os.getenv('db_7202_20_url')
+db_sch_3_20_url = os.getenv('db_sch_3_20_url')
+db_1040_20_url = os.getenv('db_1040_20_url')
+db_1040x_20_url = os.getenv('db_1040x_20_url')
+
+db_7202_21_url = os.getenv('db_7202_21_url')
+db_sch_3_21_url = os.getenv('db_sch_3_21_url')
+db_1040_21_url = os.getenv('db_1040_21_url')
+db_1040x_21_url = os.getenv('db_1040x_21_url')
+
 gsheet_scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
 gsheet_creds = ServiceAccountCredentials.from_json_keyfile_name("credentials.json", gsheet_scope)
 gsheet_client = gspread.authorize(gsheet_creds)
@@ -33,25 +45,6 @@ app = Flask(__name__)
 CORS(app)
 
 
-def upload_pdf_to_s3(pdf_url,pdf_file_name):
-
-    pdf_content = requests.get(pdf_url).content        
-    s3_client = boto3.client('s3', aws_access_key_id=s3_access_key, aws_secret_access_key=s3_secret_key)
-    s3_key = pdf_file_name
-    s3_client.put_object(Body=pdf_content, Bucket= s3_bucket_name, Key=s3_key, ContentType='application/pdf')
-        
-
-    s3_url = f'https://setcpro-automate-boring.s3.us-east-2.amazonaws.com/{s3_key}'    
-    return s3_url
-
-
-def upload_pdf_to_s3_2(pdf_content, pdf_file_name):
-    s3_client = boto3.client('s3', aws_access_key_id=s3_access_key, aws_secret_access_key=s3_secret_key)
-    s3_key = pdf_file_name
-    s3_client.put_object(Body=pdf_content, Bucket=s3_bucket_name, Key=s3_key, ContentType='application/pdf')
-
-    s3_url = f'https://setcpro-automate-boring.s3.us-east-2.amazonaws.com/{s3_key}'
-    return s3_url
 
 
 @app.route('/process_users',methods=['POST'])
@@ -219,12 +212,12 @@ def update_status_if_empty_endpoint():
             email = row_data.get('Email')
             stage = row_data.get('Stage')
 
-            cell = sheet.find(email, in_column=sheet.find("Email").col)  # Find the cell containing the email
+            cell = sheet.find(email, in_column=sheet.find("Email").col) 
             time.sleep(1)
 
-            if cell:  # If the email is found in the sheet
+            if cell:  
                 status_cell = sheet.cell(cell.row, status_column.col)
-                if not status_cell.value:  # Check if the 'Status' column is empty
+                if not status_cell.value:
                     sheet.update_cell(cell.row, status_column.col, stage)
 
 
@@ -330,8 +323,129 @@ def process_taxStatus():
             return jsonify({'error': 'Failed to resolve TP'}), resolve_api_response.status_code
     else:
         return jsonify({'error': 'Failed to obtain access token'}), token_response.status_code
+    
 
+@app.route('/fill_calculation_sheet',methods=['POST'])
+def fill_calculation_sheet():
 
+    try:
+        data = request.json
+        sheet_name = data['sheet_name']
+    except:
+        return {"message": "No sheet name provided"},400
+
+    page = 1
+    per_page = 1
+    offset = 0
+    total_pages = 0
+
+    total_count_response = requests.get("https://xyrm-sqqj-hx6t.n7c.xano.io/api:zFwSjuSC/get_taxStatus_count")
+    total_count = total_count_response.json()
+    
+    total_pages = math.ceil(total_count/per_page)    
+
+    while page <= total_pages:
+        final_result_response = requests.get(f"https://xyrm-sqqj-hx6t.n7c.xano.io/api:zFwSjuSC/get_taxStatus_data?page={page}&per_page={per_page}&offset={offset}")
+        final_result = final_result_response.json()
+        print(page)
+
+        data_variables = extract_data_keys_and_values(final_result)
+        place_data_variables(sheet_name,data_variables)
+
+        first_name = final_result.get('items','')[0].get('First_Name','')
+        last_name = final_result.get('items','')[0].get('Last_Name','')   
+        email = final_result.get('items','')[0].get('Email','')    
+        
+        data_7202_20 = get_7202_20_data(sheet_name)
+
+        payload_7202_20 = {
+            "First_Name": first_name,
+            "Last_Name": last_name,
+            "Email": email,
+            "result": data_7202_20
+        }
+
+        requests.post(db_7202_20_url,json=payload_7202_20)
+        
+        data_sch_3_20 = get_sch_3_20_data(sheet_name)
+
+        payload_sch_3_20 = {
+            "First_Name": first_name,
+            "Last_Name": last_name,
+            "Email": email,
+            "result": data_sch_3_20
+        }
+
+        requests.post(db_sch_3_20_url,json=payload_sch_3_20)
+
+        data_1040_20 = get_1040_20_data(sheet_name)
+
+        payload_1040_20 = {
+            "First_Name": first_name,
+            "Last_Name": last_name,
+            "Email": email,
+            "result": data_1040_20
+        }
+
+        requests.post(db_1040_20_url,json=payload_1040_20)
+
+        data_1040x_20 = get_1040x_20_data(sheet_name)
+
+        payload_1040x_20 = {
+            "First_Name": first_name,
+            "Last_Name": last_name,
+            "Email": email,
+            "result": data_1040x_20
+        }
+
+        requests.post(db_1040x_20_url,json=payload_1040x_20)
+
+        data_7202_21 = get_7202_21_data(sheet_name)
+
+        payload_7202_21 = {
+            "First_Name": first_name,
+            "Last_Name": last_name,
+            "Email": email,
+            "result": data_7202_21
+        }
+
+        requests.post(db_7202_21_url,json=payload_7202_21)
+
+        data_sch_3_21 = get_sch_3_21_data(sheet_name)
+
+        payload_sch_3_21 = {
+            "First_Name": first_name,
+            "Last_Name": last_name,
+            "Email": email,
+            "result": data_sch_3_21
+        }
+
+        requests.post(db_sch_3_21_url,json=payload_sch_3_21)
+
+        data_1040_21 = get_1040_21_data(sheet_name)
+        
+        payload_1040_21 = {
+            "First_Name": first_name,
+            "Last_Name": last_name,
+            "Email": email,
+            "result": data_1040_21
+        }
+
+        requests.post(db_1040_21_url,json=payload_1040_21)
+
+        data_1040x_21 = get_1040x_21_data(sheet_name)
+
+        payload_1040x_21 = {
+            "First_Name": first_name,
+            "Last_Name": last_name,
+            "Email": email,
+            "result": data_1040x_21
+        }
+
+        requests.post(db_1040x_21_url,json=payload_1040x_21)
+        page+=1
+
+    return {'message': 'Data added to the dbs'}
 
 
 if __name__ == '__main__':
