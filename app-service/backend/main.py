@@ -337,11 +337,6 @@ def fill_calculation_sheet():
     except:
         return {"message": "No sheet name provided"},400
 
-    page = 8
-    per_page = 1
-    offset = 0
-    total_pages = 0
-
     total_count_response = requests.get("https://xyrm-sqqj-hx6t.n7c.xano.io/api:zFwSjuSC/get_taxStatus_count")
     total_count = total_count_response.json()
     
