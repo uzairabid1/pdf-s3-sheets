@@ -331,10 +331,13 @@ def fill_calculation_sheet():
     try:
         data = request.json
         sheet_name = data['sheet_name']
+        page = data['page']
+        per_page = data['per_page']
+        offset = data['offset']
     except:
         return {"message": "No sheet name provided"},400
 
-    page = 1
+    page = 8
     per_page = 1
     offset = 0
     total_pages = 0
