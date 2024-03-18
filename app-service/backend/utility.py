@@ -97,10 +97,8 @@ def extract_data_keys_and_values(data):
 
         except:
             old_intake_data = {
-                "First_Name": first_name,
-                "Last_Name": last_name,
-                "Email": email,
                 "Child_April_1_2020_through_December_31_2020": "",
+                "Email": email,
                 "Child_January_1_2021_through_March_31_2021": "",
                 "Gov_April_1_2021_through_September_30_2021": "",
                 "Gov_January_1_2021_through_March_31_2021": "",
@@ -109,6 +107,8 @@ def extract_data_keys_and_values(data):
                 "Family_April_1_2020_through_December_31_2020": "",
                 "Child_April_1_2021_through_September_30_2021": "",
                 "Family_April_1_2021_through_September_30_2021": "",
+                "First_Name": first_name,
+                "Last_Name": last_name,
                 "ClientId": "",
                 "Status": ""
             }
