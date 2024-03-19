@@ -350,9 +350,10 @@ def fill_calculation_sheet():
         last_name = final_result.get('items','')[0].get('Last_Name','')   
         email = final_result.get('items','')[0].get('Email','')
 
-        email_exists = requests.get(f"https://xyrm-sqqj-hx6t.n7c.xano.io/api:zFwSjuSC/has_email_21_1040x?email={email}")
+        response_email_exists = requests.get(f"https://xyrm-sqqj-hx6t.n7c.xano.io/api:zFwSjuSC/has_email_21_1040x?email={email}")
+        email_exists = response_email_exists.json()
 
-        if email_exists:
+        if email_exists == True:
             page+=1
             print(f"skipping {str(page)}, exists")
             continue    
