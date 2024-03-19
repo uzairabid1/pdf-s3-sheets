@@ -378,8 +378,10 @@ def fill_calculation_sheet():
             data_total_2021_credit_2 = sheet_21.cell(111,8).value.strip()
         except:
             data_total_2021_credit_2 = ''
+            
 
-        if data_total_2020_credit != '-' or data_total_2020_credit != '':
+
+        if data_total_2020_credit != '-':
             print(f"processing year 2020 page={str(page)}")
 
             data_7202_20 = get_7202_20_data(sheet_name)
@@ -426,9 +428,7 @@ def fill_calculation_sheet():
             requests.post(db_1040x_20_url,json=payload_1040x_20)
 
 
-        
-
-        if (data_total_2021_credit != '-' or data_total_2021_credit != '') or (data_total_2021_credit_2 != '-' or data_total_2021_credit_2 != ''):
+        if data_total_2021_credit != '-' or data_total_2021_credit_2 != '-':
             print(f"processing year 2021 page={page}")
             data_7202_21 = get_7202_21_data(sheet_name)
 
