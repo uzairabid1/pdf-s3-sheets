@@ -12,6 +12,7 @@ import time
 from PyPDF2 import PdfFileMerger
 import math
 from utility import *
+from tenacity import retry, stop_after_attempt, wait_exponential
 
 load_dotenv()
 
@@ -325,156 +326,170 @@ def process_taxStatus():
         return jsonify({'error': 'Failed to obtain access token'}), token_response.status_code
     
 
-@app.route('/fill_calculation_sheet',methods=['POST'])
+@app.route('/fill_calculation_sheet', methods=['POST'])
 def fill_calculation_sheet():
-
     try:
         data = request.json
         sheet_name = data['sheet_name']
         page = data['page']
         per_page = data['per_page']
         offset = data['offset']
-    except:
-        return {"message": "No sheet name provided"},400
+    except KeyError:
+        return {"message": "Required data not provided in JSON request"}, 400
 
-    total_count_response = requests.get("https://xyrm-sqqj-hx6t.n7c.xano.io/api:zFwSjuSC/get_taxStatus_count")
-    total_count = total_count_response.json()
-    
-    total_pages = math.ceil(total_count/per_page)    
+    @retry(
+        stop=stop_after_attempt(3), 
+        wait=wait_exponential(multiplier=1, min=1, max=10)
+    )
+    def make_get_request(url):
+        response = requests.get(url)
+        response.raise_for_status()
+        return response
 
-    while page <= total_pages:
-        final_result_response = requests.get(f"https://xyrm-sqqj-hx6t.n7c.xano.io/api:zFwSjuSC/get_taxStatus_data?page={page}&per_page={per_page}&offset={offset}")
-        final_result = final_result_response.json()
-        
-        first_name = final_result.get('items','')[0].get('First_Name','')
-        last_name = final_result.get('items','')[0].get('Last_Name','')   
-        email = final_result.get('items','')[0].get('Email','')
+    try:
+        total_count_response = make_get_request("https://xyrm-sqqj-hx6t.n7c.xano.io/api:zFwSjuSC/get_taxStatus_count")
+        total_count = total_count_response.json()
 
-        response_email_exists = requests.get(f"https://xyrm-sqqj-hx6t.n7c.xano.io/api:zFwSjuSC/has_email_21_1040x?email={email}")
-        email_exists = response_email_exists.json()
+        total_pages = math.ceil(total_count / per_page)
 
-        if email_exists == True:
-            page+=1
-            print(f"skipping {str(page)}, exists")
-            continue    
-        data_variables = extract_data_keys_and_values(final_result)
+        while page <= total_pages:
+            final_result_response = make_get_request(
+                f"https://xyrm-sqqj-hx6t.n7c.xano.io/api:zFwSjuSC/get_taxStatus_data?page={page}&per_page={per_page}&offset={offset}")
+            final_result = final_result_response.json()
 
-        place_data_variables(sheet_name,data_variables)
+            first_name = final_result.get('items', [])[0].get('First_Name', '')
+            last_name = final_result.get('items', [])[0].get('Last_Name', '')
+            email = final_result.get('items', [])[0].get('Email', '')
 
-        sheet_20 = gsheet_client.open(sheet_name).get_worksheet(1)
-        try:
-            data_total_2020_credit = sheet_20.cell(49,36).value.strip()
-        except:
-            data_total_2020_credit = ''
+            response_email_exists = make_get_request(
+                f"https://xyrm-sqqj-hx6t.n7c.xano.io/api:zFwSjuSC/has_email_21_1040x?email={email}")
+            email_exists = response_email_exists.json()
 
-        sheet_21 = gsheet_client.open(sheet_name).get_worksheet(5)
+            if email_exists:
+                print(f"Skipping {page}, email already exists")
+                page += 1
+                continue
 
-        try:
-            data_total_2021_credit = sheet_21.cell(112,8).value.strip()
-        except:
-            data_total_2021_credit = ''
-        
-        try:
-            data_total_2021_credit_2 = sheet_21.cell(111,8).value.strip()
-        except:
-            data_total_2021_credit_2 = ''
-            
+            data_variables = extract_data_keys_and_values(final_result)
 
+            place_data_variables(sheet_name, data_variables)
 
-        if data_total_2020_credit != '-':
-            print(f"processing year 2020 page={str(page)}")
+            sheet_20 = gsheet_client.open(sheet_name).get_worksheet(1)
+            try:
+                data_total_2020_credit = sheet_20.cell(49, 36).value.strip()
+            except AttributeError:
+                data_total_2020_credit = ''
 
-            data_7202_20 = get_7202_20_data(sheet_name)
-            payload_7202_20 = {
-                "First_Name": first_name,
-                "Last_Name": last_name,
-                "Email": email,
-                "result": data_7202_20
-            }
+            sheet_21 = gsheet_client.open(sheet_name).get_worksheet(5)
 
-            requests.post(db_7202_20_url,json=payload_7202_20)
-            
-            data_sch_3_20 = get_sch_3_20_data(sheet_name)
+            try:
+                data_total_2021_credit = sheet_21.cell(112, 8).value.strip()
+            except AttributeError:
+                data_total_2021_credit = ''
 
-            payload_sch_3_20 = {
-                "First_Name": first_name,
-                "Last_Name": last_name,
-                "Email": email,
-                "result": data_sch_3_20
-            }
+            try:
+                data_total_2021_credit_2 = sheet_21.cell(111, 8).value.strip()
+            except AttributeError:
+                data_total_2021_credit_2 = ''
 
-            requests.post(db_sch_3_20_url,json=payload_sch_3_20)
+            if data_total_2020_credit != '-':
+                print(f"Processing year 2020 page={page}")
 
-            data_1040_20 = get_1040_20_data(sheet_name)
+                data_7202_20 = get_7202_20_data(sheet_name)
+                payload_7202_20 = {
+                    "First_Name": first_name,
+                    "Last_Name": last_name,
+                    "Email": email,
+                    "result": data_7202_20
+                }
 
-            payload_1040_20 = {
-                "First_Name": first_name,
-                "Last_Name": last_name,
-                "Email": email,
-                "result": data_1040_20
-            }
+                requests.post(db_7202_20_url, json=payload_7202_20)
 
-            requests.post(db_1040_20_url,json=payload_1040_20)
+                data_sch_3_20 = get_sch_3_20_data(sheet_name)
 
-            data_1040x_20 = get_1040x_20_data(sheet_name)
+                payload_sch_3_20 = {
+                    "First_Name": first_name,
+                    "Last_Name": last_name,
+                    "Email": email,
+                    "result": data_sch_3_20
+                }
 
-            payload_1040x_20 = {
-                "First_Name": first_name,
-                "Last_Name": last_name,
-                "Email": email,
-                "result": data_1040x_20
-            }
+                requests.post(db_sch_3_20_url, json=payload_sch_3_20)
 
-            requests.post(db_1040x_20_url,json=payload_1040x_20)
+                data_1040_20 = get_1040_20_data(sheet_name)
 
+                payload_1040_20 = {
+                    "First_Name": first_name,
+                    "Last_Name": last_name,
+                    "Email": email,
+                    "result": data_1040_20
+                }
 
-        if data_total_2021_credit != '-' or data_total_2021_credit_2 != '-':
-            print(f"processing year 2021 page={page}")
-            data_7202_21 = get_7202_21_data(sheet_name)
+                requests.post(db_1040_20_url, json=payload_1040_20)
 
-            payload_7202_21 = {
-                "First_Name": first_name,
-                "Last_Name": last_name,
-                "Email": email,
-                "result": data_7202_21
-            }
+                data_1040x_20 = get_1040x_20_data(sheet_name)
 
-            requests.post(db_7202_21_url,json=payload_7202_21)
+                payload_1040x_20 = {
+                    "First_Name": first_name,
+                    "Last_Name": last_name,
+                    "Email": email,
+                    "result": data_1040x_20
+                }
 
-            data_sch_3_21 = get_sch_3_21_data(sheet_name)
+                requests.post(db_1040x_20_url, json=payload_1040x_20)
 
-            payload_sch_3_21 = {
-                "First_Name": first_name,
-                "Last_Name": last_name,
-                "Email": email,
-                "result": data_sch_3_21
-            }
+            if data_total_2021_credit != '-' or data_total_2021_credit_2 != '-':
+                print(f"Processing year 2021 page={page}")
+                data_7202_21 = get_7202_21_data(sheet_name)
 
-            requests.post(db_sch_3_21_url,json=payload_sch_3_21)
+                payload_7202_21 = {
+                    "First_Name": first_name,
+                    "Last_Name": last_name,
+                    "Email": email,
+                    "result": data_7202_21
+                }
 
-            data_1040_21 = get_1040_21_data(sheet_name)
-            
-            payload_1040_21 = {
-                "First_Name": first_name,
-                "Last_Name": last_name,
-                "Email": email,
-                "result": data_1040_21
-            }
+                requests.post(db_7202_21_url, json=payload_7202_21)
 
-            requests.post(db_1040_21_url,json=payload_1040_21)
+                data_sch_3_21 = get_sch_3_21_data(sheet_name)
 
-            data_1040x_21 = get_1040x_21_data(sheet_name)
+                payload_sch_3_21 = {
+                    "First_Name": first_name,
+                    "Last_Name": last_name,
+                    "Email": email,
+                    "result": data_sch_3_21
+                }
 
-            payload_1040x_21 = {
-                "First_Name": first_name,
-                "Last_Name": last_name,
-                "Email": email,
-                "result": data_1040x_21
-            }
+                requests.post(db_sch_3_21_url, json=payload_sch_3_21)
 
-            requests.post(db_1040x_21_url,json=payload_1040x_21)
+                data_1040_21 = get_1040_21_data(sheet_name)
 
-        page+=1
+                payload_1040_21 = {
+                    "First_Name": first_name,
+                    "Last_Name": last_name,
+                    "Email": email,
+                    "result": data_1040_21
+                }
+
+                requests.post(db_1040_21_url, json=payload_1040_21)
+
+                data_1040x_21 = get_1040x_21_data(sheet_name)
+
+                payload_1040x_21 = {
+                    "First_Name": first_name,
+                    "Last_Name": last_name,
+                    "Email": email,
+                    "result": data_1040x_21
+                }
+
+                requests.post(db_1040x_21_url, json=payload_1040x_21)
+
+            page += 1
+
+    except requests.exceptions.RequestException as e:
+        return {"message": f"Request failed: {e}"}, 500
+    except Exception as e:
+        return {"message": f"An unexpected error occurred: {e}"}, 500
 
     return {'message': 'Data added to the dbs'}
 
