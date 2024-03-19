@@ -424,12 +424,12 @@ def fill_calculation_sheet():
             }
 
             requests.post(db_1040x_20_url,json=payload_1040x_20)
-            continue
 
-        print(f"processing {page}")
+
         
 
         if (data_total_2021_credit != '-' or data_total_2021_credit != '') or (data_total_2021_credit_2 != '-' or data_total_2021_credit_2 != ''):
+            print(f"processing year 2021 page={page}")
             data_7202_21 = get_7202_21_data(sheet_name)
 
             payload_7202_21 = {
