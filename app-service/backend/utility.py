@@ -105,33 +105,53 @@ def extract_data_keys_and_values(data):
                 row = df[df['Email'] == email].iloc[0]
           
                 Child_April_1_2020_through_December_31_2020 = row.get('(Child) April 1, 2020, through December, 31, 2020', '')
-                Child_April_1_2021_through_September_30_2021 = row.get('(Child) April 1, 2021, through September 30, 2021', '')
-                Child_January_1_2021_through_March_31_2021 = row.get('(Child) January 1, 2021, through March 31, 2021', '')
-                Family_April_1_2020_through_December_31_2020 = row.get('(Family) April 1, 2020, through December, 31, 2020', '')
-                Family_April_1_2021_through_September_30_2021 = row.get('(Family) April 1, 2021, through September 30, 2021', '')
-                Family_January_1_2021_through_March_31_2021 = row.get('(Family) January 1, 2021, through March 31, 2021', '')
-                Gov_April_1_2020_through_December_31_2020 = row.get('(Gov) April 1, 2020, through December, 31, 2020', '')
-                Gov_April_1_2021_through_September_30_2021 = row.get('(Gov) April 1, 2021, through September 30, 2021', '')
-                Gov_January_1_2021_through_March_31_2021 = row.get('(Gov) January 1, 2021, through March 31, 2021', '')
-                clientId = row.get('ClientId', '')
-                status = row.get('Stage', '')
+                
+                if isinstance(Child_April_1_2020_through_December_31_2020, float) and math.isnan(Child_April_1_2020_through_December_31_2020):
+                    old_intake_data = {
+                        "Child_April_1_2020_through_December_31_2020": "",
+                        "Email": email,
+                        "Child_January_1_2021_through_March_31_2021": "",
+                        "Gov_April_1_2021_through_September_30_2021": "",
+                        "Gov_January_1_2021_through_March_31_2021": "",
+                        "Gov_April_1_2020_through_December_31_2020": "",
+                        "Family_January_1_2021_through_March_31_2021": "",
+                        "Family_April_1_2020_through_December_31_2020": "",
+                        "Child_April_1_2021_through_September_30_2021": "",
+                        "Family_April_1_2021_through_September_30_2021": "",
+                        "First_Name": first_name,
+                        "Last_Name": last_name,
+                        "ClientId": "",
+                        "Status": status
+                    }   
 
-                old_intake_data = {
-                    "Child_April_1_2020_through_December_31_2020": Child_April_1_2020_through_December_31_2020,
-                    "Email": email,
-                    "Child_January_1_2021_through_March_31_2021": Child_January_1_2021_through_March_31_2021,
-                    "Gov_April_1_2021_through_September_30_2021": Gov_April_1_2021_through_September_30_2021,
-                    "Gov_January_1_2021_through_March_31_2021": Gov_January_1_2021_through_March_31_2021,
-                    "Gov_April_1_2020_through_December_31_2020": Gov_April_1_2020_through_December_31_2020,
-                    "Family_January_1_2021_through_March_31_2021": Family_January_1_2021_through_March_31_2021,
-                    "Family_April_1_2020_through_December_31_2020": Family_April_1_2020_through_December_31_2020,
-                    "Child_April_1_2021_through_September_30_2021": Child_April_1_2021_through_September_30_2021,
-                    "Family_April_1_2021_through_September_30_2021": Family_April_1_2021_through_September_30_2021,
-                    "First_Name": first_name,
-                    "Last_Name": last_name,
-                    "ClientId": clientId,
-                    "Status": status
-                }
+                else:              
+                    Child_April_1_2021_through_September_30_2021 = row.get('(Child) April 1, 2021, through September 30, 2021', '')
+                    Child_January_1_2021_through_March_31_2021 = row.get('(Child) January 1, 2021, through March 31, 2021', '')
+                    Family_April_1_2020_through_December_31_2020 = row.get('(Family) April 1, 2020, through December, 31, 2020', '')
+                    Family_April_1_2021_through_September_30_2021 = row.get('(Family) April 1, 2021, through September 30, 2021', '')
+                    Family_January_1_2021_through_March_31_2021 = row.get('(Family) January 1, 2021, through March 31, 2021', '')
+                    Gov_April_1_2020_through_December_31_2020 = row.get('(Gov) April 1, 2020, through December, 31, 2020', '')
+                    Gov_April_1_2021_through_September_30_2021 = row.get('(Gov) April 1, 2021, through September 30, 2021', '')
+                    Gov_January_1_2021_through_March_31_2021 = row.get('(Gov) January 1, 2021, through March 31, 2021', '')
+                    clientId = row.get('ClientId', '')
+                    status = row.get('Stage', '')
+
+                    old_intake_data = {
+                        "Child_April_1_2020_through_December_31_2020": Child_April_1_2020_through_December_31_2020,
+                        "Email": email,
+                        "Child_January_1_2021_through_March_31_2021": Child_January_1_2021_through_March_31_2021,
+                        "Gov_April_1_2021_through_September_30_2021": Gov_April_1_2021_through_September_30_2021,
+                        "Gov_January_1_2021_through_March_31_2021": Gov_January_1_2021_through_March_31_2021,
+                        "Gov_April_1_2020_through_December_31_2020": Gov_April_1_2020_through_December_31_2020,
+                        "Family_January_1_2021_through_March_31_2021": Family_January_1_2021_through_March_31_2021,
+                        "Family_April_1_2020_through_December_31_2020": Family_April_1_2020_through_December_31_2020,
+                        "Child_April_1_2021_through_September_30_2021": Child_April_1_2021_through_September_30_2021,
+                        "Family_April_1_2021_through_September_30_2021": Family_April_1_2021_through_September_30_2021,
+                        "First_Name": first_name,
+                        "Last_Name": last_name,
+                        "ClientId": clientId,
+                        "Status": status
+                    }
 
             except Exception as e:
                 print(f"Error reading CSV data for email {email}: {e}")

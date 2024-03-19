@@ -375,6 +375,13 @@ def fill_calculation_sheet():
 
             data_variables = extract_data_keys_and_values(final_result)
 
+            child_april = data_variables[0]['old_intake_data']['Child_April_1_2020_through_December_31_2020']
+
+            if child_april == '':
+                print(f"Skipping {page}, email already exists")
+                page += 1
+                continue
+
             place_data_variables(sheet_name, data_variables)
 
             sheet_20 = gsheet_client.open(sheet_name).get_worksheet(1)
