@@ -354,8 +354,8 @@ def fill_calculation_sheet():
 
         if email_exists:
             page+=1
+            print(f"skipping {str(page)}, exists")
             continue    
-
         data_variables = extract_data_keys_and_values(final_result)
 
         place_data_variables(sheet_name,data_variables)
@@ -367,9 +367,11 @@ def fill_calculation_sheet():
             data_total_2020_credit = ''
 
         if data_total_2020_credit == '-' or data_total_2020_credit == '':
+            print(f"skipping {str(page)}, no total credit")
             page += 1
             continue
 
+        print(f"processing {page}")
         
         data_7202_20 = get_7202_20_data(sheet_name)
 
