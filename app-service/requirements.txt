@@ -5,3 +5,5 @@ boto3
 gspread
 oauth2client
 PyPDF2==2.12.0
+pandas
+openpyxl
