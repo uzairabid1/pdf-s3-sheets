@@ -338,8 +338,8 @@ def fill_calculation_sheet():
         return {"message": "Required data not provided in JSON request"}, 400
 
     @retry(
-        stop=stop_after_attempt(3), 
-        wait=wait_exponential(multiplier=1, min=1, max=10)
+        stop=stop_after_attempt(10), 
+        wait=wait_exponential(multiplier=1, min=1, max=20)
     )
     def make_get_request(url):
         response = requests.get(url)
