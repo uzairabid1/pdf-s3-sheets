@@ -1,2 +1,3 @@
 app-service/backend/.env
 app-service/backend/credentials.json
+app-service/backend/__pycache__
