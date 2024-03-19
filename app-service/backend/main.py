@@ -351,6 +351,16 @@ def fill_calculation_sheet():
 
         place_data_variables(sheet_name,data_variables)
 
+        sheet = gsheet_client.open(sheet_name).get_worksheet(1)
+        try:
+            data_total_2020_credit = sheet.cell(49,36).value.strip()
+        except:
+            data_total_2020_credit = ''
+
+        if data_total_2020_credit == '-' or data_total_2020_credit == '':
+            page += 1
+            continue
+
         first_name = final_result.get('items','')[0].get('First_Name','')
         last_name = final_result.get('items','')[0].get('Last_Name','')   
         email = final_result.get('items','')[0].get('Email','')    
