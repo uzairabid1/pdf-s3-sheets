@@ -352,7 +352,6 @@ def fill_calculation_sheet():
 
         response_email_exists = requests.get(f"https://xyrm-sqqj-hx6t.n7c.xano.io/api:zFwSjuSC/has_email_21_1040x?email={email}")
         email_exists = response_email_exists.json()
-        print(email_exists)
         if email_exists == True:
             page+=1
             print(f"skipping {str(page)}, exists")
@@ -411,7 +410,7 @@ def fill_calculation_sheet():
 
             requests.post(db_1040x_20_url,json=payload_1040x_20)
 
-        if (adjusted_gross_income_19 != '0' or adjusted_gross_income_19 != '') and (se_tax_20 != '0' or se_tax_20 != '') and (se_tax_21 != '0' or se_tax_21 !=''):  
+        if (se_tax_20 != '0' or se_tax_20 != '') and (se_tax_21 != '0' or se_tax_21 !=''):  
             print(f"processing year 2021 page={str(page)}")
 
             data_7202_21 = get_7202_21_data(sheet_name)
