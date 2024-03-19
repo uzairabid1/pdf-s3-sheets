@@ -331,16 +331,19 @@ def place_data_variables(sheet_name, data_variables):
         for key,val in data['2020'].items():
             sheet.update_cell(row_number,13,val)
             row_number += 1
+            time.sleep(0.2)
         
         row_number = 37
         for key,val in data['2021'].items():
             sheet.update_cell(row_number,14,val)
             row_number += 1
+            time.sleep(0.2)
 
         row_number = 36
         for key,val in data['old_intake_data'].items():
             sheet.update_cell(row_number,20,val)
             row_number += 1
+            time.sleep(0.2)
 
     credit_to_your_account_19 = data_variables[0]['2019']['Credit to your account']
     sheet.update_cell(54,15,credit_to_your_account_19)
@@ -348,6 +351,7 @@ def place_data_variables(sheet_name, data_variables):
     sheet.update_cell(55,15,account_balance_19)
     accrued_interest_19 = data_variables[0]['2019']['ACCRUED INTEREST']
     sheet.update_cell(56,15,accrued_interest_19)
+    time.sleep(0.3)
     filing_status_19 = data_variables[0]['2019']['FILING STATUS']
     sheet.update_cell(52,15,filing_status_19)
     taxable_income_19 = data_variables[0]['2019']['TAXABLE INCOME']

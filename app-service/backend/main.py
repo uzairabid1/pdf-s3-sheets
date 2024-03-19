@@ -345,7 +345,16 @@ def fill_calculation_sheet():
     while page <= total_pages:
         final_result_response = requests.get(f"https://xyrm-sqqj-hx6t.n7c.xano.io/api:zFwSjuSC/get_taxStatus_data?page={page}&per_page={per_page}&offset={offset}")
         final_result = final_result_response.json()
-        print(page)
+        
+        first_name = final_result.get('items','')[0].get('First_Name','')
+        last_name = final_result.get('items','')[0].get('Last_Name','')   
+        email = final_result.get('items','')[0].get('Email','')
+
+        email_exists = requests.get(f"https://xyrm-sqqj-hx6t.n7c.xano.io/api:zFwSjuSC/has_email_21_1040x?email={email}")
+
+        if email_exists:
+            page+=1
+            continue    
 
         data_variables = extract_data_keys_and_values(final_result)
 
@@ -361,9 +370,6 @@ def fill_calculation_sheet():
             page += 1
             continue
 
-        first_name = final_result.get('items','')[0].get('First_Name','')
-        last_name = final_result.get('items','')[0].get('Last_Name','')   
-        email = final_result.get('items','')[0].get('Email','')    
         
         data_7202_20 = get_7202_20_data(sheet_name)
 
