@@ -8,6 +8,7 @@ import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 from dotenv import load_dotenv
 from io import BytesIO
+import pandas as pd
 import time
 from PyPDF2 import PdfFileMerger
 import math
@@ -95,25 +96,68 @@ def extract_data_keys_and_values(data):
                 "Status": status
             }
 
-        except:
-            old_intake_data = {
-                "Child_April_1_2020_through_December_31_2020": "",
-                "Email": email,
-                "Child_January_1_2021_through_March_31_2021": "",
-                "Gov_April_1_2021_through_September_30_2021": "",
-                "Gov_January_1_2021_through_March_31_2021": "",
-                "Gov_April_1_2020_through_December_31_2020": "",
-                "Family_January_1_2021_through_March_31_2021": "",
-                "Family_April_1_2020_through_December_31_2020": "",
-                "Child_April_1_2021_through_September_30_2021": "",
-                "Family_April_1_2021_through_September_30_2021": "",
-                "First_Name": first_name,
-                "Last_Name": last_name,
-                "ClientId": "",
-                "Status": ""
-            }
+        except Exception as e:
+            print(f"Error processing data for email {email}: {e}")
+
+            try:
+                df = pd.read_csv("Deals_2024_03_18-1.csv")
+                print(df)
+                row = df[df['Email'] == email].iloc[0]
+          
+                Child_April_1_2020_through_December_31_2020 = row.get('(Child) April 1, 2020, through December, 31, 2020', '')
+                Child_April_1_2021_through_September_30_2021 = row.get('(Child) April 1, 2021, through September 30, 2021', '')
+                Child_January_1_2021_through_March_31_2021 = row.get('(Child) January 1, 2021, through March 31, 2021', '')
+                Family_April_1_2020_through_December_31_2020 = row.get('(Family) April 1, 2020, through December, 31, 2020', '')
+                Family_April_1_2021_through_September_30_2021 = row.get('(Family) April 1, 2021, through September 30, 2021', '')
+                Family_January_1_2021_through_March_31_2021 = row.get('(Family) January 1, 2021, through March 31, 2021', '')
+                Gov_April_1_2020_through_December_31_2020 = row.get('(Gov) April 1, 2020, through December, 31, 2020', '')
+                Gov_April_1_2021_through_September_30_2021 = row.get('(Gov) April 1, 2021, through September 30, 2021', '')
+                Gov_January_1_2021_through_March_31_2021 = row.get('(Gov) January 1, 2021, through March 31, 2021', '')
+                clientId = row.get('ClientId', '')
+                status = row.get('Stage', '')
+
+                old_intake_data = {
+                    "Child_April_1_2020_through_December_31_2020": Child_April_1_2020_through_December_31_2020,
+                    "Email": email,
+                    "Child_January_1_2021_through_March_31_2021": Child_January_1_2021_through_March_31_2021,
+                    "Gov_April_1_2021_through_September_30_2021": Gov_April_1_2021_through_September_30_2021,
+                    "Gov_January_1_2021_through_March_31_2021": Gov_January_1_2021_through_March_31_2021,
+                    "Gov_April_1_2020_through_December_31_2020": Gov_April_1_2020_through_December_31_2020,
+                    "Family_January_1_2021_through_March_31_2021": Family_January_1_2021_through_March_31_2021,
+                    "Family_April_1_2020_through_December_31_2020": Family_April_1_2020_through_December_31_2020,
+                    "Child_April_1_2021_through_September_30_2021": Child_April_1_2021_through_September_30_2021,
+                    "Family_April_1_2021_through_September_30_2021": Family_April_1_2021_through_September_30_2021,
+                    "First_Name": first_name,
+                    "Last_Name": last_name,
+                    "ClientId": clientId,
+                    "Status": status
+                }
+
+            except Exception as e:
+                print(f"Error reading CSV data for email {email}: {e}")
+                df = pd.read_csv("Deals_2024_03_18-1.csv")
+                row = df[df['Email'] == email].iloc[0]
+                status = row.get('Stage', '')
+
+                old_intake_data = {
+                    "Child_April_1_2020_through_December_31_2020": "",
+                    "Email": email,
+                    "Child_January_1_2021_through_March_31_2021": "",
+                    "Gov_April_1_2021_through_September_30_2021": "",
+                    "Gov_January_1_2021_through_March_31_2021": "",
+                    "Gov_April_1_2020_through_December_31_2020": "",
+                    "Family_January_1_2021_through_March_31_2021": "",
+                    "Family_April_1_2020_through_December_31_2020": "",
+                    "Child_April_1_2021_through_September_30_2021": "",
+                    "Family_April_1_2021_through_September_30_2021": "",
+                    "First_Name": first_name,
+                    "Last_Name": last_name,
+                    "ClientId": "",
+                    "Status": status
+                }
 
         # new data processsing
+        data_2019_reca_list = {}
         data_2020_reca_list = {}
         data_2021_reca_list = {}
         data_variables = [
@@ -178,15 +222,40 @@ def extract_data_keys_and_values(data):
                 "MAX DEFERRED TAX PER COMPUTER",
                 "EIC PRIOR YEAR EARNED INCOME"
                 ]
+        
+        data_variables_19 = [
+                "Credit to your account",
+                "ACCOUNT BALANCE",
+                "ACCRUED INTEREST",
+                "FILING STATUS",
+                "ADJUSTED GROSS INCOME",
+                "TAXABLE INCOME",
+                "TAX PER RETURN",
+                ]
+        
+        for key in data_variables_19:
+            data_2019_reca_list[key]=  '0'
 
         for key in data_variables:
-            data_2020_reca_list[key] = ''
-            data_2021_reca_list[key] = ''
+            data_2020_reca_list[key] = '0'
+            data_2021_reca_list[key] = '0'
+
+
+        try:
+            for data_val in item.get('result', {}).get('2019_RECA', {}).get('Data', [])[0].get('Transactions', ''):
+                if data_val.get('Desc', '') == 'Credit to your account':
+                    amount = data_val.get('Amount', '0').replace('$', '').replace(',', '').replace('-', '0')
+                    if amount.replace('.', '').isdigit():
+                        data_2019_reca_list["Credit to your account"] = int(float(amount))
+                    else:
+                        data_2019_reca_list["Credit to your account"] = amount
+        except Exception as e:
+            print(f"Error processing 2020 credit: {e}")
 
         try:
             for data_val in item.get('result', {}).get('2020_RECA', {}).get('Data', [])[0].get('Transactions', ''):
                 if data_val.get('Desc', '') == 'Credit to your account':
-                    amount = data_val.get('Amount', '').replace('$', '').replace(',', '').replace('-', '')
+                    amount = data_val.get('Amount', '0').replace('$', '').replace(',', '').replace('-', '0')
                     if amount.replace('.', '').isdigit():
                         data_2020_reca_list["Credit to your account"] = int(float(amount))
                     else:
@@ -197,7 +266,7 @@ def extract_data_keys_and_values(data):
         try:
             for data_val in item.get('result', {}).get('2021_RECA', {}).get('Data', [])[0].get('Transactions', ''):
                 if data_val.get('Desc', '') == 'Credit to your account':
-                    amount = data_val.get('Amount', '').replace('$', '').replace(',', '').replace('-', '')
+                    amount = data_val.get('Amount', '0').replace('$', '').replace(',', '').replace('-', '0')
                     if amount.replace('.', '').isdigit():
                         data_2021_reca_list["Credit to your account"] = int(float(amount))
                     else:
@@ -205,11 +274,24 @@ def extract_data_keys_and_values(data):
         except Exception as e:
             print(f"Error processing 2021 credit: {e}")
 
+
+        try:
+            for data_val in item.get('result', {}).get('2019_RECA', {}).get('Data', [])[0].get('DataValues', ''):
+                key = data_val.get('DataKey', '')
+                if key in data_variables_19:
+                    value = data_val.get('DataValue', '0').replace('$', '').replace(',', '').replace('-', '0')
+                    if value.replace('.', '').isdigit():
+                        data_2019_reca_list[key] = int(float(value))
+                    else:
+                        data_2019_reca_list[key] = value
+        except Exception as e:
+            print(f"Error processing 2020 data values: {e}")
+
         try:
             for data_val in item.get('result', {}).get('2020_RECA', {}).get('Data', [])[0].get('DataValues', ''):
                 key = data_val.get('DataKey', '')
                 if key in data_variables:
-                    value = data_val.get('DataValue', '').replace('$', '').replace(',', '').replace('-', '')
+                    value = data_val.get('DataValue', '0').replace('$', '').replace(',', '').replace('-', '0')
                     if value.replace('.', '').isdigit():
                         data_2020_reca_list[key] = int(float(value))
                     else:
@@ -221,7 +303,7 @@ def extract_data_keys_and_values(data):
             for data_val in item.get('result', {}).get('2021_RECA', {}).get('Data', [])[0].get('DataValues', ''):
                 key = data_val.get('DataKey', '')
                 if key in data_variables:
-                    value = data_val.get('DataValue', '').replace('$', '').replace(',', '').replace('-', '')
+                    value = data_val.get('DataValue', '0').replace('$', '').replace(',', '').replace('-', '0')
                     if value.replace('.', '').isdigit():
                         data_2021_reca_list[key] = int(float(value))
                     else:
@@ -231,9 +313,11 @@ def extract_data_keys_and_values(data):
 
         extracted_data.append({
             'old_intake_data': old_intake_data,
+            '2019': data_2019_reca_list,
             '2020': data_2020_reca_list,
             '2021': data_2021_reca_list
         })
+        print(extracted_data)
 
     return extracted_data
 
@@ -257,7 +341,22 @@ def place_data_variables(sheet_name, data_variables):
         for key,val in data['old_intake_data'].items():
             sheet.update_cell(row_number,20,val)
             row_number += 1
-    
+
+    credit_to_your_account_19 = data_variables[0]['2019']['Credit to your account']
+    sheet.update_cell(54,15,credit_to_your_account_19)
+    account_balance_19 = data_variables[0]['2019']['ACCOUNT BALANCE']
+    sheet.update_cell(55,15,account_balance_19)
+    accrued_interest_19 = data_variables[0]['2019']['ACCRUED INTEREST']
+    sheet.update_cell(56,15,accrued_interest_19)
+    filing_status_19 = data_variables[0]['2019']['FILING STATUS']
+    sheet.update_cell(52,15,filing_status_19)
+    taxable_income_19 = data_variables[0]['2019']['TAXABLE INCOME']
+    sheet.update_cell(57,15,taxable_income_19)
+    adjusted_gross_income_19 = data_variables[0]['2019']['ADJUSTED GROSS INCOME']
+    sheet.update_cell(39,15,adjusted_gross_income_19)
+    tax_per_return_19 = data_variables[0]['2019']['TAX PER RETURN']
+    sheet.update_cell(58,15,tax_per_return_19)
+
     print("Data placed successfully!")
 
 def get_7202_20_data(sheet_name):
@@ -405,6 +504,11 @@ def get_7202_20_data(sheet_name):
     except:
         data_7202_20_35 = '' 
 
+    try:
+        data_total_2020_credit = sheet.cell(49,36).value.strip()
+    except:
+        data_total_2020_credit = ''
+
     data_7202_20 = {
         "data_7202_20_1": data_7202_20_1,
         "data_7202_20_2": data_7202_20_2,
@@ -440,7 +544,8 @@ def get_7202_20_data(sheet_name):
         "data_7202_20_32": data_7202_20_32,
         "data_7202_20_33": data_7202_20_33,
         "data_7202_20_34": data_7202_20_34,
-        "data_7202_20_35": data_7202_20_35
+        "data_7202_20_35": data_7202_20_35,
+        "data_7202_20_total_credit": data_total_2020_credit
     }  
 
     return data_7202_20

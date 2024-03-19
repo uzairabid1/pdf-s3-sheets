@@ -348,99 +348,101 @@ def fill_calculation_sheet():
         print(page)
 
         data_variables = extract_data_keys_and_values(final_result)
+
         place_data_variables(sheet_name,data_variables)
+        return {'message': 'Data added to the dbs'}
 
-        first_name = final_result.get('items','')[0].get('First_Name','')
-        last_name = final_result.get('items','')[0].get('Last_Name','')   
-        email = final_result.get('items','')[0].get('Email','')    
+        # first_name = final_result.get('items','')[0].get('First_Name','')
+        # last_name = final_result.get('items','')[0].get('Last_Name','')   
+        # email = final_result.get('items','')[0].get('Email','')    
         
-        data_7202_20 = get_7202_20_data(sheet_name)
+        # data_7202_20 = get_7202_20_data(sheet_name)
 
-        payload_7202_20 = {
-            "First_Name": first_name,
-            "Last_Name": last_name,
-            "Email": email,
-            "result": data_7202_20
-        }
+        # payload_7202_20 = {
+        #     "First_Name": first_name,
+        #     "Last_Name": last_name,
+        #     "Email": email,
+        #     "result": data_7202_20
+        # }
 
-        requests.post(db_7202_20_url,json=payload_7202_20)
+        # requests.post(db_7202_20_url,json=payload_7202_20)
         
-        data_sch_3_20 = get_sch_3_20_data(sheet_name)
+        # data_sch_3_20 = get_sch_3_20_data(sheet_name)
 
-        payload_sch_3_20 = {
-            "First_Name": first_name,
-            "Last_Name": last_name,
-            "Email": email,
-            "result": data_sch_3_20
-        }
+        # payload_sch_3_20 = {
+        #     "First_Name": first_name,
+        #     "Last_Name": last_name,
+        #     "Email": email,
+        #     "result": data_sch_3_20
+        # }
 
-        requests.post(db_sch_3_20_url,json=payload_sch_3_20)
+        # requests.post(db_sch_3_20_url,json=payload_sch_3_20)
 
-        data_1040_20 = get_1040_20_data(sheet_name)
+        # data_1040_20 = get_1040_20_data(sheet_name)
 
-        payload_1040_20 = {
-            "First_Name": first_name,
-            "Last_Name": last_name,
-            "Email": email,
-            "result": data_1040_20
-        }
+        # payload_1040_20 = {
+        #     "First_Name": first_name,
+        #     "Last_Name": last_name,
+        #     "Email": email,
+        #     "result": data_1040_20
+        # }
 
-        requests.post(db_1040_20_url,json=payload_1040_20)
+        # requests.post(db_1040_20_url,json=payload_1040_20)
 
-        data_1040x_20 = get_1040x_20_data(sheet_name)
+        # data_1040x_20 = get_1040x_20_data(sheet_name)
 
-        payload_1040x_20 = {
-            "First_Name": first_name,
-            "Last_Name": last_name,
-            "Email": email,
-            "result": data_1040x_20
-        }
+        # payload_1040x_20 = {
+        #     "First_Name": first_name,
+        #     "Last_Name": last_name,
+        #     "Email": email,
+        #     "result": data_1040x_20
+        # }
 
-        requests.post(db_1040x_20_url,json=payload_1040x_20)
+        # requests.post(db_1040x_20_url,json=payload_1040x_20)
 
-        data_7202_21 = get_7202_21_data(sheet_name)
+        # data_7202_21 = get_7202_21_data(sheet_name)
 
-        payload_7202_21 = {
-            "First_Name": first_name,
-            "Last_Name": last_name,
-            "Email": email,
-            "result": data_7202_21
-        }
+        # payload_7202_21 = {
+        #     "First_Name": first_name,
+        #     "Last_Name": last_name,
+        #     "Email": email,
+        #     "result": data_7202_21
+        # }
 
-        requests.post(db_7202_21_url,json=payload_7202_21)
+        # requests.post(db_7202_21_url,json=payload_7202_21)
 
-        data_sch_3_21 = get_sch_3_21_data(sheet_name)
+        # data_sch_3_21 = get_sch_3_21_data(sheet_name)
 
-        payload_sch_3_21 = {
-            "First_Name": first_name,
-            "Last_Name": last_name,
-            "Email": email,
-            "result": data_sch_3_21
-        }
+        # payload_sch_3_21 = {
+        #     "First_Name": first_name,
+        #     "Last_Name": last_name,
+        #     "Email": email,
+        #     "result": data_sch_3_21
+        # }
 
-        requests.post(db_sch_3_21_url,json=payload_sch_3_21)
+        # requests.post(db_sch_3_21_url,json=payload_sch_3_21)
 
-        data_1040_21 = get_1040_21_data(sheet_name)
+        # data_1040_21 = get_1040_21_data(sheet_name)
         
-        payload_1040_21 = {
-            "First_Name": first_name,
-            "Last_Name": last_name,
-            "Email": email,
-            "result": data_1040_21
-        }
+        # payload_1040_21 = {
+        #     "First_Name": first_name,
+        #     "Last_Name": last_name,
+        #     "Email": email,
+        #     "result": data_1040_21
+        # }
 
-        requests.post(db_1040_21_url,json=payload_1040_21)
+        # requests.post(db_1040_21_url,json=payload_1040_21)
 
-        data_1040x_21 = get_1040x_21_data(sheet_name)
+        # data_1040x_21 = get_1040x_21_data(sheet_name)
 
-        payload_1040x_21 = {
-            "First_Name": first_name,
-            "Last_Name": last_name,
-            "Email": email,
-            "result": data_1040x_21
-        }
+        # payload_1040x_21 = {
+        #     "First_Name": first_name,
+        #     "Last_Name": last_name,
+        #     "Email": email,
+        #     "result": data_1040x_21
+        # }
 
-        requests.post(db_1040x_21_url,json=payload_1040x_21)
+        # requests.post(db_1040x_21_url,json=payload_1040x_21)
         page+=1
 
     return {'message': 'Data added to the dbs'}
