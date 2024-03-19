@@ -363,9 +363,12 @@ def fill_calculation_sheet():
 
             response_email_exists = make_get_request(
                 f"https://xyrm-sqqj-hx6t.n7c.xano.io/api:zFwSjuSC/has_email_21_1040x?email={email}")
-            email_exists = response_email_exists.json()
+            response_email_exists_2020 = make_get_request(f"https://xyrm-sqqj-hx6t.n7c.xano.io/api:zFwSjuSC/email_exists_2020_7202?email={email}")
 
-            if email_exists:
+            email_exists = response_email_exists.json()
+            email_exists_20 = response_email_exists_2020.json()
+
+            if email_exists == True or email_exists_20 == True:
                 print(f"Skipping {page}, email already exists")
                 page += 1
                 continue
