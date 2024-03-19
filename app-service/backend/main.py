@@ -350,21 +350,35 @@ def fill_calculation_sheet():
         last_name = final_result.get('items','')[0].get('Last_Name','')   
         email = final_result.get('items','')[0].get('Email','')
 
-        response_email_exists = requests.get(f"https://xyrm-sqqj-hx6t.n7c.xano.io/api:zFwSjuSC/has_email_21_1040x?email={email}")
-        email_exists = response_email_exists.json()
-        if email_exists == True:
+        email_exists = requests.get(f"https://xyrm-sqqj-hx6t.n7c.xano.io/api:zFwSjuSC/has_email_21_1040x?email={email}")
+
+        if email_exists:
             page+=1
             print(f"skipping {str(page)}, exists")
             continue    
         data_variables = extract_data_keys_and_values(final_result)
-        
-        adjusted_gross_income_19 = data_variables[0]['2019']['ADJUSTED GROSS INCOME']
-        se_tax_20 = data_variables[0]['2020']['SE TAX']
-        se_tax_21 = data_variables[0]['2021']['SE TAX']
 
         place_data_variables(sheet_name,data_variables)
 
-        if (adjusted_gross_income_19 != '0' or adjusted_gross_income_19 != '') and (se_tax_20 != '0' or se_tax_20 != ''):
+        sheet_20 = gsheet_client.open(sheet_name).get_worksheet(1)
+        try:
+            data_total_2020_credit = sheet_20.cell(49,36).value.strip()
+        except:
+            data_total_2020_credit = ''
+
+        sheet_21 = gsheet_client.open(sheet_name).get_worksheet(5)
+
+        try:
+            data_total_2021_credit = sheet_21.cell(112,8).value.strip()
+        except:
+            data_total_2021_credit = ''
+        
+        try:
+            data_total_2021_credit_2 = sheet_21.cell(111,8).value.strip()
+        except:
+            data_total_2021_credit_2 = ''
+
+        if data_total_2020_credit != '-' or data_total_2020_credit != '':
             print(f"processing year 2020 page={str(page)}")
 
             data_7202_20 = get_7202_20_data(sheet_name)
@@ -409,10 +423,12 @@ def fill_calculation_sheet():
             }
 
             requests.post(db_1040x_20_url,json=payload_1040x_20)
+            continue
 
-        if (se_tax_20 != '0' or se_tax_20 != '') and (se_tax_21 != '0' or se_tax_21 !=''):  
-            print(f"processing year 2021 page={str(page)}")
+        print(f"processing {page}")
+        
 
+        if (data_total_2021_credit != '-' or data_total_2021_credit != '') or (data_total_2021_credit_2 != '-' or data_total_2021_credit_2 != ''):
             data_7202_21 = get_7202_21_data(sheet_name)
 
             payload_7202_21 = {
