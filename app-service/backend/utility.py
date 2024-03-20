@@ -2177,7 +2177,7 @@ def get_1040x_21_data(sheet_name):
     except:
         data_1040x_21_correct_15 = ''
     try:
-        data_1040x_21_change_15 = sheet.cell(27,14).value.strip()
+        data_1040x_21_change_15 = sheet.cell(27,15).value.strip()
     except:
         data_1040x_21_change_15 = '' 
     try:
