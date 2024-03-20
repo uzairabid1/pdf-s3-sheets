@@ -37,6 +37,8 @@ db_sch_3_21_url = os.getenv('db_sch_3_21_url')
 db_1040_21_url = os.getenv('db_1040_21_url')
 db_1040x_21_url = os.getenv('db_1040x_21_url')
 
+pdf_co_key = os.getenv('pdf_co_key')
+
 gsheet_scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
 gsheet_creds = ServiceAccountCredentials.from_json_keyfile_name("credentials.json", gsheet_scope)
 gsheet_client = gspread.authorize(gsheet_creds)
