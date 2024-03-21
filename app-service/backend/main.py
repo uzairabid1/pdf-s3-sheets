@@ -261,6 +261,14 @@ def update_referral_if_empty_endpoint():
 
 @app.route('/process_taxStatus', methods=['POST'])
 def process_taxStatus():
+    @retry(
+        stop=stop_after_attempt(10), 
+        wait=wait_exponential(multiplier=1, min=1, max=20)
+    )
+    def make_get_request(url):
+        response = requests.get(url)
+        response.raise_for_status()
+        return response
     token_response = requests.post(taxStatus_token_url, data={
         'grant_type': 'client_credentials',
         'client_id': taxStatus_client_id,
@@ -290,6 +298,18 @@ def process_taxStatus():
             email = request_data.get('email','')
             companyId = request_data['companyId']
             tin = data['ClientId']
+
+            response_email_exists_1040x = make_get_request(
+                f"https://xyrm-sqqj-hx6t.n7c.xano.io/api:zFwSjuSC/has_email_21_1040x?email={email}")
+
+            response_email_exists_new_system = make_get_request(
+                f"https://xyrm-sqqj-hx6t.n7c.xano.io/api:zFwSjuSC/email_exists_new_system?email={email}"
+            )
+            email_exists_1040x = response_email_exists_1040x.json()
+            exists_new_system = response_email_exists_new_system.json()
+
+            if email_exists_1040x == True or exists_new_system == True:
+                return jsonify({'message': 'email exists already'})
 
             result = {}
 
@@ -327,6 +347,58 @@ def process_taxStatus():
     else:
         return jsonify({'error': 'Failed to obtain access token'}), token_response.status_code
     
+
+@app.route('/update_taxCredit_21', methods =['POST'])
+def update_taxCredit():
+    data_response = requests.get('https://xyrm-sqqj-hx6t.n7c.xano.io/api:Dga0jXwg/2021_1040x')
+    
+    sheet_name = 'SETCPRO-D1-March-Child'
+    
+    sheet = gsheet_client.open(sheet_name).get_worksheet(1)
+
+    data = data_response.json()
+    for user in data:
+        email = user.get("Email")
+        value_correct_22 = user.get("result", {}).get("data_1040x_21_correct_22")
+
+        
+        try:
+            cell = sheet.find(email)
+            row_index = cell.row
+        except:
+            continue
+        print(row_index)        
+        sheet.update_cell(row_index, 
+                          sheet.find("Total Credit 21").col,
+                          value_correct_22)
+
+    return jsonify({"message": "Total Credits updated successfully"})
+
+@app.route('/update_taxCredit_20', methods =['POST'])
+def update_taxCredit_20():
+    data_response = requests.get('https://xyrm-sqqj-hx6t.n7c.xano.io/api:Dga0jXwg/2020_1040x')
+    
+    sheet_name = 'SETCPRO-D1-March-Child'
+    
+    sheet = gsheet_client.open(sheet_name).get_worksheet(1)
+
+    data = data_response.json()
+    for user in data:
+        email = user.get("Email")
+        value_correct_22 = user.get("result", {}).get("data_1040x_20_correct_22")
+
+
+        try:
+            cell = sheet.find(email)
+            row_index = cell.row
+        except:
+            continue
+        print(row_index)        
+        sheet.update_cell(row_index, 
+                          sheet.find("Total Credit 20").col,
+                          value_correct_22)
+
+    return jsonify({"message": "Total Credits updated successfully"})
 
 @app.route('/fill_calculation_sheet', methods=['POST'])
 def fill_calculation_sheet():
@@ -371,7 +443,7 @@ def fill_calculation_sheet():
             email_exists_20 = response_email_exists_2020.json()
 
             if email_exists == True or email_exists_20 == True:
-                print(f"Skipping {page}, email already exists")
+                print(f"Skipping {page},{email} already exists")
                 page += 1
                 continue
 
@@ -380,7 +452,7 @@ def fill_calculation_sheet():
             child_april = data_variables[0]['old_intake_data']['Child_April_1_2020_through_December_31_2020']
 
             if child_april == '':
-                print(f"Skipping {page}, child april doesnt exist")
+                print(f"Skipping {page},{email} child april doesnt exist")
                 page += 1
                 continue
 
