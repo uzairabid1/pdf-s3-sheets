@@ -380,121 +380,102 @@ def fill_calculation_sheet():
             child_april = data_variables[0]['old_intake_data']['Child_April_1_2020_through_December_31_2020']
 
             if child_april == '':
-                print(f"Skipping {page}, email already exists")
+                print(f"Skipping {page}, child april doesnt exist")
                 page += 1
                 continue
 
             place_data_variables(sheet_name, data_variables)
+            
+            print(f"Processing year 2020 page={page}")
 
-            sheet_20 = gsheet_client.open(sheet_name).get_worksheet(1)
-            try:
-                data_total_2020_credit = sheet_20.cell(49, 36).value.strip()
-            except AttributeError:
-                data_total_2020_credit = ''
-
-            sheet_21 = gsheet_client.open(sheet_name).get_worksheet(5)
-
-            try:
-                data_total_2021_credit = sheet_21.cell(112, 8).value.strip()
-            except AttributeError:
-                data_total_2021_credit = ''
-
-            try:
-                data_total_2021_credit_2 = sheet_21.cell(111, 8).value.strip()
-            except AttributeError:
-                data_total_2021_credit_2 = ''
-
-            if data_total_2020_credit != '-':
-                print(f"Processing year 2020 page={page}")
-
-                data_7202_20 = get_7202_20_data(sheet_name)
-                payload_7202_20 = {
+            data_7202_20 = get_7202_20_data(sheet_name)
+            payload_7202_20 = {
                     "First_Name": first_name,
                     "Last_Name": last_name,
                     "Email": email,
                     "result": data_7202_20
                 }
 
-                requests.post(db_7202_20_url, json=payload_7202_20)
+            requests.post(db_7202_20_url, json=payload_7202_20)
 
-                data_sch_3_20 = get_sch_3_20_data(sheet_name)
+            data_sch_3_20 = get_sch_3_20_data(sheet_name)
 
-                payload_sch_3_20 = {
+            payload_sch_3_20 = {
                     "First_Name": first_name,
                     "Last_Name": last_name,
                     "Email": email,
                     "result": data_sch_3_20
                 }
 
-                requests.post(db_sch_3_20_url, json=payload_sch_3_20)
+            requests.post(db_sch_3_20_url, json=payload_sch_3_20)
 
-                data_1040_20 = get_1040_20_data(sheet_name)
+            data_1040_20 = get_1040_20_data(sheet_name)
 
-                payload_1040_20 = {
+            payload_1040_20 = {
                     "First_Name": first_name,
                     "Last_Name": last_name,
                     "Email": email,
                     "result": data_1040_20
                 }
 
-                requests.post(db_1040_20_url, json=payload_1040_20)
+            requests.post(db_1040_20_url, json=payload_1040_20)
 
-                data_1040x_20 = get_1040x_20_data(sheet_name)
+            data_1040x_20 = get_1040x_20_data(sheet_name)
 
-                payload_1040x_20 = {
+            payload_1040x_20 = {
                     "First_Name": first_name,
                     "Last_Name": last_name,
                     "Email": email,
                     "result": data_1040x_20
                 }
 
-                requests.post(db_1040x_20_url, json=payload_1040x_20)
+            requests.post(db_1040x_20_url, json=payload_1040x_20)
 
-            if data_total_2021_credit != '-' or data_total_2021_credit_2 != '-':
-                print(f"Processing year 2021 page={page}")
-                data_7202_21 = get_7202_21_data(sheet_name)
+            
+            print(f"Processing year 2021 page={page}")
+            data_7202_21 = get_7202_21_data(sheet_name)
 
-                payload_7202_21 = {
+            payload_7202_21 = {
                     "First_Name": first_name,
                     "Last_Name": last_name,
                     "Email": email,
                     "result": data_7202_21
                 }
 
-                requests.post(db_7202_21_url, json=payload_7202_21)
+            requests.post(db_7202_21_url, json=payload_7202_21)
 
-                data_sch_3_21 = get_sch_3_21_data(sheet_name)
+            data_sch_3_21 = get_sch_3_21_data(sheet_name)
 
-                payload_sch_3_21 = {
+            payload_sch_3_21 = {
                     "First_Name": first_name,
                     "Last_Name": last_name,
                     "Email": email,
                     "result": data_sch_3_21
                 }
 
-                requests.post(db_sch_3_21_url, json=payload_sch_3_21)
+            requests.post(db_sch_3_21_url, json=payload_sch_3_21)
 
-                data_1040_21 = get_1040_21_data(sheet_name)
+            data_1040_21 = get_1040_21_data(sheet_name)
 
-                payload_1040_21 = {
+            payload_1040_21 = {
                     "First_Name": first_name,
                     "Last_Name": last_name,
                     "Email": email,
                     "result": data_1040_21
                 }
 
-                requests.post(db_1040_21_url, json=payload_1040_21)
+            requests.post(db_1040_21_url, json=payload_1040_21)
 
-                data_1040x_21 = get_1040x_21_data(sheet_name)
+            data_1040x_21 = get_1040x_21_data(sheet_name)
 
-                payload_1040x_21 = {
-                    "First_Name": first_name,
+            payload_1040x_21 = {
+                "First_Name": first_name,
                     "Last_Name": last_name,
                     "Email": email,
                     "result": data_1040x_21
                 }
 
-                requests.post(db_1040x_21_url, json=payload_1040x_21)
+            requests.post(db_1040x_21_url, json=payload_1040x_21)
 
             page += 1
 
