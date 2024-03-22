@@ -54,9 +54,27 @@ def upload_pdf_to_s3_2(pdf_content, pdf_file_name):
 def extract_data_keys_and_values(data):
     extracted_data = []
 
-    for item in data.get('items', []):
-
+    for item in data.get('items', []):        
         #old data processing
+        sheet = gsheet_client.open('TS-MASTER-1-JS-1').get_worksheet(0)
+        try:
+            data_7202_21_4b = sheet.cell(51,23).value
+        except:
+            data_7202_21_4b = ''
+        try:
+            data_7202_21_6b = sheet.cell(52,23).value
+        except:
+            data_7202_21_6b = ''
+        try:
+            data_7202_21_38 = sheet.cell(53,23).value
+        except:
+            data_7202_21_38 = ''
+        try:
+            data_7202_21_40 = sheet.cell(54,23).value
+        except:
+            data_7202_21_40 = ''
+
+        
         first_name = item.get('First_Name')
         last_name= item.get('Last_Name')
         email = item.get('Email')
@@ -80,6 +98,10 @@ def extract_data_keys_and_values(data):
             status = intake_date.get('zohoReturn','').get('Status','')
 
             old_intake_data = {
+                "data_7202_21_4b": data_7202_21_4b,
+                "data_7202_21_6b": data_7202_21_6b,
+                "data_7202_21_38": data_7202_21_38,
+                "data_7202_21_40": data_7202_21_40,
                 "Child_April_1_2020_through_December_31_2020": Child_April_1_2020_through_December_31_2020,
                 "Email": email,
                 "Child_January_1_2021_through_March_31_2021": Child_January_1_2021_through_March_31_2021,
@@ -108,6 +130,10 @@ def extract_data_keys_and_values(data):
                 
                 if isinstance(Child_April_1_2020_through_December_31_2020, float) and math.isnan(Child_April_1_2020_through_December_31_2020):
                     old_intake_data = {
+                        "data_7202_21_4b": "",
+                        "data_7202_21_6b": "",
+                        "data_7202_21_38": "",
+                        "data_7202_21_40": "",
                         "Child_April_1_2020_through_December_31_2020": "",
                         "Email": email,
                         "Child_January_1_2021_through_March_31_2021": "",
@@ -137,6 +163,10 @@ def extract_data_keys_and_values(data):
                     status = row.get('Stage', '')
 
                     old_intake_data = {
+                        "data_7202_21_4b": data_7202_21_4b,
+                        "data_7202_21_6b": data_7202_21_6b,
+                        "data_7202_21_38": data_7202_21_38,
+                        "data_7202_21_40": data_7202_21_40,
                         "Child_April_1_2020_through_December_31_2020": Child_April_1_2020_through_December_31_2020,
                         "Email": email,
                         "Child_January_1_2021_through_March_31_2021": Child_January_1_2021_through_March_31_2021,
@@ -160,6 +190,10 @@ def extract_data_keys_and_values(data):
                 status = row.get('Stage', '')
 
                 old_intake_data = {
+                    "data_7202_21_4b": "",
+                    "data_7202_21_6b": "",
+                    "data_7202_21_38": "",
+                    "data_7202_21_40": "",                    
                     "Child_April_1_2020_through_December_31_2020": "",
                     "Email": email,
                     "Child_January_1_2021_through_March_31_2021": "",
@@ -177,6 +211,41 @@ def extract_data_keys_and_values(data):
                 }
 
         # new data processsing
+        try:
+            data_new_clientId = sheet.cell(60,18).value
+        except:
+            data_new_clientId = ''
+        try:
+            data_new_status = sheet.cell(61,18).value
+        except:
+            data_new_status = ''
+        try:
+            data_new_7202_21_4b = sheet.cell(63,18).value
+        except:
+            data_new_7202_21_4b = ''
+        try:
+            data_new_7202_21_6b = sheet.cell(64,18).value
+        except:
+            data_new_7202_21_6b = ''
+        try:
+            data_new_7202_21_38b = sheet.cell(65,18).value
+        except:
+            data_new_7202_21_38b = ''
+        try:
+            data_new_7202_21_40b = sheet.cell(66,18).value
+        except:
+            data_new_7202_21_40b = ''
+
+        new_intake_data = {
+            "data_new_clientId": data_new_clientId,
+            "data_new_status": data_new_status,
+            "data_new_7202_21_4b": data_new_7202_21_4b,
+            "data_new_7202_21_6b": data_new_7202_21_6b,
+            "data_new_7202_21_38b": data_new_7202_21_38b,
+            "data_new_7202_21_40b": data_new_7202_21_40b
+        }
+
+
         data_2019_reca_list = {}
         data_2020_reca_list = {}
         data_2021_reca_list = {}
@@ -333,6 +402,7 @@ def extract_data_keys_and_values(data):
 
         extracted_data.append({
             'old_intake_data': old_intake_data,
+            'new_intake_data': new_intake_data,
             '2019': data_2019_reca_list,
             '2020': data_2020_reca_list,
             '2021': data_2021_reca_list

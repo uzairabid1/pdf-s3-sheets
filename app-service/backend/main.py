@@ -350,6 +350,40 @@ def process_taxStatus():
     else:
         return jsonify({'error': 'Failed to obtain access token'}), token_response.status_code
     
+@app.route('/process_multi', methods=['GET'])
+def process_multi_users():
+    
+    users_response = requests.get("https://xyrm-sqqj-hx6t.n7c.xano.io/api:zFwSjuSC/get_users")
+
+    users_data = users_response.json()
+
+    for user in users_data:
+        if user['Email'] != '' or user['Email'] != None:
+            print(user['Email'])
+            json_payload = {
+                "companyId":"SSXAKfA5nvNy28B",
+                "isCompany": False,
+                "firstName":f"{user['First_Name']}",
+                "lastName": f"{user['Last_Name']}",
+                "businessName":"",
+                "email":f"{user['Email']}"
+            }
+            try:
+                taxStatus_response = requests.post("http://3.129.204.41/process_taxStatus",json=json_payload)
+                result = taxStatus_response.json()
+                print(result)
+                db_json_payload = {
+                    "First_Name": f"{result['First_Name']}",
+                    "Last_Name": f"{result['Last_Name']}",
+                    "Email": f"{result['Email']}",
+                    "result": f"{result['result']}"
+                }
+                requests.post("https://xyrm-sqqj-hx6t.n7c.xano.io/api:Dga0jXwg/new_system",json=db_json_payload) 
+            except:
+                continue        
+
+    return jsonify(users_data)
+    
 
 @app.route('/update_taxCredit_21', methods =['POST'])
 def update_taxCredit():
