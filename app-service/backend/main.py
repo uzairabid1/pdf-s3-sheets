@@ -299,6 +299,9 @@ def process_taxStatus():
             companyId = request_data['companyId']
             tin = data['ClientId']
 
+            if email == '' or email == None:
+                return jsonify({'message': 'no email'}) 
+
             response_email_exists_1040x = make_get_request(
                 f"https://xyrm-sqqj-hx6t.n7c.xano.io/api:zFwSjuSC/has_email_21_1040x?email={email}")
 
