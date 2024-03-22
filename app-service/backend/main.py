@@ -308,11 +308,11 @@ def process_taxStatus():
             response_email_exists_new_system = make_get_request(
                 f"https://xyrm-sqqj-hx6t.n7c.xano.io/api:zFwSjuSC/email_exists_new_system?email={email}"
             )
-            email_exists_1040x = response_email_exists_1040x.json()
-            exists_new_system = response_email_exists_new_system.json()
+            # email_exists_1040x = response_email_exists_1040x.json()
+            # exists_new_system = response_email_exists_new_system.json()
 
-            if email_exists_1040x == True or exists_new_system == True:
-                return jsonify({'message': 'email exists already'})
+            # if email_exists_1040x == True or exists_new_system == True:
+            #     return jsonify({'message': 'email exists already'})
 
             result = {}
 
@@ -369,14 +369,14 @@ def process_multi_users():
                 "email":f"{user['Email']}"
             }
             try:
-                taxStatus_response = requests.post("http://3.129.204.41/process_taxStatus",json=json_payload)
+                taxStatus_response = requests.post("http://127.0.0.1:5000/process_taxStatus",json=json_payload)
                 result = taxStatus_response.json()
                 print(result)
                 db_json_payload = {
                     "First_Name": f"{result['First_Name']}",
                     "Last_Name": f"{result['Last_Name']}",
                     "Email": f"{result['Email']}",
-                    "result": f"{result['result']}"
+                    "result": {result['result']}
                 }
                 requests.post("https://xyrm-sqqj-hx6t.n7c.xano.io/api:Dga0jXwg/new_system",json=db_json_payload) 
             except:
