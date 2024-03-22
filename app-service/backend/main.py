@@ -376,7 +376,7 @@ def process_multi_users():
                     "First_Name": f"{result['First_Name']}",
                     "Last_Name": f"{result['Last_Name']}",
                     "Email": f"{result['Email']}",
-                    "result": {result['result']}
+                    "result": result['result']
                 }
                 requests.post("https://xyrm-sqqj-hx6t.n7c.xano.io/api:Dga0jXwg/new_system",json=db_json_payload) 
             except:
