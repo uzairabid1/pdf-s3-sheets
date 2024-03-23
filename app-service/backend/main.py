@@ -371,13 +371,14 @@ def process_multi_users():
             try:
                 taxStatus_response = requests.post("http://18.223.180.2/process_taxStatus",json=json_payload)
                 result = taxStatus_response.json()
-                print(result)
+                # print(result)
                 db_json_payload = {
                     "First_Name": f"{result['First_Name']}",
                     "Last_Name": f"{result['Last_Name']}",
                     "Email": f"{result['Email']}",
                     "result": result['result']
                 }
+                print('here')
                 requests.post("https://xyrm-sqqj-hx6t.n7c.xano.io/api:Dga0jXwg/new_system",json=db_json_payload) 
             except:
                 continue        
@@ -385,57 +386,76 @@ def process_multi_users():
     return jsonify(users_data)
     
 
-@app.route('/update_taxCredit_21', methods =['POST'])
-def update_taxCredit():
+@app.route('/update_taxCredit_21', methods=['POST'])
+def update_taxCredit_21():
     data_response = requests.get('https://xyrm-sqqj-hx6t.n7c.xano.io/api:Dga0jXwg/2021_1040x')
-    
+
     sheet_name = 'SETCPRO-D1-March-Child'
-    
-    sheet = gsheet_client.open(sheet_name).get_worksheet(1)
+
+    sheet = gsheet_client.open(sheet_name).get_worksheet(0)
 
     data = data_response.json()
+    total_updated = 0  # Counter for total credits updated
+
     for user in data:
         email = user.get("Email")
         value_correct_22 = user.get("result", {}).get("data_1040x_21_correct_22")
 
-        
         try:
             cell = sheet.find(email)
             row_index = cell.row
         except:
+            print(f"Email {email} not found in the sheet.")
             continue
-        print(row_index)        
-        sheet.update_cell(row_index, 
-                          sheet.find("Total Credit 21").col,
-                          value_correct_22)
 
-    return jsonify({"message": "Total Credits updated successfully"})
+        print(row_index)
 
-@app.route('/update_taxCredit_20', methods =['POST'])
+        # Check if Total Credit 21 cell is empty before updating
+        total_credit_21_cell = sheet.cell(row_index, sheet.find("Total Credit 21").col)
+        if not total_credit_21_cell.value:
+            sheet.update_cell(row_index, total_credit_21_cell.col, value_correct_22)
+            print(f"Total Credit 21 updated for {email}")
+            total_updated += 1  # Increment the counter
+        else:
+            print(f"Total Credit 21 already has a value for {email}")
+
+    return jsonify({"message": f"Total Credits updated successfully: {total_updated}"})
+
+
+@app.route('/update_taxCredit_20', methods=['POST'])
 def update_taxCredit_20():
     data_response = requests.get('https://xyrm-sqqj-hx6t.n7c.xano.io/api:Dga0jXwg/2020_1040x')
-    
+
     sheet_name = 'SETCPRO-D1-March-Child'
-    
-    sheet = gsheet_client.open(sheet_name).get_worksheet(1)
+
+    sheet = gsheet_client.open(sheet_name).get_worksheet(0)
 
     data = data_response.json()
+    total_updated = 0  # Counter for total credits updated
+
     for user in data:
         email = user.get("Email")
         value_correct_22 = user.get("result", {}).get("data_1040x_20_correct_22")
 
-
         try:
             cell = sheet.find(email)
             row_index = cell.row
         except:
+            print(f"Email {email} not found in the sheet.")
             continue
-        print(row_index)        
-        sheet.update_cell(row_index, 
-                          sheet.find("Total Credit 20").col,
-                          value_correct_22)
 
-    return jsonify({"message": "Total Credits updated successfully"})
+        print(row_index)
+
+        # Check if Total Credit 20 cell is empty before updating
+        total_credit_20_cell = sheet.cell(row_index, sheet.find("Total Credit 20").col)
+        if not total_credit_20_cell.value:
+            sheet.update_cell(row_index, total_credit_20_cell.col, value_correct_22)
+            print(f"Total Credit 20 updated for {email}")
+            total_updated += 1  # Increment the counter
+        else:
+            print(f"Total Credit 20 already has a value for {email}")
+
+    return jsonify({"message": f"Total Credits updated successfully: {total_updated}"})
 
 @app.route('/fill_calculation_sheet', methods=['POST'])
 def fill_calculation_sheet():
@@ -487,6 +507,16 @@ def fill_calculation_sheet():
             data_variables = extract_data_keys_and_values(final_result)
 
             child_april = data_variables[0]['old_intake_data']['Child_April_1_2020_through_December_31_2020']
+
+            old_7202_21_4b = data_variables[0]['old_dates']['data_7202_21_4b']
+            old_7202_21_6b = data_variables[0]['old_dates']['data_7202_21_6b']
+            old_7202_21_38 = data_variables[0]['old_dates']['data_7202_21_38']
+            old_7202_21_40 = data_variables[0]['old_dates']['data_7202_21_40']
+
+            new_7202_21_4b = data_variables[0]['new_intake_data']['data_new_7202_21_4b']
+            new_7202_21_6b = data_variables[0]['new_intake_data']['data_new_7202_21_6b']
+            new_7202_21_38b = data_variables[0]['new_intake_data']['data_new_7202_21_38b']
+            new_7202_21_40b = data_variables[0]['new_intake_data']['data_new_7202_21_40b']
 
             if child_april == '':
                 print(f"Skipping {page},{email} child april doesnt exist")
@@ -548,7 +578,16 @@ def fill_calculation_sheet():
                     "First_Name": first_name,
                     "Last_Name": last_name,
                     "Email": email,
-                    "result": data_7202_21
+                    "result": data_7202_21,
+                    "old_7202_21_4b": old_7202_21_4b,
+                    "old_7202_21_6b": old_7202_21_6b,
+                    "old_7202_21_38": old_7202_21_38,
+                    "old_7202_21_38": old_7202_21_38,
+                    "old_7202_21_40": old_7202_21_40,
+                    "new_7202_21_4b": new_7202_21_4b,
+                    "new_7202_21_6b": new_7202_21_6b,
+                    "new_7202_21_38b": new_7202_21_38b,
+                    "new_7202_21_40b": new_7202_21_40b
                 }
 
             requests.post(db_7202_21_url, json=payload_7202_21)
