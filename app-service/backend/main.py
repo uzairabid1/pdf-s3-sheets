@@ -578,16 +578,7 @@ def fill_calculation_sheet():
                     "First_Name": first_name,
                     "Last_Name": last_name,
                     "Email": email,
-                    "result": data_7202_21,
-                    "old_7202_21_4b": old_7202_21_4b,
-                    "old_7202_21_6b": old_7202_21_6b,
-                    "old_7202_21_38": old_7202_21_38,
-                    "old_7202_21_38": old_7202_21_38,
-                    "old_7202_21_40": old_7202_21_40,
-                    "new_7202_21_4b": new_7202_21_4b,
-                    "new_7202_21_6b": new_7202_21_6b,
-                    "new_7202_21_38b": new_7202_21_38b,
-                    "new_7202_21_40b": new_7202_21_40b
+                    "result": data_7202_21
                 }
 
             requests.post(db_7202_21_url, json=payload_7202_21)
