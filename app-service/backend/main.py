@@ -510,20 +510,22 @@ def fill_calculation_sheet():
 
             child_april = data_variables[0]['old_intake_data']['Child_April_1_2020_through_December_31_2020']
 
-            # old_7202_21_4b = data_variables[0]['old_dates']['data_7202_21_4b']
-            # old_7202_21_6b = data_variables[0]['old_dates']['data_7202_21_6b']
-            # old_7202_21_38 = data_variables[0]['old_dates']['data_7202_21_38']
-            # old_7202_21_40 = data_variables[0]['old_dates']['data_7202_21_40']
 
-            # new_7202_21_4b = data_variables[0]['new_intake_data']['data_new_7202_21_4b']
-            # new_7202_21_6b = data_variables[0]['new_intake_data']['data_new_7202_21_6b']
-            # new_7202_21_38b = data_variables[0]['new_intake_data']['data_new_7202_21_38b']
-            # new_7202_21_40b = data_variables[0]['new_intake_data']['data_new_7202_21_40b']
 
             if child_april == '':
                 print(f"Skipping {page},{email} child april doesnt exist")
                 page += 1
                 continue
+
+            old_7202_21_4b = data_variables[0]['old_intake_dates']['data_7202_21_4b']
+            old_7202_21_6b = data_variables[0]['old_intake_dates']['data_7202_21_6b']
+            old_7202_21_38 = data_variables[0]['old_intake_dates']['data_7202_21_38']
+            old_7202_21_40 = data_variables[0]['old_intake_dates']['data_7202_21_40']
+
+            new_7202_21_4b = data_variables[0]['new_intake_data']['data_new_7202_21_4b']
+            new_7202_21_6b = data_variables[0]['new_intake_data']['data_new_7202_21_6b']
+            new_7202_21_38b = data_variables[0]['new_intake_data']['data_new_7202_21_38b']
+            new_7202_21_40b = data_variables[0]['new_intake_data']['data_new_7202_21_40b']
 
             place_data_variables(sheet_name, data_variables)
             
@@ -580,7 +582,15 @@ def fill_calculation_sheet():
                     "First_Name": first_name,
                     "Last_Name": last_name,
                     "Email": email,
-                    "result": data_7202_21
+                    "result": data_7202_21,
+                    "old_7202_21_4b": old_7202_21_4b,
+                    "old_7202_21_6b": old_7202_21_6b,
+                    "old_7202_21_38": old_7202_21_38,
+                    "old_7202_21_40": old_7202_21_40,
+                    "new_7202_21_4b": new_7202_21_4b,
+                    "new_7202_21_6b": new_7202_21_6b,
+                    "new_7202_21_38b": new_7202_21_38b,
+                    "new_7202_21_40b": new_7202_21_40b
                 }
 
             requests.post(db_7202_21_url, json=payload_7202_21)
