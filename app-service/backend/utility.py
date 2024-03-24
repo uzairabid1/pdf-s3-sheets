@@ -1319,7 +1319,7 @@ def get_1040x_20_data(sheet_name):
     return data_1040x_20
 
 def get_7202_21_data(sheet_name):
-    sheet = gsheet_client.open(sheet_name).get_worksheet(5)
+    sheet = gsheet_client.open(sheet_name).get_worksheet(7)
 
     try:
         data_7202_21_1 = sheet.cell(5,7).value.strip()
@@ -1824,7 +1824,7 @@ def get_7202_21_data(sheet_name):
     return data_7202_21
 
 def get_sch_3_21_data(sheet_name):
-    sheet = gsheet_client.open(sheet_name).get_worksheet(6)
+    sheet = gsheet_client.open(sheet_name).get_worksheet(5)
 
     try:
         data_sch_3_21_1 = sheet.cell(10,28).value.strip()
@@ -2037,7 +2037,7 @@ def get_sch_3_21_data(sheet_name):
     return data_sch_3_21
 
 def get_1040_21_data(sheet_name):
-    sheet = gsheet_client.open(sheet_name).get_worksheet(7)
+    sheet = gsheet_client.open(sheet_name).get_worksheet(6)
 
     try:
         data_1040_21_1 = sheet.cell(35,28).value.strip()

@@ -403,6 +403,7 @@ def update_taxCredit_21():
 
         try:
             cell = sheet.find(email)
+            time.sleep(0.2)
             row_index = cell.row
         except:
             print(f"Email {email} not found in the sheet.")
@@ -439,6 +440,7 @@ def update_taxCredit_20():
 
         try:
             cell = sheet.find(email)
+            time.sleep(0.2)
             row_index = cell.row
         except:
             print(f"Email {email} not found in the sheet.")
