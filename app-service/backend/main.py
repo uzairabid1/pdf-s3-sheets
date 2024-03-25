@@ -522,7 +522,7 @@ def fill_calculation_sheet():
 
             child_april = data_variables[0]['old_intake_data']['Child_April_1_2020_through_December_31_2020']
 
-            return jsonify(data_7202_20)
+            return jsonify(data_1040_20)
 
             if child_april == '':
                 print(f"Skipping {page},{email} child april doesnt exist")
@@ -651,84 +651,110 @@ def fill_calculation_sheet():
 @app.route('/fill_pdf_20', methods=["POST"])
 def fill_pdf_20():
     sheet_name = 'SETCPRO-D1-March-Child'
+    try:
+        data = request.json
+        page = data['page']
+        per_page = data['per_page']
+        offset = data['offset']
+    except KeyError:
+        return {"message": "Required data not provided in JSON request"}, 400
 
-    sheet = gsheet_client.open(sheet_name).get_worksheet(0)
+    @retry(
+        stop=stop_after_attempt(10), 
+        wait=wait_exponential(multiplier=1, min=1, max=20)
+    )
+    def make_get_request(url):
+        response = requests.get(url)
+        response.raise_for_status()
+        return response
+
     
-    response_user_list = requests.get("https://xyrm-sqqj-hx6t.n7c.xano.io/api:zFwSjuSC/get_users")
-    
-    user_list = response_user_list.json()
-    
-    pdf_count = 0 
-    
-    for user in user_list:
-        email = user.get("Email","")    
-        first_name = user.get("First_Name",'')
-        last_name = user.get("Last_Name",'')
+    sheet = gsheet_client.open(sheet_name).get_worksheet(0)  
 
-        destinationFile = f"{first_name.replace(' ','_')}_{last_name.replace(' ','_')}_filled_pdf_1.pdf"
+    pdf_count = 0     
 
-        print(email)
+    try:
+        total_count_response = make_get_request("https://xyrm-sqqj-hx6t.n7c.xano.io/api:zFwSjuSC/get_users_count")
+        total_count = total_count_response.json()
 
-        email_exists_7202_response = requests.get(f"https://xyrm-sqqj-hx6t.n7c.xano.io/api:zFwSjuSC/email_exists_2020_7202?email={email}")
-        email_exists_1040_response= requests.get(f"https://xyrm-sqqj-hx6t.n7c.xano.io/api:zFwSjuSC/email_exists_2020_1040?email={email}")
-        email_exists_1040x_response = requests.get(f"https://xyrm-sqqj-hx6t.n7c.xano.io/api:zFwSjuSC/email_exists_1040x?email={email}")
-        email_exists_sch_3_response = requests.get(f"https://xyrm-sqqj-hx6t.n7c.xano.io/api:zFwSjuSC/email_exists_2020_sch_3?email={email}")
+        total_pages = math.ceil(total_count / per_page)
 
-        email_exists_7202 = email_exists_7202_response.json()
-        email_exists_1040 = email_exists_1040_response.json()
-        email_exists_1040x = email_exists_1040x_response.json()
-        email_exists_sch_3 = email_exists_sch_3_response.json()
+        while page <= total_pages:
+            final_result_response = make_get_request(
+                f"https://xyrm-sqqj-hx6t.n7c.xano.io/api:zFwSjuSC/get_users?page={page}&per_page={per_page}&offset={offset}")
+            final_result = final_result_response.json()
 
-        if email_exists_1040 and email_exists_1040x and email_exists_7202 and email_exists_sch_3:
-            try:
-                email_cell = sheet.find(email)
-                pdf_1_value = sheet.cell(email_cell.row, 4).value
-            except:
-                continue
-            if not pdf_1_value:
-                response_1040 =  requests.get(f"https://xyrm-sqqj-hx6t.n7c.xano.io/api:Dga0jXwg/get_1040_20_email?email={email}")
-                response_1040x = requests.get(f"https://xyrm-sqqj-hx6t.n7c.xano.io/api:Dga0jXwg/get_1040x_20_email?email={email}")
-                response_7202 =  requests.get(f"https://xyrm-sqqj-hx6t.n7c.xano.io/api:Dga0jXwg/get_7202_email?email={email}")
-                response_sch_3 = requests.get(f"https://xyrm-sqqj-hx6t.n7c.xano.io/api:Dga0jXwg/get_sch_3_20_email?email={email}")
+            first_name = final_result.get('items', [])[0].get('First_Name', '')
+            last_name = final_result.get('items', [])[0].get('Last_Name', '')
+            email = final_result.get('items', [])[0].get('Email', '')
 
-                data_variables_1040_20 = response_1040.json()
-                data_variables_1040x_20 = response_1040x.json()
-                data_variables_7202_20 = response_7202.json()
-                data_variables_sch_3_20 = response_sch_3.json()
-                
+
+            destinationFile = f"{first_name.replace(' ','_')}_{last_name.replace(' ','_')}_filled_pdf_1.pdf"
+
+            print(email)
+
+            email_exists_7202_response = requests.get(f"https://xyrm-sqqj-hx6t.n7c.xano.io/api:zFwSjuSC/email_exists_2020_7202?email={email}")
+            email_exists_1040_response= requests.get(f"https://xyrm-sqqj-hx6t.n7c.xano.io/api:zFwSjuSC/email_exists_2020_1040?email={email}")
+            email_exists_1040x_response = requests.get(f"https://xyrm-sqqj-hx6t.n7c.xano.io/api:zFwSjuSC/email_exists_1040x?email={email}")
+            email_exists_sch_3_response = requests.get(f"https://xyrm-sqqj-hx6t.n7c.xano.io/api:zFwSjuSC/email_exists_2020_sch_3?email={email}")
+
+            email_exists_7202 = email_exists_7202_response.json()
+            email_exists_1040 = email_exists_1040_response.json()
+            email_exists_1040x = email_exists_1040x_response.json()
+            email_exists_sch_3 = email_exists_sch_3_response.json()
+
+            if email_exists_1040 and email_exists_1040x and email_exists_7202 and email_exists_sch_3:
                 try:
-                    FieldsStrings = combine_fields(data_variables_1040_20, data_variables_1040x_20, data_variables_7202_20, data_variables_sch_3_20)
+                    email_cell = sheet.find(email)
+                    pdf_1_value = sheet.cell(email_cell.row, 4).value
                 except:
-                    print('combine error, skipping')
                     continue
+                if not pdf_1_value:
+                    response_1040 =  requests.get(f"https://xyrm-sqqj-hx6t.n7c.xano.io/api:Dga0jXwg/get_1040_20_email?email={email}")
+                    response_1040x = requests.get(f"https://xyrm-sqqj-hx6t.n7c.xano.io/api:Dga0jXwg/get_1040x_20_email?email={email}")
+                    response_7202 =  requests.get(f"https://xyrm-sqqj-hx6t.n7c.xano.io/api:Dga0jXwg/get_7202_email?email={email}")
+                    response_sch_3 = requests.get(f"https://xyrm-sqqj-hx6t.n7c.xano.io/api:Dga0jXwg/get_sch_3_20_email?email={email}")
 
-                parameters = {}
-                parameters["name"] = os.path.basename(destinationFile)
-                parameters["url"] = template_20_pdf
-                parameters["fieldsString"] = FieldsStrings
-                parameters["async"] = "False"
+                    data_variables_1040_20 = response_1040.json()
+                    data_variables_1040x_20 = response_1040x.json()
+                    data_variables_7202_20 = response_7202.json()
+                    data_variables_sch_3_20 = response_sch_3.json()
+                    
+                    try:
+                        FieldsStrings = combine_fields(data_variables_1040_20, data_variables_1040x_20, data_variables_7202_20, data_variables_sch_3_20)
+                    except:
+                        print('combine error, skipping')
+                        continue
 
-                url = "{}/pdf/edit/add".format(PDF_BASE_URL)
+                    parameters = {}
+                    parameters["name"] = os.path.basename(destinationFile)
+                    parameters["url"] = template_20_pdf
+                    parameters["fieldsString"] = FieldsStrings
+                    parameters["async"] = "False"
 
-                response = requests.post(url, data=parameters, headers={"x-api-key": pdf_co_key})
-                if response.status_code == 200:
-                    json_data = response.json()
+                    url = "{}/pdf/edit/add".format(PDF_BASE_URL)
 
-                    if not json_data["error"]:
-                        resultFileUrl = json_data["url"]
-                        s3_url = upload_pdf_to_s3(resultFileUrl, os.path.basename(destinationFile))
-                        sheet.update_cell(email_cell.row,4,s3_url)
-                        pdf_count += 1
-                        print(f"pdf 1 updated for {email}")
+                    response = requests.post(url, data=parameters, headers={"x-api-key": pdf_co_key})
+                    if response.status_code == 200:
+                        json_data = response.json()
+
+                        if not json_data["error"]:
+                            resultFileUrl = json_data["url"]
+                            s3_url = upload_pdf_to_s3(resultFileUrl, os.path.basename(destinationFile))
+                            sheet.update_cell(email_cell.row,4,s3_url)
+                            pdf_count += 1
+                            print(f"pdf 1 updated for {email}")
+                        else:
+                            print(json_data["message"])
                     else:
-                        print(json_data["message"])
+                        print(f"Request error: {response.status_code} {response.reason}")
                 else:
-                    print(f"Request error: {response.status_code} {response.reason}")
+                    print(f"PDF 1 value exists for {email}. Skipping.")
             else:
-                print(f"PDF 1 value exists for {email}. Skipping.")
-        else:
-            print(f'skipping {email}')
-            continue
+                print(f'skipping {email}')
+                continue
+    except:
+        return {"message": "error"}
 
     return {"message":f"filled and updated {pdf_count} pdfs"}       
 if __name__ == '__main__':
