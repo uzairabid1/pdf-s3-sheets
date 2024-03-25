@@ -1,5 +1,5 @@
-from flask import Flask, request, jsonify
-from flask_cors import CORS
+from instructions import get_instructions_data
+
 import requests
 import boto3
 import json
@@ -7,10 +7,9 @@ import os
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 from dotenv import load_dotenv
-from io import BytesIO
 import pandas as pd
 import time
-from PyPDF2 import PdfFileMerger
+
 import math
 
 load_dotenv()
@@ -445,2164 +444,507 @@ def place_data_variables(sheet_name, data_variables):
 
     print("Data placed successfully!")
 
-def get_7202_20_data(sheet_name):
+def get_7202_20_data(data_variables):
 
-    sheet = gsheet_client.open(sheet_name).get_worksheet(1)
+    instructions_data =  get_instructions_data(data_variables)
+    twenty_7202_Day_Overide_1 = int(instructions_data['Gov_April_1_2020_through_December_31_2020'])
+    # pull the date variable from Gov_April_1_2020_through_December_3
+    # AL7
+    AL7 = int(twenty_7202_Day_Overide_1)
+    twenty_7202_Day_Overide_2 = int(instructions_data['Child_April_1_2020_through_December_31_2020'])
+    # pull the date variable from Child_April_1_2020_through_December_31_2020
+    # AL8
+    AL8 = int(twenty_7202_Day_Overide_2)
+    twenty_7202_Day_Overide_3 = int(instructions_data['Family_April_1_2020_through_December_31_2020'])
+    # pull the date variable from Family_April_1_2020_through_December_31_2020
+    # = AL9
+    AL9 = int(twenty_7202_Day_Overide_3)
 
-    try:
-        data_7202_20_1 = sheet.cell(5,36).value.strip()
-    except:
-        data_7202_20_1 = ''
-    time.sleep(0.1)
-    try:
-        data_7202_20_2 = sheet.cell(6,36).value.strip()
-    except:
-        data_7202_20_2 = ''
-    time.sleep(0.1)
-    try:
-        data_7202_20_3 = sheet.cell(7,36).value.strip()
-    except:
-        data_7202_20_3 = ''
-    time.sleep(0.1)
-    try:
-        data_7202_20_4 = sheet.cell(8,36).value.strip()
-    except:
-        data_7202_20_4 = ''
-    time.sleep(0.1)
-    try:
-        data_7202_20_5 = sheet.cell(9,36).value.strip()
-    except:
-        data_7202_20_5 = ''
-    time.sleep(0.1)
-    try:
-        data_7202_20_6 = sheet.cell(10,36).value.strip()
-    except:
-        data_7202_20_6 = ''
-    time.sleep(0.1)
-    try:
-        data_7202_20_7 = sheet.cell(11,36).value.strip()
-    except:
-        data_7202_20_7 = ''
-    time.sleep(0.1)
-    try:
-        data_7202_20_8 = sheet.cell(12,36).value.strip()
-    except:
-        data_7202_20_8 = ''
-    time.sleep(0.1)
-    try:
-        data_7202_20_9 = sheet.cell(13,36).value.strip()
-    except:
-        data_7202_20_9 = ''
-    time.sleep(0.1)
-    try:
-        data_7202_20_10 = sheet.cell(14,36).value.strip()
-    except:
-        data_7202_20_10 = ''
-    time.sleep(0.1)
-    try:
-        data_7202_20_11 = sheet.cell(15,36).value.strip()
-    except:
-        data_7202_20_11 = ''
-    time.sleep(0.1)
-    try:
-        data_7202_20_12 = sheet.cell(16,36).value.strip()
-    except:
-        data_7202_20_12 = ''
-    time.sleep(0.1)
-    try:
-        data_7202_20_13 = sheet.cell(17,36).value.strip()
-    except:
-        data_7202_20_13 = ''
-    time.sleep(0.1)
-    try:
-        data_7202_20_14 = sheet.cell(18,36).value.strip()
-    except:
-        data_7202_20_14 = ''
-    try:
-        data_7202_20_15 = sheet.cell(19,36).value.strip()
-    except:
-        data_7202_20_15 = ''
-    try:
-        data_7202_20_16 = sheet.cell(20,36).value.strip()
-    except:
-        data_7202_20_16 = ''
-    try:
-        data_7202_20_17 = sheet.cell(22,36).value.strip()
-    except:
-        data_7202_20_17 = ''
-    try:
-        data_7202_20_18 = sheet.cell(23,36).value.strip()
-    except:
-        data_7202_20_18 = ''
-    try:
-        data_7202_20_19 = sheet.cell(24,36).value.strip()
-    except:
-        data_7202_20_19 = ''
-    try:
-        data_7202_20_20 = sheet.cell(25,36).value.strip()
-    except:
-        data_7202_20_20 = ''
-    try:
-        data_7202_20_21 = sheet.cell(26,36).value.strip()
-    except:
-        data_7202_20_21 = ''
-    try:
-        data_7202_20_22 = sheet.cell(27,36).value.strip()
-    except:
-        data_7202_20_22 = ''
-    try:
-        data_7202_20_23 = sheet.cell(28,36).value.strip()
-    except:
-        data_7202_20_23 = ''
-    try:
-        data_7202_20_24 = sheet.cell(29,36).value.strip()
-    except:
-        data_7202_20_24 = ''
-    try:
-        data_7202_20_25 = sheet.cell(32,36).value.strip()
-    except:
-        data_7202_20_25 = ''
-    try:
-        data_7202_20_26 = sheet.cell(35,36).value.strip()
-    except:
-        data_7202_20_26 = ''
-    try:
-        data_7202_20_27 = sheet.cell(36,36).value.strip()
-    except:
-        data_7202_20_27 = ''
-    try:
-        data_7202_20_28 = sheet.cell(37,36).value.strip()
-    except:
-        data_7202_20_28 = ''
-    try:
-        data_7202_20_29 = sheet.cell(38,36).value.strip()
-    except:
-        data_7202_20_29 = ''
-    try:
-        data_7202_20_30 = sheet.cell(39,36).value.strip()
-    except:
-        data_7202_20_30 = ''
-    try:
-        data_7202_20_31 = sheet.cell(40,36).value.strip()
-    except:
-        data_7202_20_31 = ''
-    try:
-        data_7202_20_32 = sheet.cell(42,36).value.strip()
-    except:
-        data_7202_20_32 = ''
-    time.sleep(0.1)
-    try:
-        data_7202_20_33 = sheet.cell(43,36).value.strip()
-    except:
-        data_7202_20_33 = ''
-    time.sleep(0.1)
-    try:
-        data_7202_20_34 = sheet.cell(44,36).value.strip()
-    except:
-        data_7202_20_34 = ''
-    try:
-        data_7202_20_35 = sheet.cell(45,36).value.strip()
-    except:
-        data_7202_20_35 = '' 
-    time.sleep(0.1)
-    try:
-        data_total_2020_credit = sheet.cell(49,36).value.strip()
-    except:
-        data_total_2020_credit = ''
+    # this is the 2019 income variable
+    twenty_7202_2019 = int(instructions_data['nineteen_ADJUSTED_GROSS_INCOME'])
+
+    # this is the 2020 income variables
+    twenty_7202_20Schedule_SE_Line_3 = int(instructions_data['twenty_SE_income_per_computer'])
+
+    # formula =ROUND(IF(AL24>0,AL24*0.9235,AL24),0)
+    # Given value of AL24
+    AL24 = int(twenty_7202_20Schedule_SE_Line_3)
+    # Applying the formula
+    AL24result = int(round(AL24 * 0.9235 if AL24 > 0 else AL24, 0))
+    # print(AL24result)
+
+    twenty_7202_20_Line_4a = AL24result
+
+    twenty_7202_20_Line_4b = 0
+    # was AL26
+
+    # AL27
+    # =MAX(SUM(AL25,AL26),0)
+    # AL25 = twenty_7202_20_Line_4a,  AL26= twenty_7202_20_Line 4b
+    # Given values of AL25 and AL26
+    AL25 = int(twenty_7202_20_Line_4a)
+    AL26 = int(twenty_7202_20_Line_4b)
+
+    # Applying the formula
+    twenty_7202_20_Line_4c_result = max(sum([AL25, AL26]), 0)
+    twenty_7202_20_Line_4c = twenty_7202_20_Line_4c_result
+
+
+
+    twenty_7202_20_Line_5a = 0
+
+    # AL29
+    # =ROUND(AL28*0.9235,0)
+    # Given value of AL28
+    AL28 = int(twenty_7202_20_Line_5a)
+    # Applying the formula
+    twenty_7202_20_Line_5b_result = round(AL28 * 0.9235, 0)
+    twenty_7202_20_Line_5b = twenty_7202_20_Line_5b_result
+
+
+
+    # =AL27+AL29
+    # Given Values of AL27 AL29
+    AL27 = int(twenty_7202_20_Line_4c)
+    AL29 = int(twenty_7202_20_Line_5b)
+    # Adding the values
+    twenty_7202_20_Line_6_result = AL27 + AL29
+    twenty_7202_20_Line_6 = twenty_7202_20_Line_6_result
+
+
+    Fiscal_Year_Return = True
+    Sick_Leave_1 = 0
+    Sick_Leave_2 = 0
+    Sick_Leave_3 = 0
+    AL21 = Sick_Leave_3
+
+
+    # start the Column for the 7202 form
+
+    twenty_7202_1 = twenty_7202_Day_Overide_1
+    # = AJ5
+    # =SUMIF($AM$7:$AM$16,"Self",$AP$7:$AP$16)
+    AJ5 = int(twenty_7202_1)
+
+    # this is working on Line 2
+    # AJ6
+    # =IF(AJ5>9,0,MIN(10-AJ5,SUMIF($AM$7:$AM$16,"Other",$AP$7:$AP$16)))
+
+    if AJ5 > 9:
+        twenty_7202_2_result = 0
+    else:
+        twenty_7202_2_result = min(10 - int(AJ5), 10)
+
+    twenty_7202_2 = twenty_7202_2_result
+    AJ6 = int(twenty_7202_2)
+
+    # This is working on Line 3
+    # AJ7
+    # =IF(AJ5=0,0,IF(AL18="no",10,"View instructions"))
+    # AL18 = Fiscal_Year_Return
+    # This Python code will set result to 0 if AJ5 equals 0. If AJ5 is not 0, it checks the value of Fiscal_Year_Return. If Fiscal_Year_Return is False, it sets result to 10, otherwise, it sets result to "View instructions".
+    twenty_7202_3 = 0 if AJ5 == 0 else (10 if Fiscal_Year_Return else "View instructions")
+    AJ7 = int(twenty_7202_3)
+
+    # working on line 4
+    #AJ8
+    # =MIN(AJ5,AJ7)
+    # This Python code will assign the minimum value between AJ5 and AJ7 to the variable.
+    twenty_7202_4 = min(AJ5, AJ7)
+    AJ8 = int(twenty_7202_4)
+
+    # working on Line 5
+    # AJ9
+    # =IF(AJ5=0,0,AJ7-AJ8)
+
+    if AJ5 == 0:
+        twenty_7202_5 = 0
+    else:
+        twenty_7202_5 = AJ7 - AJ8
+    AJ9 = int(twenty_7202_5)
+
+    # working on Line 6
+    # AJ10
+    # =MIN(AJ6,AJ9)
+
+    twenty_7202_6 = min(AJ6, AJ9)
+    AJ10 = twenty_7202_6
+
+    # working on Line 7
+    # AJ11
+    # =MAX(AL30,AN24)
+    AL30 = twenty_7202_20_Line_6
+    AN24 = twenty_7202_2019
+
+    twenty_7202_7 = max(AL30, AN24)
+    AJ11 = twenty_7202_7
+
+    # working on Line 8
+    # AJ12
+    # =ROUND(AJ11/260,0)
+    twenty_7202_8 = int(round(AJ11 / 260, 0))
+    AJ12 = twenty_7202_8
+
+    # working on Line 9
+    # AJ13
+    # =MIN(AJ12,511)
+    twenty_7202_9 = min(AJ12,511)
+    AJ13 = twenty_7202_9
+
+    # working on Line 10
+    # AJ14
+    # =ROUND(AJ13*AJ8,0)
+    twenty_7202_10 = int(round(AJ13*AJ8,0))
+    AJ14 = twenty_7202_10
+
+    # working on Line 11
+    # AJ15
+    # =ROUND(AJ12*0.67,0)
+    twenty_7202_11 = int(round(AJ12*0.67,0))
+    AJ15 = twenty_7202_11
+
+    # working on Line 12
+    # AJ16
+    # =MIN(AJ15,200)
+    twenty_7202_12 =min(AJ15,200)
+    AJ16 = twenty_7202_12
+
+    # working on Line 13
+    # AJ17
+    # =AJ16*AJ10
+    twenty_7202_13 =AJ16*AJ10
+    AJ17 = twenty_7202_13
+
+    # working on Line 14
+    # AJ18
+    # =AJ17+AJ14
+    twenty_7202_14 =AJ17+AJ14
+    AJ18 = twenty_7202_14
+
+    # working on Line 15
+    # AJ19
+    # =AL19 = Sick_Leave_1
+    twenty_7202_15 = Sick_Leave_1
+    AJ19 = twenty_7202_15
+
+    # working on Line 16
+    # AJ20
+    # =AL20  = Sick_Leave_2
+    twenty_7202_16 = Sick_Leave_2
+    AJ20 = twenty_7202_16
+
+    # working on Line 17
+    # AJ22
+    # =AJ20+AJ17
+    twenty_7202_17 =AJ20+AJ17
+    AJ22 = twenty_7202_17
+
+    # working on Line 18
+    # AJ23
+    # =MIN(AJ22,2000)
+    twenty_7202_18 =min(AJ22,2000)
+    AJ23 = twenty_7202_18
+
+
+    # working on Line 19
+    # AJ24
+    # =AJ22-AJ23
+    twenty_7202_19 =AJ22-AJ23
+    AJ24 = twenty_7202_19
+
+    # working on Line 20
+    # AJ25
+    # =AJ14+AJ19+AJ23
+    twenty_7202_20 =AJ14+AJ19+AJ23
+    AJ25 = twenty_7202_20
+
+    # working on Line 21
+    # AJ26
+    # =MIN(AJ25,5110)
+    twenty_7202_21 =min(AJ25,5110)
+    AJ26 = twenty_7202_21
+
+    # working on Line 22
+    # AJ27
+    # =AJ25-AJ26
+    twenty_7202_22 =AJ25-AJ26
+    AJ27 = twenty_7202_22
+
+    # working on Line 23
+    # AJ28
+    # =AJ24+AJ27
+    twenty_7202_23 =AJ24+AJ27
+    AJ28 = twenty_7202_23
+
+    # working on Line 24
+    # AJ30
+    # =IF((AJ18-AJ28)<=0,0,AJ18-AJ28)
+    if (AJ18 - AJ28) <= 0:
+        twenty_7202_24 = 0
+    else:
+        twenty_7202_24 = AJ18 - AJ28
+    AJ30= twenty_7202_24
+
+    # working on Line 25
+    # AJ34
+    # =MIN(SUMIF($AM$7:$AM$16,"Fam Leave",$AP$7:$AP$16),50)
+    # AL9 = twenty_7202_Day_Overide_3
+    # Take the minimum between the sum and 50
+    twenty_7202_25 = min(twenty_7202_Day_Overide_3, 50)
+    AJ34 = twenty_7202_25
+
+    # working on Line 26
+    # AJ26
+    # =AJ11
+    twenty_7202_26 =AJ11
+    AJ35 = twenty_7202_26
+
+    # working on Line 27
+    # AJ36
+    # =ROUND(AJ35/260,0)
+    twenty_7202_27 =int(round(AJ35/260,0))
+    AJ36 = twenty_7202_27
+
+    # working on Line 28
+    # AJ37
+    # =ROUND(AJ36*0.67,0)
+    twenty_7202_28 =int(round(AJ36*0.67,0))
+    AJ37 = twenty_7202_28
+
+    # working on Line 29
+    # AJ38
+    # =MIN(AJ37,200)
+    twenty_7202_29 =min(AJ37,200)
+    AJ38 = twenty_7202_29
+
+    # working on Line 30
+    # AJ39
+    # =AJ32*AJ38
+    AJ32 = AJ34
+
+    twenty_7202_30 = AJ32*AJ38
+    AJ39 = twenty_7202_30
+
+    # working on Line 31
+    # =AJ40 as the cell
+    # =AL21 = new Sick_Leave_3
+    twenty_7202_31 = Sick_Leave_3
+    AJ40 = twenty_7202_31
+
+    # working on Line 32
+    # AJ42
+    # =AJ39+AJ40
+    twenty_7202_32 = AJ39+AJ40
+    AJ42 = twenty_7202_32
+
+    # working on Line 33
+    # AJ43
+    # =MIN(AJ42,10000)
+    twenty_7202_33 =min(AJ42,10000)
+    AJ43 = twenty_7202_33
+
+    # working on Line 34
+    # AJ44
+    # =AJ42-AJ43
+    twenty_7202_34 =AJ42-AJ43
+    AJ44 = twenty_7202_34
+
+    # working on Line 35
+    # AJ46
+    # =MAX(AJ39-AJ44,0)
+    twenty_7202_35 =max(AJ39-AJ44,0)
+    AJ46 = twenty_7202_35
+
+
+    # Total 2020 Credit (enter this number on Schedule 3 Line 12b)
+    # =AJ45+AJ29
+    # AJ49
+    Total_2020_Credit =AJ46+AJ30
 
     data_7202_20 = {
-        "data_7202_20_1": data_7202_20_1,
-        "data_7202_20_2": data_7202_20_2,
-        "data_7202_20_3": data_7202_20_3,
-        "data_7202_20_4": data_7202_20_4,
-        "data_7202_20_5": data_7202_20_5,
-        "data_7202_20_6": data_7202_20_6,
-        "data_7202_20_7": data_7202_20_7,
-        "data_7202_20_8": data_7202_20_8,
-        "data_7202_20_9": data_7202_20_9,
-        "data_7202_20_10": data_7202_20_10,
-        "data_7202_20_11": data_7202_20_11,
-        "data_7202_20_12": data_7202_20_12,
-        "data_7202_20_13": data_7202_20_13,
-        "data_7202_20_14": data_7202_20_14,
-        "data_7202_20_15": data_7202_20_15,
-        "data_7202_20_16": data_7202_20_16,
-        "data_7202_20_17": data_7202_20_17,
-        "data_7202_20_18": data_7202_20_18,
-        "data_7202_20_19": data_7202_20_19,
-        "data_7202_20_20": data_7202_20_20,
-        "data_7202_20_21": data_7202_20_21,
-        "data_7202_20_22": data_7202_20_22,
-        "data_7202_20_23": data_7202_20_23,
-        "data_7202_20_24": data_7202_20_24,
-        "data_7202_20_25": data_7202_20_25,
-        "data_7202_20_26": data_7202_20_26,
-        "data_7202_20_27": data_7202_20_27,
-        "data_7202_20_28": data_7202_20_28,
-        "data_7202_20_29": data_7202_20_29,
-        "data_7202_20_30": data_7202_20_30,
-        "data_7202_20_31": data_7202_20_31,
-        "data_7202_20_32": data_7202_20_32,
-        "data_7202_20_33": data_7202_20_33,
-        "data_7202_20_34": data_7202_20_34,
-        "data_7202_20_35": data_7202_20_35,
-        "data_7202_20_total_credit": data_total_2020_credit
+        "data_7202_20_1": AJ5,
+        "data_7202_20_2": AJ6,
+        "data_7202_20_3": AJ7,
+        "data_7202_20_4": AJ8,
+        "data_7202_20_5": AJ9,
+        "data_7202_20_6": AJ10,
+        "data_7202_20_7": AJ11,
+        "data_7202_20_8": AJ12,
+        "data_7202_20_9": AJ13,
+        "data_7202_20_10": AJ14,
+        "data_7202_20_11": AJ15,
+        "data_7202_20_12": AJ16,
+        "data_7202_20_13": AJ17,
+        "data_7202_20_14": AJ18,
+        "data_7202_20_15": AJ19,
+        "data_7202_20_16": AJ20,
+        "data_7202_20_17": AJ22,
+        "data_7202_20_18": AJ23,
+        "data_7202_20_19": AJ24,
+        "data_7202_20_20": AJ25,
+        "data_7202_20_21": AJ26,
+        "data_7202_20_22": AJ27,
+        "data_7202_20_23": AJ28,
+        "data_7202_20_24": AJ30,
+        "data_7202_20_25": AJ34,
+        "data_7202_20_26": AJ35,
+        "data_7202_20_27": AJ36,
+        "data_7202_20_28": AJ37,
+        "data_7202_20_29": AJ38,
+        "data_7202_20_30": AJ39,
+        "data_7202_20_31": AJ40,
+        "data_7202_20_32": AJ42,
+        "data_7202_20_33": AJ43,
+        "data_7202_20_34": AJ44,
+        "data_7202_20_35": AJ46,
+        "data_7202_20_total_credit": Total_2020_Credit
     }  
 
     return data_7202_20
 
-def get_sch_3_20_data(sheet_name):
-    sheet = gsheet_client.open(sheet_name).get_worksheet(2)
 
-    try:
-        data_sch_3_20_1 = sheet.cell(10,28).value.strip()
-    except:
-        data_sch_3_20_1 = ''
-    time.sleep(0.1)
-    try:
-        data_sch_3_20_2 = sheet.cell(11,28).value.strip()
-    except:
-        data_sch_3_20_2 = ''
-    time.sleep(0.1)
-    try:
-        data_sch_3_20_3 = sheet.cell(12,28).value.strip()
-    except:
-        data_sch_3_20_3 = ''
-    time.sleep(0.1)
-    try:
-        data_sch_3_20_4 = sheet.cell(13,28).value.strip()
-    except:
-        data_sch_3_20_4 = ''
-    time.sleep(0.1)
-    try:
-        data_sch_3_20_5 = sheet.cell(14,28).value.strip()
-    except:
-        data_sch_3_20_5 = ''
-    time.sleep(0.1)
-    try:
-        data_sch_3_20_6 = sheet.cell(15,28).value.strip()
-    except:
-        data_sch_3_20_6 = ''
-    time.sleep(0.1)
-    try:
-        data_sch_3_20_7 = sheet.cell(16,28).value.strip()
-    except:
-        data_sch_3_20_7 = ''
-    time.sleep(0.1)
-    try:
-        data_sch_3_20_8 = sheet.cell(18,28).value.strip()
-    except:
-        data_sch_3_20_8 = ''
-    time.sleep(0.1)
-    try:
-        data_sch_3_20_9 = sheet.cell(19,28).value.strip()
-    except:
-        data_sch_3_20_9 = ''
-    try:
-        data_sch_3_20_10 = sheet.cell(20,28).value.strip()
-    except:
-        data_sch_3_20_10 = ''
-    time.sleep(0.1)
-    try:
-        data_sch_3_20_11 = sheet.cell(21,28).value.strip()
-    except:
-        data_sch_3_20_11 = ''
-    time.sleep(0.1)
-    try:
-        data_sch_3_20_12a = sheet.cell(23,22).value.strip()
-    except:
-        data_sch_3_20_12a = ''
-    try:
-        data_sch_3_20_12b = sheet.cell(25,22).value.strip()
-    except:
-        data_sch_3_20_12b = ''
-    try:
-        data_sch_3_20_12c = sheet.cell(26,22).value.strip()
-    except:
-        data_sch_3_20_12c = ''
-    time.sleep(0.1)
-    try:
-        data_sch_3_20_12d = sheet.cell(27,22).value.strip()
-    except:
-        data_sch_3_20_12d = ''   
-    try:
-        data_sch_3_20_12e = sheet.cell(28,22).value.strip()
-    except:
-        data_sch_3_20_12e = ''
-    try:
-        data_sch_3_20_12f = sheet.cell(29,28).value.strip()
-    except:
-        data_sch_3_20_12f = ''
-    time.sleep(0.1)
-    try:
-        data_sch_3_20_13 = sheet.cell(30,28).value.strip()
-    except:
-        data_sch_3_20_13 = ''
+def get_sch_3_20_data(data_variables):
+    twenty_schd3_7 = 0
+    
+
+    twenty_schd3_12b = get_7202_20_data(data_variables)['data_7202_20_total_credit']
+
+    twenty_schd3_12f = twenty_schd3_12b
+
+    twenty_schd3_13 = twenty_schd3_12f + twenty_schd3_7
+
     data_sch_3_20 = {
-            "data_sch_3_20_1" : data_sch_3_20_1,
-            "data_sch_3_20_2" : data_sch_3_20_2,
-            "data_sch_3_20_3" : data_sch_3_20_3,
-            "data_sch_3_20_4" : data_sch_3_20_4,
-            "data_sch_3_20_5" : data_sch_3_20_5,
-            "data_sch_3_20_6" : data_sch_3_20_6,
-            "data_sch_3_20_7" : data_sch_3_20_7,
-            "data_sch_3_20_8" : data_sch_3_20_8,
-            "data_sch_3_20_9" : data_sch_3_20_9,
-            "data_sch_3_20_10" : data_sch_3_20_10,
-            "data_sch_3_20_11" : data_sch_3_20_11,
-            "data_sch_3_20_12a" : data_sch_3_20_12a,
-            "data_sch_3_20_12b" : data_sch_3_20_12b,
-            "data_sch_3_20_12c" : data_sch_3_20_12c,
-            "data_sch_3_20_12d" : data_sch_3_20_12d,
-            "data_sch_3_20_12e" : data_sch_3_20_12e,
-            "data_sch_3_20_12f" : data_sch_3_20_12f,
-            "data_sch_3_20_13" : data_sch_3_20_13
+            "data_sch_3_20_7": twenty_schd3_7,
+            "data_sch_3_20_12b" : twenty_schd3_12b,
+            "data_sch_3_20_12f" : twenty_schd3_12f,
+            "data_sch_3_20_13" : twenty_schd3_13
     }
 
     return data_sch_3_20
 
-def get_1040_20_data(sheet_name):
-    sheet = gsheet_client.open(sheet_name).get_worksheet(3)
 
-    try:
-        data_1040_20_1 = sheet.cell(35,28).value.strip()
-    except:
-        data_1040_20_1 = ''
-    time.sleep(0.1)
-    try:
-        data_1040_20_7 = sheet.cell(41,28).value.strip()
-    except:
-        data_1040_20_7 = ''
-    try:
-        data_1040_20_8 = sheet.cell(42,28).value.strip()
-    except:
-        data_1040_20_8 = ''
-    time.sleep(0.1)
-    try:
-        data_1040_20_9 = sheet.cell(43,28).value.strip()
-    except:
-        data_1040_20_9 = ''
-    try:
-        data_1040_20_11 = sheet.cell(48,28).value.strip()
-    except:
-        data_1040_20_11 = ''
-    try:
-        data_1040_20_12 = sheet.cell(49,28).value.strip()
-    except:
-        data_1040_20_12 = ''
-    time.sleep(0.1)
-    try:
-        data_1040_20_13 = sheet.cell(50,28).value.strip()
-    except:
-        data_1040_20_13 = ''
-    try:
-        data_1040_20_14 = sheet.cell(51,28).value.strip()
-    except:
-        data_1040_20_14 = ''
-    time.sleep(0.1)
-    try:
-        data_1040_20_15 = sheet.cell(52,28).value.strip()
-    except:
-        data_1040_20_15 = ''
-    time.sleep(0.1)
-    try:
-        data_1040_20_16 = sheet.cell(55,28).value.strip()
-    except:
-        data_1040_20_16 = ''
-    time.sleep(0.1)
-    try:
-        data_1040_20_17 = sheet.cell(56,28).value.strip()
-    except:
-        data_1040_20_17 = ''
-    time.sleep(0.1)
-    try:
-        data_1040_20_18 = sheet.cell(57,28).value.strip()
-    except:
-        data_1040_20_18 = ''
-    time.sleep(0.1)
-    try:
-        data_1040_20_19 = sheet.cell(58,28).value.strip()
-    except:
-        data_1040_20_19 = ''
-    try:
-        data_1040_20_20 = sheet.cell(59,28).value.strip()
-    except:
-        data_1040_20_20 = ''
-    try:
-        data_1040_20_21 = sheet.cell(60,28).value.strip()
-    except:
-        data_1040_20_21 = ''
-    try:
-        data_1040_20_22 = sheet.cell(61,28).value.strip()
-    except:
-        data_1040_20_22 = '' 
-    time.sleep(0.1)
-    try:
-        data_1040_20_23 = sheet.cell(62,28).value.strip()
-    except:
-        data_1040_20_23 = '' 
-    time.sleep(0.1)
-    try:
-        data_1040_20_24 = sheet.cell(63,28).value.strip()
-    except:
-        data_1040_20_24 = '' 
-    try:
-        data_1040_20_26 = sheet.cell(69,28).value.strip()
-    except:
-        data_1040_20_26 = '' 
-    time.sleep(0.1)
-    try:
-        data_1040_20_27 = sheet.cell(70,24).value.strip()
-    except:
-        data_1040_20_27 = '' 
-    time.sleep(0.1)
-    try:
-        data_1040_20_28 = sheet.cell(71,24).value.strip()
-    except:
-        data_1040_20_28 = '' 
-    time.sleep(0.1)
-    try:
-        data_1040_20_29 = sheet.cell(72,24).value.strip()
-    except:
-        data_1040_20_29 = '' 
-    time.sleep(0.1)
-    try:
-        data_1040_20_30 = sheet.cell(73,24).value.strip()
-    except:
-        data_1040_20_30 = '' 
-    time.sleep(0.1)
-    try:
-        data_1040_20_31 = sheet.cell(74,24).value.strip()
-    except:
-        data_1040_20_31 = '' 
-    time.sleep(0.1)
-    try:
-        data_1040_20_32 = sheet.cell(75,28).value.strip()
-    except:
-        data_1040_20_32 = ''
-    time.sleep(0.1)
-    try:
-        data_1040_20_33 = sheet.cell(76,28).value.strip()
-    except:
-        data_1040_20_33 = '' 
-    time.sleep(0.1)
-    try:
-        data_1040_20_34 = sheet.cell(77,28).value.strip()
-    except:
-        data_1040_20_34 = ''
-    time.sleep(0.1)
-    try:
-        data_1040_20_36 = sheet.cell(81,21).value.strip()
-    except:
-        data_1040_20_36 = '' 
-    try:
-        data_1040_20_37 = sheet.cell(82,28).value.strip()
-    except:
-        data_1040_20_37 = '' 
-    try:
-        data_1040_20_38 = sheet.cell(84,21).value.strip()
-    except:
-        data_1040_20_38 = '' 
-    time.sleep(0.1)
-    try:
-        data_1040_20_35a = sheet.cell(78,28).value.strip()
-    except:
-        data_1040_20_35a = ''
-    time.sleep(0.1)
-    try:
-        data_1040_20_2a = sheet.cell(36,13).value.strip()
-    except:
-        data_1040_20_2a = '' 
-    time.sleep(0.1)
-    try:
-        data_1040_20_3a = sheet.cell(37,13).value.strip()
-    except:
-        data_1040_20_3a = ''
-    time.sleep(0.1)
-    try:
-        data_1040_20_4a = sheet.cell(38,13).value.strip()
-    except:
-        data_1040_20_4a = ''
-    try:
-        data_1040_20_5a = sheet.cell(39,13).value.strip()
-    except:
-        data_1040_20_5a = ''
-    time.sleep(0.1)
-    try:
-        data_1040_20_6a = sheet.cell(40,13).value.strip()
-    except:
-        data_1040_20_6a = ''
-    try:
-        data_1040_20_2b = sheet.cell(36,28).value.strip()
-    except:
-        data_1040_20_2b = ''
-    time.sleep(0.1)
-    try:
-        data_1040_20_3b = sheet.cell(37,28).value.strip()
-    except:
-        data_1040_20_3b = ''
-    time.sleep(0.1)
-    try:
-        data_1040_20_4b = sheet.cell(38,28).value.strip()
-    except:
-        data_1040_20_4b = ''
-    try:
-        data_1040_20_5b = sheet.cell(39,28).value.strip()
-    except:
-        data_1040_20_5b = ''
-    time.sleep(0.1)
-    try:
-        data_1040_20_6b = sheet.cell(40,28).value.strip()
-    except:
-        data_1040_20_6b = ''
-    try:
-        data_1040_20_10a = sheet.cell(45,24).value.strip()
-    except:
-        data_1040_20_10a = ''
-    try:
-        data_1040_20_10b = sheet.cell(46,24).value.strip()
-    except:
-        data_1040_20_10b = '' 
-    try:
-        data_1040_20_10c = sheet.cell(47,28).value.strip()
-    except:
-        data_1040_20_10c = ''
-    try:
-        data_1040_20_25a = sheet.cell(65,24).value.strip()
-    except:
-        data_1040_20_25a = ''
-    time.sleep(0.1)
-    try:
-        data_1040_20_25b = sheet.cell(66,24).value.strip()
-    except:
-        data_1040_20_25b = ''
-    try:
-        data_1040_20_25c = sheet.cell(67,24).value.strip()
-    except:
-        data_1040_20_25c = ''
-    time.sleep(0.1)
-    try:
-        data_1040_20_25d = sheet.cell(68,28).value.strip()
-    except:
-        data_1040_20_25d = ''
-    
+def get_1040_20_data(data_variables):
+    # line 1
+    #AB35
+    # =Instructions!M72 = twenty_wages_salaries_tips_etc
+    instructions_data = get_instructions_data(data_variables)
+
+    sch_3_data = get_sch_3_20_data(data_variables)
+
+    twenty1040_1 = int(instructions_data['twenty_wages_salaries_tips_etc'])
+
+    #2a
+    #=Instructions!M73 =twenty_tax_exempt_interest
+    #
+    twenty1040_2a = int(instructions_data['twenty_tax_exempt_interest'])
+
+    # =Instructions!M78
+    twenty1040_2b = int(instructions_data['twenty_taxable_interest_income'])
+
+    #
+    twenty1040_3a = int(instructions_data['twenty_qualified_dividends'])
+
+    twenty1040_3b = int(instructions_data['twenty_ordinary_dividend_income'])
+
+    twenty1040_4a = int(instructions_data['twenty_total_IRA_distributions'])
+    twenty1040_4b = int(instructions_data['twenty_taxable_IRA_distributions'])
+
+    twenty1040_5a = int(instructions_data['twenty_total_pensions_and_annuities'])
+    twenty1040_5b = int(instructions_data['twenty_taxable_pension_annuity_amount'])  # Corrected variable name
+
+    twenty1040_6a = int(instructions_data['twenty_total_social_security_benefits'])
+    twenty1040_6b = int(instructions_data['twenty_taxable_social_security_benefits_per_computer'])
+
+    twenty1040_7 = int(instructions_data['twenty_capital_gain_or_loss'])
+    twenty1040_8 = int(instructions_data['twenty_other_income'])
+    twenty1040_9 = twenty1040_1 + twenty1040_2b + twenty1040_3b + twenty1040_4b + twenty1040_5b + twenty1040_6b + twenty1040_7 + twenty1040_8
+
+    twenty1040_10a = int(instructions_data['twenty_total_adjustments_per_computer'])
+    twenty1040_10b = int(instructions_data['twenty_non_itemized_charitable_contribution_per_computer'])
+    twenty1040_10c = twenty1040_10a + twenty1040_10b
+
+    twenty1040_11 = abs(twenty1040_9 - twenty1040_10c)
+    twenty1040_12 = int(instructions_data['twenty_standard_deduction_per_computer'])
+    twenty1040_13 = int(instructions_data['twenty_business_income_or_loss_schedule_C'])
+    twenty1040_14 = twenty1040_12 + twenty1040_13
+    twenty1040_15 = max(0, twenty1040_11 - twenty1040_14)
+    twenty1040_16 = int(instructions_data['twenty_tentative_tax'])
+    twenty1040_17 = 0
+    twenty1040_18 = twenty1040_16 + twenty1040_17
+    twenty1040_19 = 0
+    twenty1040_20 = int(sch_3_data['data_sch_3_20_7']) if 'data_sch_3_20_7' in sch_3_data else 0
+    twenty1040_21 = twenty1040_19 + twenty1040_20
+    # Assigns the result of the formula to twenty1040_22
+    twenty1040_22 = max(twenty1040_18 - twenty1040_21, 0)
+    twenty1040_23 = int(instructions_data['twenty_SE_tax'])
+    twenty1040_24 = twenty1040_23 + twenty1040_22
+    twenty1040_25a = 0
+    twenty1040_25b = 0
+    twenty1040_25c = 0
+    twenty1040_25d = twenty1040_25a + twenty1040_25b + twenty1040_25c
+    twenty1040_26 = 0
+    twenty1040_27 = int(instructions_data['twenty_earned_income_credit']) if 'twenty_earned_income_credit' in instructions_data else 0
+    twenty1040_28 = int(instructions_data['twenty_schedule_8812_additional_child_tax_credit']) if 'twenty_schedule_8812_additional_child_tax_credit' in instructions_data else 0
+    twenty1040_29 = int(instructions_data['twenty_total_education_credit_amount_per_computer']) if 'twenty_total_education_credit_amount_per_computer' in instructions_data else 0
+    twenty1040_30 = int(instructions_data['twenty_recovery_rebate_credit_per_computer']) if 'twenty_recovery_rebate_credit_per_computer' in instructions_data else 0
+    twenty1040_31 = int(sch_3_data['data_sch_3_20_13']) if 'data_sch_3_20_13' in sch_3_data else 0
+
+    twenty1040_32 = twenty1040_27 + twenty1040_28 + twenty1040_29 + twenty1040_30 + twenty1040_31
+    twenty1040_33 = twenty1040_25d + twenty1040_32 + twenty1040_26
+    twenty1040_34 = max(twenty1040_33 - twenty1040_24, 0) if twenty1040_33 > twenty1040_24 else 0
+    twenty1040_35a = twenty1040_34
+    twenty1040_37 = twenty1040_24 - twenty1040_33 if twenty1040_34 == 0 else 0
+    twenty1040_38 = int(instructions_data['twenty_estimated_tax_penalty'])
+
     data_1040_20 = {
-        "data_1040_20_1": data_1040_20_1,
-        "data_1040_20_2a": data_1040_20_2a,
-        "data_1040_20_2b": data_1040_20_2b,
-        "data_1040_20_3a": data_1040_20_3a,
-        "data_1040_20_3b": data_1040_20_3b,
-        "data_1040_20_4a": data_1040_20_4a,
-        "data_1040_20_4b": data_1040_20_4b,
-        "data_1040_20_5a": data_1040_20_5a,
-        "data_1040_20_5b": data_1040_20_5b,
-        "data_1040_20_6a": data_1040_20_6a,
-        "data_1040_20_6b": data_1040_20_6b,
-        "data_1040_20_7": data_1040_20_7,
-        "data_1040_20_8": data_1040_20_8,
-        "data_1040_20_9": data_1040_20_9,
-        "data_1040_20_10a": data_1040_20_10a,
-        "data_1040_20_10b": data_1040_20_10b,
-        "data_1040_20_10c": data_1040_20_10c,
-        "data_1040_20_11": data_1040_20_11,
-        "data_1040_20_12": data_1040_20_12,
-        "data_1040_20_13": data_1040_20_13,
-        "data_1040_20_14": data_1040_20_14,
-        "data_1040_20_15": data_1040_20_15,
-        "data_1040_20_16": data_1040_20_16,
-        "data_1040_20_17": data_1040_20_17,
-        "data_1040_20_18": data_1040_20_18,
-        "data_1040_20_19": data_1040_20_19,
-        "data_1040_20_20": data_1040_20_20,
-        "data_1040_20_21": data_1040_20_21,
-        "data_1040_20_22": data_1040_20_22,
-        "data_1040_20_23": data_1040_20_23,
-        "data_1040_20_24": data_1040_20_24,
-        "data_1040_20_25a": data_1040_20_25a,
-        "data_1040_20_25b": data_1040_20_25b,
-        "data_1040_20_25c": data_1040_20_25c,
-        "data_1040_20_25d": data_1040_20_25d,
-        "data_1040_20_26": data_1040_20_26,
-        "data_1040_20_27": data_1040_20_27,
-        "data_1040_20_28": data_1040_20_28,
-        "data_1040_20_29": data_1040_20_29,
-        "data_1040_20_30": data_1040_20_30,
-        "data_1040_20_31": data_1040_20_31,
-        "data_1040_20_32": data_1040_20_32,
-        "data_1040_20_33": data_1040_20_33,
-        "data_1040_20_34": data_1040_20_34,
-        "data_1040_20_35a": data_1040_20_35a,
-        "data_1040_20_36": data_1040_20_36,
-        "data_1040_20_37": data_1040_20_37,
-        "data_1040_20_38": data_1040_20_38,
+        "data_1040_20_1": twenty1040_1,
+        "data_1040_20_2a": twenty1040_2a,
+        "data_1040_20_2b": twenty1040_2b,
+        "data_1040_20_3a": twenty1040_3a,
+        "data_1040_20_3b": twenty1040_3b,
+        "data_1040_20_4a": twenty1040_4a,
+        "data_1040_20_4b": twenty1040_4b,
+        "data_1040_20_5a": twenty1040_5a,
+        "data_1040_20_5b": twenty1040_5b,
+        "data_1040_20_6a": twenty1040_6a,
+        "data_1040_20_6b": twenty1040_6b,
+        "data_1040_20_7": twenty1040_7,
+        "data_1040_20_8": twenty1040_8,
+        "data_1040_20_9": twenty1040_9,
+        "data_1040_20_10a": twenty1040_10a,
+        "data_1040_20_10b": twenty1040_10b,
+        "data_1040_20_10c": twenty1040_10c,
+        "data_1040_20_11": twenty1040_11,
+        "data_1040_20_12": twenty1040_12,
+        "data_1040_20_13": twenty1040_13,
+        "data_1040_20_14": twenty1040_14,
+        "data_1040_20_15": twenty1040_15,
+        "data_1040_20_16": twenty1040_16,
+        "data_1040_20_17": twenty1040_17,
+        "data_1040_20_18": twenty1040_18,
+        "data_1040_20_19": twenty1040_19,
+        "data_1040_20_20": twenty1040_20,
+        "data_1040_20_21": twenty1040_21,
+        "data_1040_20_22": twenty1040_22,
+        "data_1040_20_23": twenty1040_23,
+        "data_1040_20_24": twenty1040_24,
+        "data_1040_20_25a": twenty1040_25a,
+        "data_1040_20_25b": twenty1040_25b,
+        "data_1040_20_25c": twenty1040_25c,
+        "data_1040_20_25d": twenty1040_25d,
+        "data_1040_20_26": twenty1040_26,
+        "data_1040_20_27": twenty1040_27,
+        "data_1040_20_28": twenty1040_28,
+        "data_1040_20_29": twenty1040_29,
+        "data_1040_20_30": twenty1040_30,
+        "data_1040_20_31": twenty1040_31,
+        "data_1040_20_32": twenty1040_32,
+        "data_1040_20_33": twenty1040_33,
+        "data_1040_20_34": twenty1040_34,
+        "data_1040_20_35a": twenty1040_35a,
+        "data_1040_20_37": twenty1040_37,
+        "data_1040_20_38": twenty1040_38,
     }
 
     return data_1040_20
-
-def get_1040x_20_data(sheet_name):
-    sheet = gsheet_client.open(sheet_name).get_worksheet(4)
-
-    try:
-        data_1040x_20_original_1 = sheet.cell(12,11).value.strip()
-    except:
-        data_1040x_20_original_1 = ''
-    time.sleep(0.1)
-    try:
-        data_1040x_20_correct_1 = sheet.cell(12,19).value.strip()
-    except:
-        data_1040x_20_correct_1 = ''
-    time.sleep(0.1)
-    try:
-        data_1040x_20_original_2 = sheet.cell(13,11).value.strip()
-    except:
-        data_1040x_20_original_2 = ''
-    time.sleep(0.1)
-    try:
-        data_1040x_20_correct_2 = sheet.cell(13,19).value.strip()
-    except:
-        data_1040x_20_correct_2 = ''
-    try:
-        data_1040x_20_original_3 = sheet.cell(14,11).value.strip()
-    except:
-        data_1040x_20_original_3 = ''
-    time.sleep(0.1)
-    try:
-        data_1040x_20_correct_3 = sheet.cell(14,19).value.strip()
-    except:
-        data_1040x_20_correct_3 = ''
-    time.sleep(0.1)
-    try:
-        data_1040x_20_original_4a = sheet.cell(15,11).value.strip()
-    except:
-        data_1040x_20_original_4a = ''
-    time.sleep(0.1)
-    try:
-        data_1040x_20_correct_4a = sheet.cell(15,19).value.strip()
-    except:
-        data_1040x_20_correct_4a = ''
-    time.sleep(0.1)
-    try:
-        data_1040x_20_original_4b = sheet.cell(16,11).value.strip()
-    except:
-        data_1040x_20_original_4b = ''
-    try:
-        data_1040x_20_correct_4b = sheet.cell(16,19).value.strip()
-    except:
-        data_1040x_20_correct_4b = ''
-    try:
-        data_1040x_20_original_5 = sheet.cell(17,11).value.strip()
-    except:
-        data_1040x_20_original_5 = ''
-    time.sleep(0.1)
-    try:
-        data_1040x_20_correct_5 = sheet.cell(17,19).value.strip()
-    except:
-        data_1040x_20_correct_5 = ''
-    time.sleep(0.1)
-    try:
-        data_1040x_20_original_6 = sheet.cell(18,11).value.strip()
-    except:
-        data_1040x_20_original_6 = ''
-    try:
-        data_1040x_20_correct_6 = sheet.cell(18,19).value.strip()
-    except:
-        data_1040x_20_correct_6 = ''
-    try:
-        data_1040x_20_original_7  = sheet.cell(19,11).value.strip()
-    except:
-        data_1040x_20_original_7  = ''
-    time.sleep(0.1)
-    try:
-        data_1040x_20_correct_7  = sheet.cell(19,19).value.strip()
-    except:
-        data_1040x_20_correct_7  = ''
-    try:
-        data_1040x_20_original_8 = sheet.cell(20,11).value.strip()
-    except:
-        data_1040x_20_original_8 = ''
-    try:
-        data_1040x_20_correct_8 = sheet.cell(20,19).value.strip()
-    except:
-        data_1040x_20_correct_8 = ''
-    time.sleep(0.1)
-    try:
-        data_1040x_20_original_9 = sheet.cell(21,11).value.strip()
-    except:
-        data_1040x_20_original_9 = ''
-    time.sleep(0.1)
-    try:
-        data_1040x_20_correct_9 = sheet.cell(21,19).value.strip()
-    except:
-        data_1040x_20_correct_9 = ''
-    time.sleep(0.1)
-    try:
-        data_1040x_20_original_10 = sheet.cell(22,11).value.strip()
-    except:
-        data_1040x_20_original_10 = ''
-    try:
-        data_1040x_20_correct_10 = sheet.cell(22,19).value.strip()
-    except:
-        data_1040x_20_correct_10 = ''
-    try:
-        data_1040x_20_original_11 = sheet.cell(23,11).value.strip()
-    except:
-        data_1040x_20_original_11 = ''
-    time.sleep(0.1)
-    try:
-        data_1040x_20_correct_11 = sheet.cell(23,19).value.strip()
-    except:
-        data_1040x_20_correct_11 = ''
-    try:
-        data_1040x_20_original_12 = sheet.cell(24,11).value.strip()
-    except:
-        data_1040x_20_original_12 = ''
-    time.sleep(0.1)
-    try:
-        data_1040x_20_correct_12 = sheet.cell(24,19).value.strip()
-    except:
-        data_1040x_20_correct_12 = ''
-    try:
-        data_1040x_20_original_13 = sheet.cell(25,11).value.strip()
-    except:
-        data_1040x_20_original_13 = ''
-    time.sleep(0.1)
-    try:
-        data_1040x_20_correct_13 = sheet.cell(25,19).value.strip()
-    except:
-        data_1040x_20_correct_13 = ''
-    try:
-        data_1040x_20_original_14 = sheet.cell(26,11).value.strip()
-    except:
-        data_1040x_20_original_14 = ''
-    try:
-        data_1040x_20_correct_14 = sheet.cell(26,19).value.strip()
-    except:
-        data_1040x_20_correct_14 = ''
-    time.sleep(0.1)
-    try:
-        data_1040x_20_original_15 = sheet.cell(27,11).value.strip()
-    except:
-        data_1040x_20_original_15 = ''
-    try:
-        data_1040x_20_correct_15 = sheet.cell(27,19).value.strip()
-    except:
-        data_1040x_20_correct_15 = ''
-    try:
-        data_1040x_20_change_15 = sheet.cell(27,15).value.strip()
-    except:
-        data_1040x_20_change_15 = '' 
-    time.sleep(0.1)
-    try:
-        data_1040x_20_correct_16 = sheet.cell(28,19).value.strip()
-    except:
-        data_1040x_20_correct_16 = ''
-    try:
-        data_1040x_20_correct_17 = sheet.cell(29,19).value.strip()
-    except:
-        data_1040x_20_correct_17 = ''
-    try:
-        data_1040x_20_correct_17 = sheet.cell(29,19).value.strip()
-    except:
-        data_1040x_20_correct_17 = ''
-    time.sleep(0.1)
-    try:
-        data_1040x_20_correct_18 = sheet.cell(30,19).value.strip()
-    except:
-        data_1040x_20_correct_18 = ''
-    try:
-        data_1040x_20_correct_19 = sheet.cell(31,19).value.strip()
-    except:
-        data_1040x_20_correct_19 = ''
-    time.sleep(0.1)
-    try:
-        data_1040x_20_correct_20 = sheet.cell(32,19).value.strip()
-    except:
-        data_1040x_20_correct_20 = ''
-    time.sleep(0.1)
-    try:
-        data_1040x_20_correct_21 = sheet.cell(33,19).value.strip()
-    except:
-        data_1040x_20_correct_21 = ''
-    try:
-        data_1040x_20_correct_22 = sheet.cell(34,19).value.strip()
-    except:
-        data_1040x_20_correct_22 = ''
-    time.sleep(0.1)
-    try:
-        data_1040x_20_23 = sheet.cell(35,17).value.strip()
-    except:
-        data_1040x_20_23 = ''
-    try:
-        data_1040x_20_28 = sheet.cell(39,10).value.strip()
-    except:
-        data_1040x_20_28 = ''
-    try:
-        data_1040x_20_29 = sheet.cell(40,10).value.strip()
-    except:
-        data_1040x_20_29 = ''
-    time.sleep(0.1)
-    try:
-        data_1040x_20_30 = sheet.cell(41,10).value.strip()
-    except:
-        data_1040x_20_30 = ''
-    time.sleep(0.1)
-    try:
-        data_1040x_20_31 = sheet.cell(42,10).value.strip()
-    except:
-        data_1040x_20_31 = ''
-    time.sleep(0.1)
-    try:
-        data_1040x_20_37 = sheet.cell(44,10).value.strip()
-    except:
-        data_1040x_20_37 = ''
-    try:
-        data_1040x_20_38 = sheet.cell(45,10).value.strip()
-    except:
-        data_1040x_20_38 = ''
-    time.sleep(0.1)
-    try:
-        data_1040x_20_org_sch_3_9 = sheet.cell(49,10).value.strip()
-    except:
-        data_1040x_20_org_sch_3_9 = ''
-
-    data_1040x_20 = {
-        "data_1040x_20_orginal_1": data_1040x_20_original_1,
-        "data_1040x_20_correct_1": data_1040x_20_correct_1,
-        "data_1040x_20_orginal_2": data_1040x_20_original_2,
-        "data_1040x_20_correct_2": data_1040x_20_correct_2,
-        "data_1040x_20_orginal_3": data_1040x_20_original_3,
-        "data_1040x_20_correct_3": data_1040x_20_correct_3,
-        "data_1040x_20_orginal_4a": data_1040x_20_original_4a,
-        "data_1040x_20_correct_4a": data_1040x_20_correct_4a,
-        "data_1040x_20_orginal_4b": data_1040x_20_original_4b,
-        "data_1040x_20_correct_4b": data_1040x_20_correct_4b,
-        "data_1040x_20_orginal_5": data_1040x_20_original_5,
-        "data_1040x_20_correct_5": data_1040x_20_correct_5,
-        "data_1040x_20_orginal_6": data_1040x_20_original_6,
-        "data_1040x_20_correct_6": data_1040x_20_correct_6,
-        "data_1040x_20_orginal_7": data_1040x_20_original_7,
-        "data_1040x_20_correct_7": data_1040x_20_correct_7,
-        "data_1040x_20_orginal_8": data_1040x_20_original_8,
-        "data_1040x_20_correct_8": data_1040x_20_correct_8,
-        "data_1040x_20_orginal_9": data_1040x_20_original_9,
-        "data_1040x_20_correct_9": data_1040x_20_correct_9,
-        "data_1040x_20_orginal_10": data_1040x_20_original_10,
-        "data_1040x_20_correct_10": data_1040x_20_correct_10,
-        "data_1040x_20_orginal_11": data_1040x_20_original_11,
-        "data_1040x_20_correct_11": data_1040x_20_correct_11,
-        "data_1040x_20_orginal_12": data_1040x_20_original_12,
-        "data_1040x_20_correct_12": data_1040x_20_correct_12,
-        "data_1040x_20_orginal_13": data_1040x_20_original_13,
-        "data_1040x_20_correct_13": data_1040x_20_correct_13,
-        "data_1040x_20_orginal_14": data_1040x_20_original_14,
-        "data_1040x_20_correct_14": data_1040x_20_correct_14,
-        "data_1040x_20_orginal_15": data_1040x_20_original_15,
-        "data_1040x_20_correct_15": data_1040x_20_correct_15,
-        "data_1040x_20_change_15": data_1040x_20_change_15,
-        "data_1040x_20_correct_16": data_1040x_20_correct_16,
-        "data_1040x_20_correct_17": data_1040x_20_correct_17,
-        "data_1040x_20_correct_18": data_1040x_20_correct_18,
-        "data_1040x_20_correct_19": data_1040x_20_correct_19,
-        "data_1040x_20_correct_20": data_1040x_20_correct_20,
-        "data_1040x_20_correct_21": data_1040x_20_correct_21,
-        "data_1040x_20_correct_22": data_1040x_20_correct_22,
-        "data_1040x_20_23": data_1040x_20_23,
-        "data_1040x_20_28": data_1040x_20_28,
-        "data_1040x_20_29": data_1040x_20_29,
-        "data_1040x_20_30": data_1040x_20_30,
-        "data_1040x_20_31": data_1040x_20_31,
-        "data_1040x_20_37": data_1040x_20_37,
-        "data_1040x_20_38": data_1040x_20_38,
-        "data_1040x_20_org_sch_3_9": data_1040x_20_org_sch_3_9,
-    }
-    
-    return data_1040x_20
-
-def get_7202_21_data(sheet_name):
-    sheet = gsheet_client.open(sheet_name).get_worksheet(7)
-
-    try:
-        data_7202_21_1 = sheet.cell(5,7).value.strip()
-    except:
-        data_7202_21_1 = '' 
-    time.sleep(0.1)
-    try:
-        data_7202_21_2 = sheet.cell(6,7).value.strip()
-    except:
-        data_7202_21_2 = ''
-    try:
-        data_7202_21_3a = sheet.cell(7,7).value.strip()
-    except:
-        data_7202_21_3a = ''    
-    try:
-        data_7202_21_3b = sheet.cell(8,7).value.strip()
-    except:
-        data_7202_21_3b = ''
-    time.sleep(0.1)
-    try:
-        data_7202_21_3c = sheet.cell(9,7).value.strip()
-    except:
-        data_7202_21_3c = ''
-    try:
-        data_7202_21_3d = sheet.cell(10,7).value.strip()
-    except:
-        data_7202_21_3d = ''
-    time.sleep(0.1)
-    try:
-        data_7202_21_4a = sheet.cell(11,7).value.strip()
-    except:
-        data_7202_21_4a = ''
-    try:
-        data_7202_21_5 = sheet.cell(13,7).value.strip()
-    except:
-        data_7202_21_5 = ''
-    time.sleep(0.1)
-    try:
-        data_7202_21_6a = sheet.cell(14,7).value.strip()
-    except:
-        data_7202_21_6a = ''
-    time.sleep(0.1)
-    try:
-        data_7202_21_7a = sheet.cell(16,7).value.strip()
-    except:
-        data_7202_21_7a = ''
-    time.sleep(0.1)
-    try:
-        data_7202_21_8 = sheet.cell(18,7).value.strip()
-    except:
-        data_7202_21_8 = ''
-    try:
-        data_7202_21_9 = sheet.cell(19,7).value.strip()
-    except:
-        data_7202_21_9 = ''
-    time.sleep(0.1)
-    try:
-        data_7202_21_10 = sheet.cell(20,7).value.strip()
-    except:
-        data_7202_21_10 = ''
-    time.sleep(0.1)
-    try:
-        data_7202_21_11 = sheet.cell(21,7).value.strip()
-    except:
-        data_7202_21_11 = ''
-    try:
-        data_7202_21_12 = sheet.cell(22,7).value.strip()
-    except:
-        data_7202_21_12 = ''
-    try:
-        data_7202_21_13 = sheet.cell(23,7).value.strip()
-    except:
-        data_7202_21_13 = ''
-    try:
-        data_7202_21_14 = sheet.cell(24,7).value.strip()
-    except:
-        data_7202_21_14 = ''
-    try:
-        data_7202_21_15a = sheet.cell(25,7).value.strip()
-    except:
-        data_7202_21_15a = ''
-    time.sleep(0.1)
-    try:
-        data_7202_21_15b = sheet.cell(26,7).value.strip()
-    except:
-        data_7202_21_15b = ''
-    try:
-        data_7202_21_15c = sheet.cell(27,7).value.strip()
-    except:
-        data_7202_21_15c = ''
-    try:
-        data_7202_21_16a = sheet.cell(28,7).value.strip()
-    except:
-        data_7202_21_16a = ''
-    try:
-        data_7202_21_16b = sheet.cell(29,7).value.strip()
-    except:
-        data_7202_21_16b = ''
-    time.sleep(0.1)
-    try:
-        data_7202_21_16c = sheet.cell(30,7).value.strip()
-    except:
-        data_7202_21_16c = ''
-    time.sleep(0.1)
-    try:
-        data_7202_21_17a = sheet.cell(32,7).value.strip()
-    except:
-        data_7202_21_17a = ''
-    try:
-        data_7202_21_17b = sheet.cell(33,7).value.strip()
-    except:
-        data_7202_21_17b = ''
-    time.sleep(0.1)
-    try:
-        data_7202_21_17c = sheet.cell(34,7).value.strip()
-    except:
-        data_7202_21_17c = ''
-    time.sleep(0.1)
-    try:
-        data_7202_21_18 = sheet.cell(35,7).value.strip()
-    except:
-        data_7202_21_18 = ''
-    time.sleep(0.1)
-    try:
-        data_7202_21_19 = sheet.cell(36,7).value.strip()
-    except:
-        data_7202_21_19 = ''
-    try:
-        data_7202_21_20a = sheet.cell(37,7).value.strip()
-    except:
-        data_7202_21_20a = ''
-    try:
-        data_7202_21_20b = sheet.cell(38,7).value.strip()
-    except:
-        data_7202_21_20b = ''
-    try:
-        data_7202_21_20c = sheet.cell(39,7).value.strip()
-    except:
-        data_7202_21_20c = ''
-    time.sleep(0.1)
-    try:
-        data_7202_21_21 = sheet.cell(40,7).value.strip()
-    except:
-        data_7202_21_21 = ''
-    try:
-        data_7202_21_22 = sheet.cell(41,7).value.strip()
-    except:
-        data_7202_21_22 = ''
-    time.sleep(0.1)
-    try:
-        data_7202_21_23 = sheet.cell(42,7).value.strip()
-    except:
-        data_7202_21_23 = ''
-    try:
-        data_7202_21_24 = sheet.cell(43,7).value.strip()
-    except:
-        data_7202_21_24 = ''
-    try:
-        data_7202_21_25a = sheet.cell(46,7).value.strip()
-    except:
-        data_7202_21_25a = ''
-    try:
-        data_7202_21_25b = sheet.cell(47,7).value.strip()
-    except:
-        data_7202_21_25b = ''
-    time.sleep(0.1)
-    try:
-        data_7202_21_25c = sheet.cell(48,7).value.strip()
-    except:
-        data_7202_21_25c = ''
-    try:
-        data_7202_21_25d = sheet.cell(49,7).value.strip()
-    except:
-        data_7202_21_25d = ''
-    try:
-        data_7202_21_26a = sheet.cell(50,7).value.strip()
-    except:
-        data_7202_21_26a = ''
-    time.sleep(0.1)
-    try:
-        data_7202_21_27 = sheet.cell(52,7).value.strip()
-    except:
-        data_7202_21_27 = ''
-    try:
-        data_7202_21_28 = sheet.cell(53,7).value.strip()
-    except:
-        data_7202_21_28 = ''
-    try:
-        data_7202_21_29 = sheet.cell(54,7).value.strip()
-    except:
-        data_7202_21_29 = ''
-    try:
-        data_7202_21_30 = sheet.cell(55,7).value.strip()
-    except:
-        data_7202_21_30 = ''
-    time.sleep(0.1)
-    try:
-        data_7202_21_31a = sheet.cell(56,7).value.strip()
-    except:
-        data_7202_21_31a = ''
-    try:
-        data_7202_21_31b = sheet.cell(57,7).value.strip()
-    except:
-        data_7202_21_31b = ''
-    time.sleep(0.1)
-    try:
-        data_7202_21_31c = sheet.cell(58,7).value.strip()
-    except:
-        data_7202_21_31c = ''
-    time.sleep(0.1)
-    try:
-        data_7202_21_32a = sheet.cell(60,7).value.strip()
-    except:
-        data_7202_21_32a = ''
-    try:
-        data_7202_21_32b = sheet.cell(61,7).value.strip()
-    except:
-        data_7202_21_32b = ''
-    time.sleep(0.1)
-    try:
-        data_7202_21_32c = sheet.cell(62,7).value.strip()
-    except:
-        data_7202_21_32c = ''
-    time.sleep(0.1)
-    try:
-        data_7202_21_33 = sheet.cell(63,7).value.strip()
-    except:
-        data_7202_21_33 = ''
-    try:
-        data_7202_21_34 = sheet.cell(64,7).value.strip()
-    except:
-        data_7202_21_34 = ''
-    time.sleep(0.1)
-    try:
-        data_7202_21_35 = sheet.cell(65,7).value.strip()
-    except:
-        data_7202_21_35 = ''
-    time.sleep(0.1)
-    try:
-        data_7202_21_36 = sheet.cell(67,7).value.strip()
-    except:
-        data_7202_21_36 = ''
-    try:
-        data_7202_21_37 = sheet.cell(68,7).value.strip()
-    except:
-        data_7202_21_37 = ''
-    try:
-        data_7202_21_38a = sheet.cell(69,7).value.strip()
-    except:
-        data_7202_21_38a = ''
-    try:
-        data_7202_21_39 = sheet.cell(71,7).value.strip()
-    except:
-        data_7202_21_39 = ''
-    time.sleep(0.1)
-    try:
-        data_7202_21_40a = sheet.cell(72,7).value.strip()
-    except:
-        data_7202_21_40a = ''
-    try:
-        data_7202_21_41a = sheet.cell(74,7).value.strip()
-    except:
-        data_7202_21_41a = ''
-    try:
-        data_7202_21_42 = sheet.cell(76,7).value.strip()
-    except:
-        data_7202_21_42 = ''
-    time.sleep(0.1)
-    try:
-        data_7202_21_43 = sheet.cell(77,7).value.strip()
-    except:
-        data_7202_21_43 = ''
-    try:
-        data_7202_21_44 = sheet.cell(78, 7).value.strip()
-    except:
-        data_7202_21_44 = ''
-    time.sleep(0.1)
-    try:
-        data_7202_21_45 = sheet.cell(79, 7).value.strip()
-    except:
-        data_7202_21_45 = ''
-    time.sleep(0.1)
-    try:
-        data_7202_21_46 = sheet.cell(80, 7).value.strip()
-    except:
-        data_7202_21_46 = ''
-    time.sleep(0.1)
-    try:
-        data_7202_21_47 = sheet.cell(81, 7).value.strip()
-    except:
-        data_7202_21_47 = ''
-    time.sleep(0.1)
-    try:
-        data_7202_21_48 = sheet.cell(82, 7).value.strip()
-    except:
-        data_7202_21_48 = ''
-    time.sleep(0.1)
-    try:
-        data_7202_21_49 = sheet.cell(83, 7).value.strip()
-    except:
-        data_7202_21_49 = ''
-    time.sleep(0.1)
-    try:
-        data_7202_21_50 = sheet.cell(84,7).value.strip()
-    except:
-        data_7202_21_50 = ''
-    time.sleep(0.1)
-    try:
-        data_7202_21_51 = sheet.cell(86, 7).value.strip()
-    except:
-        data_7202_21_51 = ''
-    time.sleep(0.1)
-    try:
-        data_7202_21_52 = sheet.cell(87, 7).value.strip()
-    except:
-        data_7202_21_52 = ''
-    try:
-        data_7202_21_53 = sheet.cell(88, 7).value.strip()
-    except:
-        data_7202_21_53 = ''
-    time.sleep(0.1)
-    try:
-        data_7202_21_54 = sheet.cell(89, 7).value.strip()
-    except:
-        data_7202_21_54 = ''
-    time.sleep(0.1)
-    try:
-        data_7202_21_55 = sheet.cell(90, 7).value.strip()
-    except:
-        data_7202_21_55 = ''
-    time.sleep(0.1)
-    try:
-        data_7202_21_56 = sheet.cell(91, 7).value.strip()
-    except:
-        data_7202_21_56 = ''
-    time.sleep(0.1)
-    try:
-        data_7202_21_57 = sheet.cell(92, 7).value.strip()
-    except:
-        data_7202_21_57 = ''
-    time.sleep(0.1)
-    try:
-        data_7202_21_58 = sheet.cell(93, 7).value.strip()
-    except:
-        data_7202_21_58 = ''
-    time.sleep(0.1)
-    try:
-        data_7202_21_59 = sheet.cell(96, 7).value.strip()
-    except:
-        data_7202_21_59 = ''
-    time.sleep(0.1)
-    try:
-        data_7202_21_60a = sheet.cell(97, 7).value.strip()
-    except:
-        data_7202_21_60a = ''
-    time.sleep(0.1)
-    try:
-        data_7202_21_61 = sheet.cell(99, 7).value.strip()
-    except:
-        data_7202_21_61 = ''
-    time.sleep(0.1)
-    try:
-        data_7202_21_62 = sheet.cell(100, 7).value.strip()
-    except:
-        data_7202_21_62 = ''
-    time.sleep(0.1)
-    try:
-        data_7202_21_63 = sheet.cell(101, 7).value.strip()
-    except:
-        data_7202_21_63 = ''
-    try:
-        data_7202_21_64 = sheet.cell(102, 7).value.strip()
-    except:
-        data_7202_21_64 = ''
-    time.sleep(0.1)
-    try:
-        data_7202_21_65 = sheet.cell(103, 7).value.strip()
-    except:
-        data_7202_21_65 = ''
-    time.sleep(0.1)
-    try:
-        data_7202_21_66 = sheet.cell(105, 7).value.strip()
-    except:
-        data_7202_21_66 = ''
-    time.sleep(0.1)
-    try:
-        data_7202_21_67 = sheet.cell(106, 7).value.strip()
-    except:
-        data_7202_21_67 = ''
-    time.sleep(0.1)
-    try:
-        data_7202_21_68 = sheet.cell(107, 7).value.strip()
-    except:
-        data_7202_21_68 = ''
-    time.sleep(0.1)
-    try:
-        data_7202_21_69 = sheet.cell(108, 7).value.strip()
-    except:
-        data_7202_21_69 = ''  
-    try:
-        data_7202_21_sch_3_13b = sheet.cell(111,8).value.strip()
-    except:
-        data_7202_21_sch_3_13b = ''
-    time.sleep(0.1)
-    try:
-        data_7202_21_sch_3_13h = sheet.cell(112,8).value.strip()
-    except:
-        data_7202_21_sch_3_13h = ''
-
-    data_7202_21 = {
-        "data_7202_21_1": data_7202_21_1,
-        "data_7202_21_2": data_7202_21_2,
-        "data_7202_21_3a": data_7202_21_3a,
-        "data_7202_21_3b": data_7202_21_3b,
-        "data_7202_21_3c": data_7202_21_3c,
-        "data_7202_21_3d": data_7202_21_3d,
-        "data_7202_21_4a": data_7202_21_4a,
-        "data_7202_21_5": data_7202_21_5,
-        "data_7202_21_6a": data_7202_21_6a,
-        "data_7202_21_7a": data_7202_21_7a,
-        "data_7202_21_8": data_7202_21_8,
-        "data_7202_21_9": data_7202_21_9,
-        "data_7202_21_10": data_7202_21_10,
-        "data_7202_21_11": data_7202_21_11,
-        "data_7202_21_12": data_7202_21_12,
-        "data_7202_21_13": data_7202_21_13,
-        "data_7202_21_14": data_7202_21_14,
-        "data_7202_21_15a": data_7202_21_15a,
-        "data_7202_21_15b": data_7202_21_15b,
-        "data_7202_21_15c": data_7202_21_15c,
-        "data_7202_21_16a": data_7202_21_16a,
-        "data_7202_21_16b": data_7202_21_16b,
-        "data_7202_21_16c": data_7202_21_16c,
-        "data_7202_21_17a": data_7202_21_17a,
-        "data_7202_21_17b": data_7202_21_17b,
-        "data_7202_21_17c": data_7202_21_17c,
-        "data_7202_21_18": data_7202_21_18,
-        "data_7202_21_19": data_7202_21_19,
-        "data_7202_21_20a": data_7202_21_20a,
-        "data_7202_21_20b": data_7202_21_20b,
-        "data_7202_21_20c": data_7202_21_20c,
-        "data_7202_21_21": data_7202_21_21,
-        "data_7202_21_22": data_7202_21_22,
-        "data_7202_21_23": data_7202_21_23,
-        "data_7202_21_24": data_7202_21_24,
-        "data_7202_21_25a": data_7202_21_25a,
-        "data_7202_21_25b": data_7202_21_25b,
-        "data_7202_21_25c": data_7202_21_25c,
-        "data_7202_21_25d": data_7202_21_25d,
-        "data_7202_21_26a": data_7202_21_26a,
-        "data_7202_21_27": data_7202_21_27,
-        "data_7202_21_28": data_7202_21_28,
-        "data_7202_21_29": data_7202_21_29,
-        "data_7202_21_30": data_7202_21_30,
-        "data_7202_21_31a": data_7202_21_31a,
-        "data_7202_21_31b": data_7202_21_31b,
-        "data_7202_21_31c": data_7202_21_31c,
-        "data_7202_21_32a": data_7202_21_32a,
-        "data_7202_21_32b": data_7202_21_32b,
-        "data_7202_21_32c": data_7202_21_32c,
-        "data_7202_21_33": data_7202_21_33,
-        "data_7202_21_34": data_7202_21_34,
-        "data_7202_21_35": data_7202_21_35,
-        "data_7202_21_36": data_7202_21_36,
-        "data_7202_21_37": data_7202_21_37,
-        "data_7202_21_38a": data_7202_21_38a,
-        "data_7202_21_39": data_7202_21_39,
-        "data_7202_21_40a": data_7202_21_40a,
-        "data_7202_21_41a": data_7202_21_41a,
-        "data_7202_21_42": data_7202_21_42,
-        "data_7202_21_43": data_7202_21_43,
-        "data_7202_21_44": data_7202_21_44,
-        "data_7202_21_45": data_7202_21_45,
-        "data_7202_21_46": data_7202_21_46,
-        "data_7202_21_47": data_7202_21_47,
-        "data_7202_21_48": data_7202_21_48,
-        "data_7202_21_49": data_7202_21_49,
-        "data_7202_21_50": data_7202_21_50,
-        "data_7202_21_51": data_7202_21_51,
-        "data_7202_21_52": data_7202_21_52,
-        "data_7202_21_53": data_7202_21_53,
-        "data_7202_21_54": data_7202_21_54,
-        "data_7202_21_55": data_7202_21_55,
-        "data_7202_21_56": data_7202_21_56,
-        "data_7202_21_57": data_7202_21_57,
-        "data_7202_21_58": data_7202_21_58,
-        "data_7202_21_59": data_7202_21_59,
-        "data_7202_21_60a": data_7202_21_60a,
-        "data_7202_21_61": data_7202_21_61,
-        "data_7202_21_62": data_7202_21_62,
-        "data_7202_21_63": data_7202_21_63,
-        "data_7202_21_64": data_7202_21_64,
-        "data_7202_21_65": data_7202_21_65,
-        "data_7202_21_66": data_7202_21_66,
-        "data_7202_21_67": data_7202_21_67,
-        "data_7202_21_68": data_7202_21_68,
-        "data_7202_21_69": data_7202_21_69,
-        "data_7202_21_sch_3_13b": data_7202_21_sch_3_13b,
-        "data_7202_21_sch_3_13h": data_7202_21_sch_3_13h
-    }
-
-    return data_7202_21
-
-def get_sch_3_21_data(sheet_name):
-    sheet = gsheet_client.open(sheet_name).get_worksheet(5)
-
-    try:
-        data_sch_3_21_1 = sheet.cell(10,28).value.strip()
-    except:
-        data_sch_3_21_1 = ''
-    time.sleep(0.1)
-    try:
-        data_sch_3_21_2 = sheet.cell(12,28).value.strip()
-    except:
-        data_sch_3_21_2 = ''
-    time.sleep(0.1)
-    try:
-        data_sch_3_21_3 = sheet.cell(13,28).value.strip()
-    except:
-        data_sch_3_21_3 = ''
-    try:
-        data_sch_3_21_4 = sheet.cell(14,28).value.strip()
-    except:
-        data_sch_3_21_4 = ''
-    time.sleep(0.1)
-    try:
-        data_sch_3_21_5 = sheet.cell(15,28).value.strip()
-    except:
-        data_sch_3_21_5 = ''
-    time.sleep(0.1)
-    try:
-        data_sch_3_21_6a = sheet.cell(17,22).value.strip()
-    except:
-        data_sch_3_21_6a = ''
-    try:
-        data_sch_3_21_6b = sheet.cell(18,22).value.strip()
-    except:
-        data_sch_3_21_6b = ''
-    time.sleep(0.1)
-    try:
-        data_sch_3_21_6c = sheet.cell(19,22).value.strip()
-    except:
-        data_sch_3_21_6c = ''
-    time.sleep(0.1)
-    try:
-        data_sch_3_21_6d = sheet.cell(20,22).value.strip()
-    except:
-        data_sch_3_21_6d = ''
-    time.sleep(0.1)
-    try:
-        data_sch_3_21_6e = sheet.cell(21,22).value.strip()
-    except:
-        data_sch_3_21_6e = ''
-    time.sleep(0.1)
-    try:
-        data_sch_3_21_6f = sheet.cell(22,22).value.strip()
-    except:
-        data_sch_3_21_6f = ''
-    time.sleep(0.1)
-    try:
-        data_sch_3_21_6g = sheet.cell(23,22).value.strip()
-    except:
-        data_sch_3_21_6g = ''
-    time.sleep(0.1)
-    try:
-        data_sch_3_21_6h = sheet.cell(24,22).value.strip()
-    except:
-        data_sch_3_21_6h = ''
-    time.sleep(0.1)
-    try:
-        data_sch_3_21_6i = sheet.cell(25,22).value.strip()
-    except:
-        data_sch_3_21_6i = ''
-    try:
-        data_sch_3_21_6j = sheet.cell(26,22).value.strip()
-    except:
-        data_sch_3_21_6j = ''
-    try:
-        data_sch_3_21_6k = sheet.cell(27,22).value.strip()
-    except:
-        data_sch_3_21_6k = ''
-    time.sleep(0.1)
-    try:
-        data_sch_3_21_6l = sheet.cell(28,22).value.strip()
-    except:
-        data_sch_3_21_6l = ''
-    time.sleep(0.1)
-    try:
-        data_sch_3_21_6z = sheet.cell(30,22).value.strip()
-    except:
-        data_sch_3_21_6z = ''
-    time.sleep(0.1)
-    try:
-        data_sch_3_21_7 = sheet.cell(31,28).value.strip()
-    except:
-        data_sch_3_21_7 = ''
-    time.sleep(0.1)
-    try:
-        data_sch_3_21_8 = sheet.cell(33,28).value.strip()
-    except:
-        data_sch_3_21_8 = ''
-    time.sleep(0.1)
-    try:
-        data_sch_3_21_9 = sheet.cell(38,28).value.strip()
-    except:
-        data_sch_3_21_9 = ''
-    time.sleep(0.1)
-    try:
-        data_sch_3_21_10 = sheet.cell(39,28).value.strip()
-    except:
-        data_sch_3_21_10 = ''
-    time.sleep(0.1)
-    try:
-        data_sch_3_21_11 = sheet.cell(40,28).value.strip()
-    except:
-        data_sch_3_21_11 = ''
-    time.sleep(0.1)
-    try:
-        data_sch_3_21_12 = sheet.cell(41,28).value.strip()
-    except:
-        data_sch_3_21_12 = ''
-    time.sleep(0.1)
-    try:
-        data_sch_3_21_13a = sheet.cell(43,22).value.strip()
-    except:
-        data_sch_3_21_13a = ''
-    time.sleep(0.1)
-    try:
-        data_sch_3_21_13b = sheet.cell(45,22).value.strip()
-    except:
-        data_sch_3_21_13b = ''
-    time.sleep(0.1)
-    try:
-        data_sch_3_21_13c = sheet.cell(46,22).value.strip()
-    except:
-        data_sch_3_21_13c = ''
-    time.sleep(0.1)
-    try:
-        data_sch_3_21_13d = sheet.cell(48,22).value.strip()
-    except:
-        data_sch_3_21_13d = ''
-    time.sleep(0.1)
-    try:
-        data_sch_3_21_13e = sheet.cell(49,22).value.strip()
-    except:
-        data_sch_3_21_13e = ''
-    time.sleep(0.1)
-    try:
-        data_sch_3_21_13f = sheet.cell(50,22).value.strip()
-    except:
-        data_sch_3_21_13f = ''
-    time.sleep(0.1)
-    try:
-        data_sch_3_21_13g = sheet.cell(52,22).value.strip()
-    except:
-        data_sch_3_21_13g = ''
-    try:
-        data_sch_3_21_13h = sheet.cell(54,22).value.strip()
-    except:
-        data_sch_3_21_13h = ''
-    time.sleep(0.1)
-    try:
-        data_sch_3_21_13z = sheet.cell(56,22).value.strip()
-    except:
-        data_sch_3_21_13z = ''
-    time.sleep(0.1)
-    try:
-        data_sch_3_21_14 = sheet.cell(57,28).value.strip()
-    except:
-        data_sch_3_21_14 = ''
-    time.sleep(0.1)
-    try:
-        data_sch_3_21_15 = sheet.cell(59,28).value.strip()
-    except:
-        data_sch_3_21_15 = ''
-
-    data_sch_3_21 = {
-        "data_sch_3_21_1": data_sch_3_21_1,
-        "data_sch_3_21_2": data_sch_3_21_2,
-        "data_sch_3_21_3": data_sch_3_21_3,
-        "data_sch_3_21_4": data_sch_3_21_4,
-        "data_sch_3_21_5": data_sch_3_21_5,
-        "data_sch_3_21_6a": data_sch_3_21_6a,
-        "data_sch_3_21_6b": data_sch_3_21_6b,
-        "data_sch_3_21_6c": data_sch_3_21_6c,
-        "data_sch_3_21_6d": data_sch_3_21_6d,
-        "data_sch_3_21_6e": data_sch_3_21_6e,
-        "data_sch_3_21_6f": data_sch_3_21_6f,
-        "data_sch_3_21_6g": data_sch_3_21_6g,
-        "data_sch_3_21_6h": data_sch_3_21_6h,
-        "data_sch_3_21_6i": data_sch_3_21_6i,
-        "data_sch_3_21_6j": data_sch_3_21_6j,
-        "data_sch_3_21_6k": data_sch_3_21_6k,
-        "data_sch_3_21_6l": data_sch_3_21_6l,
-        "data_sch_3_21_6z": data_sch_3_21_6z,
-        "data_sch_3_21_7": data_sch_3_21_7,
-        "data_sch_3_21_8": data_sch_3_21_8,
-        "data_sch_3_21_9": data_sch_3_21_9,
-        "data_sch_3_21_10": data_sch_3_21_10,
-        "data_sch_3_21_11": data_sch_3_21_11,
-        "data_sch_3_21_12": data_sch_3_21_12,
-        "data_sch_3_21_13a": data_sch_3_21_13a,
-        "data_sch_3_21_13b": data_sch_3_21_13b,
-        "data_sch_3_21_13c": data_sch_3_21_13c,
-        "data_sch_3_21_13d": data_sch_3_21_13d,
-        "data_sch_3_21_13e": data_sch_3_21_13e,
-        "data_sch_3_21_13f": data_sch_3_21_13f,
-        "data_sch_3_21_13g": data_sch_3_21_13g,
-        "data_sch_3_21_13h": data_sch_3_21_13h,
-        "data_sch_3_21_13z": data_sch_3_21_13z,
-        "data_sch_3_21_14": data_sch_3_21_14,
-        "data_sch_3_21_15": data_sch_3_21_15
-    }
-
-    return data_sch_3_21
-
-def get_1040_21_data(sheet_name):
-    sheet = gsheet_client.open(sheet_name).get_worksheet(6)
-
-    try:
-        data_1040_21_1 = sheet.cell(35,28).value.strip()
-    except:
-        data_1040_21_1 = ''
-    time.sleep(0.1)
-    try:
-        data_1040_21_7 = sheet.cell(41,28).value.strip()
-    except:
-        data_1040_21_7 = ''
-    time.sleep(0.1)
-    try:
-        data_1040_21_8 = sheet.cell(42,28).value.strip()
-    except:
-        data_1040_21_8 = ''
-    time.sleep(0.1)
-    try:
-        data_1040_21_9 = sheet.cell(43,28).value.strip()
-    except:
-        data_1040_21_9 = ''
-    time.sleep(0.1)
-    try:
-        data_1040_21_10 = sheet.cell(44,28).value.strip()
-    except:
-        data_1040_21_10 = ''
-    time.sleep(0.1)
-    try:
-        data_1040_21_11 = sheet.cell(45,28).value.strip()
-    except:
-        data_1040_21_11 = ''
-    time.sleep(0.1)
-    try:
-        data_1040_21_12c = sheet.cell(48,28).value.strip()
-    except:
-        data_1040_21_12c = ''
-    time.sleep(0.1)
-    try:
-        data_1040_21_13 = sheet.cell(49,28).value.strip()
-    except:
-        data_1040_21_13 = ''
-    time.sleep(0.1)
-    try:
-        data_1040_21_14 = sheet.cell(50,28).value.strip()
-    except:
-        data_1040_21_14 = ''
-    time.sleep(0.1)
-    try:
-        data_1040_21_15 = sheet.cell(51,28).value.strip()
-    except:
-        data_1040_21_15 = ''
-    time.sleep(0.1)
-    try:
-        data_1040_21_16 = sheet.cell(54,28).value.strip()
-    except:
-        data_1040_21_16 = ''
-    time.sleep(0.1)
-    try:
-        data_1040_21_17 = sheet.cell(55,28).value.strip()
-    except:
-        data_1040_21_17 = ''
-    time.sleep(0.1)
-    try:
-        data_1040_21_18 = sheet.cell(56,28).value.strip()
-    except:
-        data_1040_21_18 = ''
-    time.sleep(0.1)
-    try:
-        data_1040_21_19 = sheet.cell(57,28).value.strip()
-    except:
-        data_1040_21_19 = ''
-    time.sleep(0.1)
-    try:
-        data_1040_21_20 = sheet.cell(58,28).value.strip()
-    except:
-        data_1040_21_20 = ''
-    time.sleep(0.1)
-    try:
-        data_1040_21_21 = sheet.cell(59,28).value.strip()
-    except:
-        data_1040_21_21 = ''
-    time.sleep(0.1)
-    try:
-        data_1040_21_22 = sheet.cell(60,28).value.strip()
-    except:
-        data_1040_21_22 = ''
-    time.sleep(0.1)
-    try:
-        data_1040_21_23 = sheet.cell(61,28).value.strip()
-    except:
-        data_1040_21_23 = ''
-    time.sleep(0.1)
-    try:
-        data_1040_21_24 = sheet.cell(62,28).value.strip()
-    except:
-        data_1040_21_24 = ''
-    time.sleep(0.1)
-    try:
-        data_1040_21_25d = sheet.cell(67,28).value.strip()
-    except:
-        data_1040_21_25d = ''
-    time.sleep(0.1)
-    try:
-        data_1040_21_26 = sheet.cell(68,28).value.strip()
-    except:
-        data_1040_21_26 = ''
-    time.sleep(0.1)
-    try:
-        data_1040_21_32 = sheet.cell(79,28).value.strip()
-    except:
-        data_1040_21_32 = ''
-    time.sleep(0.1)
-    try:
-        data_1040_21_33 = sheet.cell(80,28).value.strip()
-    except:
-        data_1040_21_33 = ''
-    time.sleep(0.1)
-    try:
-        data_1040_21_34 = sheet.cell(81,28).value.strip()
-    except:
-        data_1040_21_34 = ''
-    time.sleep(0.1)
-    try:
-        data_1040_21_35a = sheet.cell(82,28).value.strip()
-    except:
-        data_1040_21_35a = ''
-    time.sleep(0.1)
-    try:
-        data_1040_21_37 = sheet.cell(86,28).value.strip()
-    except:
-        data_1040_21_37 = ''
-    time.sleep(0.1)
-    try:
-        data_1040_21_36 = sheet.cell(85,21).value.strip()
-    except:
-        data_1040_21_36 = ''
-    time.sleep(0.1)
-    try:
-        data_1040_21_38 = sheet.cell(87,21).value.strip()
-    except:
-        data_1040_21_38 = ''
-    time.sleep(0.1)
-    try:
-        data_1040_21_27a = sheet.cell(69,24).value.strip()
-    except:
-        data_1040_21_27a = ''
-    time.sleep(0.1)
-    try:
-        data_1040_21_28 = sheet.cell(75,24).value.strip()
-    except:
-        data_1040_21_28 = ''
-    time.sleep(0.1)
-    try:
-        data_1040_21_29 = sheet.cell(76,28).value.strip()
-    except:
-        data_1040_21_29 = ''
-    time.sleep(0.1)
-    try:
-        data_1040_21_30 = sheet.cell(77,28).value.strip()
-    except:
-        data_1040_21_30 = ''
-    time.sleep(0.1)
-    try:
-        data_1040_21_31 = sheet.cell(78,28).value.strip()
-    except:
-        data_1040_21_31 = ''
-    time.sleep(0.1)
-    try:
-        data_1040_21_27b = sheet.cell(73,28).value.strip()
-    except:
-        data_1040_21_27b = ''
-    time.sleep(0.1)
-    try:
-        data_1040_21_27c = sheet.cell(74,28).value.strip()
-    except:
-        data_1040_21_27c = ''
-    time.sleep(0.1)
-    try:
-        data_1040_21_25a = sheet.cell(64,24).value.strip()
-    except:
-        data_1040_21_25a = ''
-    try:
-        data_1040_21_25b = sheet.cell(65,24).value.strip()
-    except:
-        data_1040_21_25b = ''
-    time.sleep(0.1)
-    try:
-        data_1040_21_25c = sheet.cell(66,24).value.strip()
-    except:
-        data_1040_21_25c = ''
-    time.sleep(0.1)
-    try:
-        data_1040_21_12a = sheet.cell(46,24).value.strip()
-    except:
-        data_1040_21_12a = ''
-    time.sleep(0.1)
-    try:
-        data_1040_21_12b = sheet.cell(47,24).value.strip()
-    except:
-        data_1040_21_12b = ''
-    time.sleep(0.1)
-    try:
-        data_1040_21_2a = sheet.cell(36,13).value.strip()
-    except:
-        data_1040_21_2a = ''
-    time.sleep(0.1)
-    try:
-        data_1040_21_3a = sheet.cell(37,13).value.strip()
-    except:
-        data_1040_21_3a = ''
-    time.sleep(0.1)
-    try:
-        data_1040_21_4a = sheet.cell(38,13).value.strip()
-    except:
-        data_1040_21_4a = ''
-    time.sleep(0.1)
-    try:
-        data_1040_21_5a = sheet.cell(39,13).value.strip()
-    except:
-        data_1040_21_5a = ''
-    time.sleep(0.1)
-    try:
-        data_1040_21_6a = sheet.cell(40,13).value.strip()
-    except:
-        data_1040_21_6a = ''
-
-    data_1040_21 = {
-        "data_1040_21_1": data_1040_21_1,
-        "data_1040_21_2a": data_1040_21_2a,
-        "data_1040_21_3a": data_1040_21_3a,
-        "data_1040_21_4a": data_1040_21_4a,
-        "data_1040_21_5a": data_1040_21_5a,
-        "data_1040_21_6a": data_1040_21_6a,
-        "data_1040_21_7": data_1040_21_7,
-        "data_1040_21_8": data_1040_21_8,
-        "data_1040_21_9": data_1040_21_9,
-        "data_1040_21_10": data_1040_21_10,
-        "data_1040_21_11": data_1040_21_11,
-        "data_1040_21_12a": data_1040_21_12a,
-        "data_1040_21_12b": data_1040_21_12b,
-        "data_1040_21_12c": data_1040_21_12c,
-        "data_1040_21_13": data_1040_21_13,
-        "data_1040_21_14": data_1040_21_14,
-        "data_1040_21_15": data_1040_21_15,
-        "data_1040_21_16": data_1040_21_16,
-        "data_1040_21_17": data_1040_21_17,
-        "data_1040_21_18": data_1040_21_18,
-        "data_1040_21_19": data_1040_21_19,
-        "data_1040_21_20": data_1040_21_20,
-        "data_1040_21_21": data_1040_21_21,
-        "data_1040_21_22": data_1040_21_22,
-        "data_1040_21_23": data_1040_21_23,
-        "data_1040_21_24": data_1040_21_24,
-        "data_1040_21_25a": data_1040_21_25a,
-        "data_1040_21_25b": data_1040_21_25b,
-        "data_1040_21_25c": data_1040_21_25c,
-        "data_1040_21_25d": data_1040_21_25d,
-        "data_1040_21_26": data_1040_21_26,
-        "data_1040_21_27a": data_1040_21_27a,
-        "data_1040_21_27b": data_1040_21_27b,
-        "data_1040_21_27c": data_1040_21_27c,
-        "data_1040_21_28": data_1040_21_28,
-        "data_1040_21_29": data_1040_21_29,
-        "data_1040_21_30": data_1040_21_30,
-        "data_1040_21_31": data_1040_21_31,
-        "data_1040_21_32": data_1040_21_32,
-        "data_1040_21_33": data_1040_21_33,
-        "data_1040_21_34": data_1040_21_34,
-        "data_1040_21_35a": data_1040_21_35a,
-        "data_1040_21_36": data_1040_21_36,
-        "data_1040_21_37": data_1040_21_37,
-        "data_1040_21_38": data_1040_21_38
-    }
-    
-    return data_1040_21
-
-def get_1040x_21_data(sheet_name):
-    sheet = gsheet_client.open(sheet_name).get_worksheet(8)
-    try:
-        data_1040x_21_original_1 = sheet.cell(12,11).value.strip()
-    except:
-        data_1040x_21_original_1 = ''
-    time.sleep(0.1)
-    try:
-        data_1040x_21_correct_1 = sheet.cell(12,19).value.strip()
-    except:
-        data_1040x_21_correct_1 = ''
-    time.sleep(0.1)
-    try:
-        data_1040x_21_original_2 = sheet.cell(13,11).value.strip()
-    except:
-        data_1040x_21_original_2 = ''
-    time.sleep(0.1)
-    try:
-        data_1040x_21_correct_2 = sheet.cell(13,19).value.strip()
-    except:
-        data_1040x_21_correct_2 = ''
-    time.sleep(0.1)
-    try:
-        data_1040x_21_original_3 = sheet.cell(14,11).value.strip()
-    except:
-        data_1040x_21_original_3 = ''
-    time.sleep(0.1)
-    try:
-        data_1040x_21_correct_3 = sheet.cell(14,19).value.strip()
-    except:
-        data_1040x_21_correct_3 = ''
-    time.sleep(0.1)
-    try:
-        data_1040x_21_original_4a = sheet.cell(15,11).value.strip()
-    except:
-        data_1040x_21_original_4a = ''
-    time.sleep(0.1)
-    try:
-        data_1040x_21_correct_4a = sheet.cell(15,19).value.strip()
-    except:
-        data_1040x_21_correct_4a = ''
-    time.sleep(0.1)
-    try:
-        data_1040x_21_original_4b = sheet.cell(16,11).value.strip()
-    except:
-        data_1040x_21_original_4b = ''
-    time.sleep(0.1)
-    try:
-        data_1040x_21_correct_4b = sheet.cell(16,19).value.strip()
-    except:
-        data_1040x_21_correct_4b = ''
-    time.sleep(0.1)
-    try:
-        data_1040x_21_original_5 = sheet.cell(17,11).value.strip()
-    except:
-        data_1040x_21_original_5 = ''
-    time.sleep(0.1)
-    try:
-        data_1040x_21_correct_5 = sheet.cell(17,19).value.strip()
-    except:
-        data_1040x_21_correct_5 = ''
-    time.sleep(0.1)
-    try:
-        data_1040x_21_original_6 = sheet.cell(18,11).value.strip()
-    except:
-        data_1040x_21_original_6 = ''
-    time.sleep(0.1)
-    try:
-        data_1040x_21_correct_6 = sheet.cell(18,19).value.strip()
-    except:
-        data_1040x_21_correct_6 = ''
-    time.sleep(0.1)
-    try:
-        data_1040x_21_original_7  = sheet.cell(19,11).value.strip()
-    except:
-        data_1040x_21_original_7  = ''
-    time.sleep(0.1)
-    try:
-        data_1040x_21_correct_7  = sheet.cell(19,19).value.strip()
-    except:
-        data_1040x_21_correct_7  = ''
-    time.sleep(0.1)
-    try:
-        data_1040x_21_original_8 = sheet.cell(20,11).value.strip()
-    except:
-        data_1040x_21_original_8 = ''
-    time.sleep(0.1)
-    try:
-        data_1040x_21_correct_8 = sheet.cell(20,19).value.strip()
-    except:
-        data_1040x_21_correct_8 = ''
-    time.sleep(0.1)
-    try:
-        data_1040x_21_original_9 = sheet.cell(21,11).value.strip()
-    except:
-        data_1040x_21_original_9 = ''
-    time.sleep(0.1)
-    try:
-        data_1040x_21_correct_9 = sheet.cell(21,19).value.strip()
-    except:
-        data_1040x_21_correct_9 = ''
-    time.sleep(0.1)
-    try:
-        data_1040x_21_original_10 = sheet.cell(22,11).value.strip()
-    except:
-        data_1040x_21_original_10 = ''
-    time.sleep(0.1)
-    try:
-        data_1040x_21_correct_10 = sheet.cell(22,19).value.strip()
-    except:
-        data_1040x_21_correct_10 = ''
-    time.sleep(0.1)
-    try:
-        data_1040x_21_original_11 = sheet.cell(23,11).value.strip()
-    except:
-        data_1040x_21_original_11 = ''
-    time.sleep(0.1)
-    try:
-        data_1040x_21_correct_11 = sheet.cell(23,19).value.strip()
-    except:
-        data_1040x_21_correct_11 = ''
-    time.sleep(0.1)
-    try:
-        data_1040x_21_original_12 = sheet.cell(24,11).value.strip()
-    except:
-        data_1040x_21_original_12 = ''
-    time.sleep(0.1)
-    try:
-        data_1040x_21_correct_12 = sheet.cell(24,19).value.strip()
-    except:
-        data_1040x_21_correct_12 = ''
-    time.sleep(0.1)
-    try:
-        data_1040x_21_original_13 = sheet.cell(25,11).value.strip()
-    except:
-        data_1040x_21_original_13 = ''
-    time.sleep(0.1)
-    try:
-        data_1040x_21_correct_13 = sheet.cell(25,19).value.strip()
-    except:
-        data_1040x_21_correct_13 = ''
-    time.sleep(0.1)
-    try:
-        data_1040x_21_original_14 = sheet.cell(26,11).value.strip()
-    except:
-        data_1040x_21_original_14 = ''
-    time.sleep(0.1)
-    try:
-        data_1040x_21_correct_14 = sheet.cell(26,19).value.strip()
-    except:
-        data_1040x_21_correct_14 = ''
-    time.sleep(0.1)
-    try:
-        data_1040x_21_original_15 = sheet.cell(27,11).value.strip()
-    except:
-        data_1040x_21_original_15 = ''
-    time.sleep(0.1)
-    try:
-        data_1040x_21_correct_15 = sheet.cell(27,19).value.strip()
-    except:
-        data_1040x_21_correct_15 = ''
-    time.sleep(0.1)
-    try:
-        data_1040x_21_change_15 = sheet.cell(27,15).value.strip()
-    except:
-        data_1040x_21_change_15 = '' 
-    time.sleep(0.1)
-    try:
-        data_1040x_21_correct_17 = sheet.cell(29,19).value.strip()
-    except:
-        data_1040x_21_correct_17 = ''
-    time.sleep(0.1)
-    try:
-        data_1040x_21_correct_17 = sheet.cell(29,19).value.strip()
-    except:
-        data_1040x_21_correct_17 = ''
-    time.sleep(0.1)
-    try:
-        data_1040x_21_correct_18 = sheet.cell(30,19).value.strip()
-    except:
-        data_1040x_21_correct_18 = ''
-    time.sleep(0.1)
-    try:
-        data_1040x_21_correct_19 = sheet.cell(31,19).value.strip()
-    except:
-        data_1040x_21_correct_19 = ''
-    time.sleep(0.1)
-    try:
-        data_1040x_21_correct_20 = sheet.cell(32,19).value.strip()
-    except:
-        data_1040x_21_correct_20 = ''
-    time.sleep(0.1)
-    try:
-        data_1040x_21_correct_21 = sheet.cell(33,19).value.strip()
-    except:
-        data_1040x_21_correct_21 = ''
-    time.sleep(0.1)
-    try:
-        data_1040x_21_correct_22 = sheet.cell(34,19).value.strip()
-    except:
-        data_1040x_21_correct_22 = ''
-    time.sleep(0.1)
-    try:
-        data_1040x_21_23 = sheet.cell(35,17).value.strip()
-    except:
-        data_1040x_21_23 = ''
-    time.sleep(0.1)
-    try:
-        data_1040x_21_28 = sheet.cell(39,10).value.strip()
-    except:
-        data_1040x_21_28 = ''
-    try:
-        data_1040x_21_29 = sheet.cell(40,10).value.strip()
-    except:
-        data_1040x_21_29 = ''
-    time.sleep(0.1)
-    try:
-        data_1040x_21_30 = sheet.cell(41,10).value.strip()
-    except:
-        data_1040x_21_30 = ''
-    time.sleep(0.1)
-    try:
-        data_1040x_21_31 = sheet.cell(42,10).value.strip()
-    except:
-        data_1040x_21_31 = ''
-    time.sleep(0.1)
-    try:
-        data_1040x_21_37 = sheet.cell(44,10).value.strip()
-    except:
-        data_1040x_21_37 = ''
-    time.sleep(0.1)
-    try:
-        data_1040x_21_38 = sheet.cell(45,10).value.strip()
-    except:
-        data_1040x_21_38 = ''
-    time.sleep(0.1)
-    try:
-        data_1040x_21_org_sch_3_10 = sheet.cell(49,10).value.strip()
-    except:
-        data_1040x_21_org_sch_3_10 = ''
-
-    data_1040x_21 = {
-        "data_1040x_21_original_1": data_1040x_21_original_1,
-        "data_1040x_21_correct_1": data_1040x_21_correct_1,
-        "data_1040x_21_original_2": data_1040x_21_original_2,
-        "data_1040x_21_correct_2": data_1040x_21_correct_2,
-        "data_1040x_21_original_3": data_1040x_21_original_3,
-        "data_1040x_21_correct_3": data_1040x_21_correct_3,
-        "data_1040x_21_original_4a": data_1040x_21_original_4a,
-        "data_1040x_21_correct_4a": data_1040x_21_correct_4a,
-        "data_1040x_21_original_4b": data_1040x_21_original_4b,
-        "data_1040x_21_correct_4b": data_1040x_21_correct_4b,
-        "data_1040x_21_original_5": data_1040x_21_original_5,
-        "data_1040x_21_correct_5": data_1040x_21_correct_5,
-        "data_1040x_21_original_6": data_1040x_21_original_6,
-        "data_1040x_21_correct_6": data_1040x_21_correct_6,
-        "data_1040x_21_original_7": data_1040x_21_original_7,
-        "data_1040x_21_correct_7": data_1040x_21_correct_7,
-        "data_1040x_21_original_8": data_1040x_21_original_8,
-        "data_1040x_21_correct_8": data_1040x_21_correct_8,
-        "data_1040x_21_original_9": data_1040x_21_original_9,
-        "data_1040x_21_correct_9": data_1040x_21_correct_9,
-        "data_1040x_21_original_10": data_1040x_21_original_10,
-        "data_1040x_21_correct_10": data_1040x_21_correct_10,
-        "data_1040x_21_original_11": data_1040x_21_original_11,
-        "data_1040x_21_correct_11": data_1040x_21_correct_11,
-        "data_1040x_21_original_12": data_1040x_21_original_12,
-        "data_1040x_21_correct_12": data_1040x_21_correct_12,
-        "data_1040x_21_original_13": data_1040x_21_original_13,
-        "data_1040x_21_correct_13": data_1040x_21_correct_13,
-        "data_1040x_21_original_14": data_1040x_21_original_14,
-        "data_1040x_21_correct_14": data_1040x_21_correct_14,
-        "data_1040x_21_original_15": data_1040x_21_original_15,
-        "data_1040x_21_correct_15": data_1040x_21_correct_15,
-        "data_1040x_21_change_15": data_1040x_21_change_15,
-        "data_1040x_21_correct_17": data_1040x_21_correct_17,
-        "data_1040x_21_correct_18": data_1040x_21_correct_18,
-        "data_1040x_21_correct_19": data_1040x_21_correct_19,
-        "data_1040x_21_correct_20": data_1040x_21_correct_20,
-        "data_1040x_21_correct_21": data_1040x_21_correct_21,
-        "data_1040x_21_correct_22": data_1040x_21_correct_22,
-        "data_1040x_21_23": data_1040x_21_23,
-        "data_1040x_21_28": data_1040x_21_28,
-        "data_1040x_21_29": data_1040x_21_29,
-        "data_1040x_21_30": data_1040x_21_30,
-        "data_1040x_21_31": data_1040x_21_31,
-        "data_1040x_21_37": data_1040x_21_37,
-        "data_1040x_21_38": data_1040x_21_38,
-        "data_1040x_21_org_sch_3_10": data_1040x_21_org_sch_3_10
-    }
-
-    return data_1040x_21
 
