@@ -708,6 +708,7 @@ def fill_pdf_20():
                     email_cell = sheet.find(email)
                     pdf_1_value = sheet.cell(email_cell.row, 4).value
                 except:
+                    page+=1
                     continue
                 if not pdf_1_value:
                     response_1040 =  requests.get(f"https://xyrm-sqqj-hx6t.n7c.xano.io/api:Dga0jXwg/get_1040_20_email?email={email}")
@@ -724,6 +725,7 @@ def fill_pdf_20():
                         FieldsStrings = combine_fields(data_variables_1040_20, data_variables_1040x_20, data_variables_7202_20, data_variables_sch_3_20)
                     except:
                         print('combine error, skipping')
+                        page+=1
                         continue
 
                     parameters = {}
@@ -752,7 +754,9 @@ def fill_pdf_20():
                     print(f"PDF 1 value exists for {email}. Skipping.")
             else:
                 print(f'skipping {email}')
+                page+=1
                 continue
+            page+=1
     except:
         return {"message": "error"}
 
