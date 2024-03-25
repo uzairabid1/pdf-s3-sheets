@@ -55,31 +55,6 @@ def extract_data_keys_and_values(data):
 
     for item in data.get('items', []):        
         #old data processing
-        sheet = gsheet_client.open('TS-MASTER-1-JS-1').get_worksheet(0)
-        try:
-            data_7202_21_4b = sheet.cell(51,23).value
-        except:
-            data_7202_21_4b = ''
-        try:
-            data_7202_21_6b = sheet.cell(52,23).value
-        except:
-            data_7202_21_6b = ''
-        try:
-            data_7202_21_38 = sheet.cell(53,23).value
-        except:
-            data_7202_21_38 = ''
-        try:
-            data_7202_21_40 = sheet.cell(54,23).value
-        except:
-            data_7202_21_40 = ''
-
-        old_dates = {
-            "data_7202_21_4b": data_7202_21_4b,
-            "data_7202_21_6b": data_7202_21_6b,
-            "data_7202_21_38": data_7202_21_38,
-            "data_7202_21_40": data_7202_21_40,      
-        }
-
         
         first_name = item.get('First_Name')
         last_name= item.get('Last_Name')
@@ -199,41 +174,7 @@ def extract_data_keys_and_values(data):
                     "ClientId": "",
                     "Status": status
                 }
-
-        # new data processsing
-        try:
-            data_new_clientId = sheet.cell(60,18).value
-        except:
-            data_new_clientId = ''
-        try:
-            data_new_status = sheet.cell(61,18).value
-        except:
-            data_new_status = ''
-        try:
-            data_new_7202_21_4b = sheet.cell(63,18).value
-        except:
-            data_new_7202_21_4b = ''
-        try:
-            data_new_7202_21_6b = sheet.cell(64,18).value
-        except:
-            data_new_7202_21_6b = ''
-        try:
-            data_new_7202_21_38b = sheet.cell(65,18).value
-        except:
-            data_new_7202_21_38b = ''
-        try:
-            data_new_7202_21_40b = sheet.cell(66,18).value
-        except:
-            data_new_7202_21_40b = ''
-
-        new_intake_data = {
-            "data_new_clientId": data_new_clientId,
-            "data_new_status": data_new_status,
-            "data_new_7202_21_4b": data_new_7202_21_4b,
-            "data_new_7202_21_6b": data_new_7202_21_6b,
-            "data_new_7202_21_38b": data_new_7202_21_38b,
-            "data_new_7202_21_40b": data_new_7202_21_40b
-        }
+        
 
 
         data_2019_reca_list = {}
@@ -392,8 +333,6 @@ def extract_data_keys_and_values(data):
 
         extracted_data.append({
             'old_intake_data': old_intake_data,
-            'old_intake_dates': old_dates,
-            'new_intake_data': new_intake_data,
             '2019': data_2019_reca_list,
             '2020': data_2020_reca_list,
             '2021': data_2021_reca_list
@@ -402,47 +341,7 @@ def extract_data_keys_and_values(data):
 
     return extracted_data
 
-def place_data_variables(sheet_name, data_variables):
 
-    
-    sheet = gsheet_client.open(sheet_name).get_worksheet(0)
-
-    for data in data_variables:
-        row_number = 37
-        for key,val in data['2020'].items():
-            sheet.update_cell(row_number,13,val)
-            row_number += 1
-            time.sleep(0.05)
-        
-        row_number = 37
-        for key,val in data['2021'].items():
-            sheet.update_cell(row_number,14,val)
-            row_number += 1
-            time.sleep(0.05)
-
-        row_number = 36
-        for key,val in data['old_intake_data'].items():
-            sheet.update_cell(row_number,20,val)
-            row_number += 1
-            time.sleep(0.05)
-
-    credit_to_your_account_19 = data_variables[0]['2019']['Credit to your account']
-    sheet.update_cell(54,15,credit_to_your_account_19)
-    account_balance_19 = data_variables[0]['2019']['ACCOUNT BALANCE']
-    sheet.update_cell(55,15,account_balance_19)
-    accrued_interest_19 = data_variables[0]['2019']['ACCRUED INTEREST']
-    sheet.update_cell(56,15,accrued_interest_19)
-    time.sleep(0.3)
-    filing_status_19 = data_variables[0]['2019']['FILING STATUS']
-    sheet.update_cell(52,15,filing_status_19)
-    taxable_income_19 = data_variables[0]['2019']['TAXABLE INCOME']
-    sheet.update_cell(57,15,taxable_income_19)
-    adjusted_gross_income_19 = data_variables[0]['2019']['ADJUSTED GROSS INCOME']
-    sheet.update_cell(39,15,adjusted_gross_income_19)
-    tax_per_return_19 = data_variables[0]['2019']['TAX PER RETURN']
-    sheet.update_cell(58,15,tax_per_return_19)
-
-    print("Data placed successfully!")
 
 def get_7202_20_data(data_variables):
 
@@ -802,7 +701,6 @@ def get_7202_20_data(data_variables):
 
     return data_7202_20
 
-
 def get_sch_3_20_data(data_variables):
     twenty_schd3_7 = 0
     
@@ -821,7 +719,6 @@ def get_sch_3_20_data(data_variables):
     }
 
     return data_sch_3_20
-
 
 def get_1040_20_data(data_variables):
     # line 1
@@ -948,6 +845,96 @@ def get_1040_20_data(data_variables):
 
     return data_1040_20
 
+def get_1040x_20_data(data_variables):
+    #1040X Extra Data Variables
+    data_1040_20 = get_1040_20_data(data_variables)
+    data_7202 = get_7202_20_data(data_variables)
+    data_sch_3 = get_sch_3_20_data(data_variables)
+    
+    Orig_1040_28 = data_1040_20['data_1040_20_28']
+    Orig_1040_29 = data_1040_20['data_1040_20_29']
+    Orig_1040_30 = data_1040_20['data_1040_20_30']
+    Orig_1040_31 = data_sch_3['data_sch_3_20_13']
+    Orig_1040_37 = 0 if data_1040_20['data_1040_20_37'] == 0 else data_1040_20['data_1040_20_37']
+    Orig_1040_38 = 0 if data_1040_20['data_1040_20_37'] <= 0 else data_1040_20['data_1040_20_38']
+
+    twenty_1040_11a = data_1040_20['data_1040_20_24']
+    twenty_1040_11b = twenty_1040_11a
+    twenty_1040_12a = data_1040_20['data_1040_20_25d']
+    twenty_1040_12b = twenty_1040_12a
+    twenty_1040_13a = data_1040_20['data_1040_20_26']
+    twenty_1040_13b = twenty_1040_13a
+    twenty_1040_14a = data_1040_20['data_1040_20_27']
+    twenty_1040_14b = twenty_1040_14a
+    twenty_1040_15a = Orig_1040_28 + Orig_1040_29 + Orig_1040_30
+    twenty_1040_15b = Orig_1040_31
+    twenty_1040_15c = twenty_1040_15a + twenty_1040_15b
+    twenty_1040_16 = 0 if Orig_1040_37 - Orig_1040_38 <= 0 else Orig_1040_37 - Orig_1040_38
+    twenty_1040_17 = twenty_1040_12b + twenty_1040_13b + twenty_1040_14b + twenty_1040_15c + twenty_1040_16
+    #2020 1040'!AI77 is on the right side of 34 hence why 34b
+    # =IF('2020 1040'!AI77="N/A",0,'2020 1040'!AI77)
+    twenty_1040_18 = 0 if data_1040_20['data_1040_20_34'] - data_7202['data_7202_20_total_credit'] <= 0 else data_1040_20['data_1040_20_34'] - data_7202['data_7202_20_total_credit']
+
+    # =S29-S30
+    twenty_1040_19 = twenty_1040_17 - twenty_1040_18
+
+    #=IF(S23>S31,S23-S31,0)
+    twenty_1040_20 = twenty_1040_11b - twenty_1040_19 if twenty_1040_11b > twenty_1040_19 else 0
+
+    twenty_1040_21 = twenty_1040_19 - twenty_1040_11b if twenty_1040_11b < twenty_1040_19 else 0
+    twenty_1040_22 = twenty_1040_21 if twenty_1040_21 > 0 else 0
+    data_1040x_20 = {
+        "data_1040x_20_orginal_1": '',
+        "data_1040x_20_correct_1": '',
+        "data_1040x_20_orginal_2": '',
+        "data_1040x_20_correct_2": '',
+        "data_1040x_20_orginal_3": '',
+        "data_1040x_20_correct_3": '',
+        "data_1040x_20_orginal_4a": '',
+        "data_1040x_20_correct_4a": '',
+        "data_1040x_20_orginal_4b": '',
+        "data_1040x_20_correct_4b": '',
+        "data_1040x_20_orginal_5": '',
+        "data_1040x_20_correct_5": '',
+        "data_1040x_20_orginal_6": '',
+        "data_1040x_20_correct_6": '',
+        "data_1040x_20_orginal_7": '',
+        "data_1040x_20_correct_7": '',
+        "data_1040x_20_orginal_8": '',
+        "data_1040x_20_correct_8": '',
+        "data_1040x_20_orginal_9": '',
+        "data_1040x_20_correct_9": '',
+        "data_1040x_20_orginal_10": '',
+        "data_1040x_20_correct_10": '',
+        "data_1040x_20_orginal_11": twenty_1040_11a,
+        "data_1040x_20_correct_11": twenty_1040_11b,
+        "data_1040x_20_orginal_12": twenty_1040_12a,
+        "data_1040x_20_correct_12": twenty_1040_12b,
+        "data_1040x_20_orginal_13": twenty_1040_13a,
+        "data_1040x_20_correct_13": twenty_1040_13b,
+        "data_1040x_20_orginal_14": twenty_1040_14a,
+        "data_1040x_20_correct_14": twenty_1040_14b,
+        "data_1040x_20_orginal_15": twenty_1040_15a,
+        "data_1040x_20_correct_15": twenty_1040_15c,
+        "data_1040x_20_change_15": twenty_1040_15b,
+        "data_1040x_20_correct_16": twenty_1040_16,
+        "data_1040x_20_correct_17": twenty_1040_17,
+        "data_1040x_20_correct_18": twenty_1040_18,
+        "data_1040x_20_correct_19": twenty_1040_19,
+        "data_1040x_20_correct_20": twenty_1040_20,
+        "data_1040x_20_correct_21": twenty_1040_21,
+        "data_1040x_20_correct_22": twenty_1040_22,
+        "data_1040x_20_23": '',
+        "data_1040x_20_28": Orig_1040_28,
+        "data_1040x_20_29": Orig_1040_29,
+        "data_1040x_20_30": Orig_1040_30,
+        "data_1040x_20_31": Orig_1040_31,
+        "data_1040x_20_37": Orig_1040_37,
+        "data_1040x_20_38": Orig_1040_38,
+        "data_1040x_20_org_sch_3_9": '',
+    }
+
+    return data_1040x_20
 
 def combine_fields(data_1040_20,data_1040x_20,data_7202_20,data_sch_3_20):
 

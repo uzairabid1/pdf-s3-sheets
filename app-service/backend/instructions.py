@@ -620,62 +620,62 @@ def get_instructions_data(data_variables):
 
     Zoho_21_7202_38b =	"04/01 04/02 04/03 04/04 04/05 04/06/ 04/07 04/08 04/09 04/10"
     if Gov_April_1_2021_through_September_30_2021 == 0:
-        Zoho_21_7202_5b = ""
+        Zoho_21_7202_38b = ""
     elif Gov_April_1_2021_through_September_30_2021 == 1:
-        Zoho_21_7202_5b = "04/01"
+        Zoho_21_7202_38b = "04/01"
     elif Gov_April_1_2021_through_September_30_2021 == 2:
-        Zoho_21_7202_5b = "04/01 04/02"
+        Zoho_21_7202_38b = "04/01 04/02"
     elif Gov_April_1_2021_through_September_30_2021 == 3:
-        Zoho_21_7202_5b = "04/01 04/02 04/03"
+        Zoho_21_7202_38b = "04/01 04/02 04/03"
     elif Gov_April_1_2021_through_September_30_2021 == 4:
-        Zoho_21_7202_5b = "04/01 04/02 04/03 04/04"
+        Zoho_21_7202_38b = "04/01 04/02 04/03 04/04"
     elif Gov_April_1_2021_through_September_30_2021 == 5:
-        Zoho_21_7202_5b = "04/01 04/02 04/03 04/04 04/05"
+        Zoho_21_7202_38b = "04/01 04/02 04/03 04/04 04/05"
     elif Gov_April_1_2021_through_September_30_2021 == 6:
-        Zoho_21_7202_5b = "04/01 04/02 04/03 04/04 04/05 04/06"
+        Zoho_21_7202_38b = "04/01 04/02 04/03 04/04 04/05 04/06"
     elif Gov_April_1_2021_through_September_30_2021 == 7:
-        Zoho_21_7202_5b = "04/01 04/02 04/03 04/04 04/05 04/06 04/07"
+        Zoho_21_7202_38b = "04/01 04/02 04/03 04/04 04/05 04/06 04/07"
     elif Gov_April_1_2021_through_September_30_2021 == 8:
-        Zoho_21_7202_5b = "04/01 04/02 04/03 04/04 04/05 04/06 04/07 04/08"
+        Zoho_21_7202_38b = "04/01 04/02 04/03 04/04 04/05 04/06 04/07 04/08"
     elif Gov_April_1_2021_through_September_30_2021 == 9:
-        Zoho_21_7202_5b = "04/01 04/02 04/03 04/04 04/05 04/06 04/07 04/08 04/09"
+        Zoho_21_7202_38b = "04/01 04/02 04/03 04/04 04/05 04/06 04/07 04/08 04/09"
     elif Gov_April_1_2021_through_September_30_2021 == 10:
-        Zoho_21_7202_5b = "04/01 04/02 04/03 04/04 04/05 04/06 04/07 04/08 04/09 04/10"
+        Zoho_21_7202_38b = "04/01 04/02 04/03 04/04 04/05 04/06 04/07 04/08 04/09 04/10"
     else:
-        Zoho_21_7202_5b = ""  # handle cases where Gov_April_1_2021_through_September_30_2021 is out of range
+        Zoho_21_7202_38b = ""  # handle cases where Gov_April_1_2021_through_September_30_2021 is out of range
 
-    print(Zoho_21_7202_5b)
+    print(Zoho_21_7202_38b)
 
     Zoho_21_7202_40b =	"04/11 04/12 04/13 04/14 04/15 04/16/ 04/17 04/18 04/19 04/20"
     # Assuming Child_April_1_2021_through_September_30_2021 holds a numeric value
     Child_April_1_2021_through_September_30_2021 = 4  # Example value
 
     if Child_April_1_2021_through_September_30_2021 == 0:
-        Zoho_21_7202_6b = ""
+        Zoho_21_7202_48b = ""
     elif Child_April_1_2021_through_September_30_2021 == 1:
-        Zoho_21_7202_6b = "04/11"
+        Zoho_21_7202_48b = "04/11"
     elif Child_April_1_2021_through_September_30_2021 == 2:
-        Zoho_21_7202_6b = "04/11 04/12"
+        Zoho_21_7202_48b = "04/11 04/12"
     elif Child_April_1_2021_through_September_30_2021 == 3:
-        Zoho_21_7202_6b = "04/11 04/12 04/13"
+        Zoho_21_7202_48b = "04/11 04/12 04/13"
     elif Child_April_1_2021_through_September_30_2021 == 4:
-        Zoho_21_7202_6b = "04/11 04/12 04/13 04/14"
+        Zoho_21_7202_48b = "04/11 04/12 04/13 04/14"
     elif Child_April_1_2021_through_September_30_2021 == 5:
-        Zoho_21_7202_6b = "04/11 04/12 04/13 04/14 04/15"
+        Zoho_21_7202_48b = "04/11 04/12 04/13 04/14 04/15"
     elif Child_April_1_2021_through_September_30_2021 == 6:
-        Zoho_21_7202_6b = "04/11 04/12 04/13 04/14 04/15 04/16"
+        Zoho_21_7202_48b = "04/11 04/12 04/13 04/14 04/15 04/16"
     elif Child_April_1_2021_through_September_30_2021 == 7:
-        Zoho_21_7202_6b = "04/11 04/12 04/13 04/14 04/15 04/16 04/17"
+        Zoho_21_7202_48b = "04/11 04/12 04/13 04/14 04/15 04/16 04/17"
     elif Child_April_1_2021_through_September_30_2021 == 8:
-        Zoho_21_7202_6b = "04/11 04/12 04/13 04/14 04/15 04/16 04/17 04/18"
+        Zoho_21_7202_48b = "04/11 04/12 04/13 04/14 04/15 04/16 04/17 04/18"
     elif Child_April_1_2021_through_September_30_2021 == 9:
-        Zoho_21_7202_6b = "04/11 04/12 04/13 04/14 04/15 04/16 04/17 04/18 04/19"
+        Zoho_21_7202_48b = "04/11 04/12 04/13 04/14 04/15 04/16 04/17 04/18 04/19"
     elif Child_April_1_2021_through_September_30_2021 == 10:
-        Zoho_21_7202_6b = "04/11 04/12 04/13 04/14 04/15 04/16 04/17 04/18 04/19 04/20"
+        Zoho_21_7202_48b = "04/11 04/12 04/13 04/14 04/15 04/16 04/17 04/18 04/19 04/20"
     else:
-        Zoho_21_7202_6b = ""  # handle cases where Child_April_1_2021_through_September_30_2021 is out of range
+        Zoho_21_7202_48b = ""  # handle cases where Child_April_1_2021_through_September_30_2021 is out of range
 
-    print(Zoho_21_7202_6b)
+    print(Zoho_21_7202_48b)
 
 
 
@@ -1078,6 +1078,10 @@ def get_instructions_data(data_variables):
         'Family_April_1_2020_through_December_31_2020': Family_April_1_2020_through_December_31_2020,
         'Child_April_1_2021_through_September_30_2021': Child_April_1_2021_through_September_30_2021,
         'Family_April_1_2021_through_September_30_2021': Family_April_1_2021_through_September_30_2021,
+        'Zoho_21_7202_4b': Zoho_21_7202_4b,
+        'Zoho_21_7202_6b': Zoho_21_7202_6b,
+        'Zoho_21_7202_38b': Zoho_21_7202_38b,
+        'Zoho_21_7202_40b': Zoho_21_7202_40b,
         'First_Name': First_Name,
         'Last_Name': Last_Name,
         'ClientId': ClientId,
