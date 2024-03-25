@@ -1145,3 +1145,789 @@ def combine_fields(data_1040_20,data_1040x_20,data_7202_20,data_sch_3_20):
         combined_values.append(f"{value};{val}")
 
     return "|".join(combined_values)
+
+
+def get_7202_21_data(data_variables):
+    
+    instructions_data =  get_instructions_data(data_variables)
+    data_7202_20 = get_7202_20_data(data_variables)
+
+    twentyOne_7202_Day_Overide_1 = int(instructions_data['Gov_January_1_2021_through_March_31_2021'])
+    # pull the date variable from Gov_January_1_2021_through_March_31_2021
+    # K7
+    K7 = twentyOne_7202_Day_Overide_1
+
+    twentyOne_7202_Day_Overide_2 = int(instructions_data['Child_January_1_2021_through_March_31_2021'])
+    # pull the date variable from Child_January_1_2021_through_March_31_2021
+    # K8
+    K8 = twentyOne_7202_Day_Overide_2
+
+    twentyOne_7202_Day_Overide_3 = int(instructions_data['Family_January_1_2021_through_March_31_2021'])
+    # pull the date variable from Family_January_1_2021_through_March_31_2021
+    # = K9
+    K9 = twentyOne_7202_Day_Overide_3
+
+    twentyOne_7202_Day_Overide_4 = int(instructions_data['Gov_April_1_2021_through_September_30_2021'])
+    twentyOne_7202_Day_Overide_5 = int(instructions_data['Child_April_1_2021_through_September_30_2021'])
+    twentyOne_7202_Day_Overide_6 = int(instructions_data['Family_April_1_2021_through_September_30_2021'])
+
+
+    # this is the 2019 income variable
+    twenty_7202_2019 = int(instructions_data['nineteen_ADJUSTED_GROSS_INCOME'])
+
+    # this is the 2020 income variables
+    twenty_7202_20Schedule_SE_Line_3 = int(instructions_data['twenty_SE_income_per_computer'])
+
+    # formula =ROUND(IF(AL24>0,AL24*0.9235,AL24),0)
+    # Given value of AL24
+    AL24 = int(twenty_7202_20Schedule_SE_Line_3)
+    # Applying the formula
+    AL24result = int(round(AL24 * 0.9235 if AL24 > 0 else AL24, 0))
+    twenty_7202_20_Line_4a = AL24result
+    print(AL24result)
+
+    twenty_7202_20_Line_4b = 0
+    # was AL26
+
+    # AL27
+    # =MAX(SUM(AL25,AL26),0)
+    # AL25 = twenty_7202_20_Line_4a,  AL26= twenty_7202_20_Line 4b
+    # Given values of AL25 and AL26
+    AL25 = twenty_7202_20_Line_4a
+    AL26 = twenty_7202_20_Line_4b
+
+    # Applying the formula
+    twenty_7202_20_Line_4c_result = max(sum([AL25, AL26]), 0)
+    twenty_7202_20_Line_4c = twenty_7202_20_Line_4c_result
+
+
+
+    twenty_7202_20_Line_5a = 0
+
+    # AL29
+    # =ROUND(AL28*0.9235,0)
+    # Given value of AL28
+    AL28 = twenty_7202_20_Line_5a
+    # Applying the formula
+    twenty_7202_20_Line_5b_result = int(round(AL28 * 0.9235, 0))
+    twenty_7202_20_Line_5b = twenty_7202_20_Line_5b_result
+
+
+
+    # =AL27+AL29
+    # Given Values of AL27 AL29
+    AL27 = twenty_7202_20_Line_4c
+    AL29 = twenty_7202_20_Line_5b
+    # Adding the values
+    twenty_7202_20_Line_6_result = AL27 + AL29
+    twenty_7202_20_Line_6 = twenty_7202_20_Line_6_result
+
+    twentyOne_IncomeSELine3 = int(instructions_data['twenty_twenty_one_SE_income_per_computer'])
+    twentyOne_Line4a = int(round(twentyOne_IncomeSELine3 * 0.9235 if twentyOne_IncomeSELine3 > 0 else twentyOne_IncomeSELine3, 0))
+    # Assigns the rounded result of the calculation to twentyOne_Line4a
+    twentyOne_Line4b = 0
+    # Assigns the maximum of the sum of L31 and L32 or 0 to twentyOne_Line4c
+    twentyOne_Line4c = max(twentyOne_Line4a + twentyOne_Line4b, 0)
+    twentyOne_Line5a = 0
+    twentyOne_Line5b = int(round(twentyOne_Line5a*0.9235,0))
+    twentyOne_Line6 = twentyOne_Line4c + twentyOne_Line5b
+
+
+
+    Fiscal_Year_Return = True
+    Sick_Leave_1 = 0
+    Sick_Leave_2 = 0
+    Sick_Leave_3 = 0
+    AL21 = Sick_Leave_3
+
+
+    # start the Column for the 7202 form
+
+    # Line 1
+    # Assigns the value based on the condition
+
+    twentyOne_7202_1 = twentyOne_7202_Day_Overide_1
+    # = G5
+    # =IF(G5>9,0,MIN(10-G5,SUMIF($L$7:$L$17,"Other",$O$7:$O$17)))
+    # =IF(G5>9,0,MIN(10-G5,G5)))
+    G5 = twentyOne_7202_1
+
+    # Line 2
+    # =IF(G5>9,0,MIN(10-G5,SUMIF($L$7:$L$17,"Other",$O$7:$O$17)))
+    # G5 = twentyOne_7202_1  Sum replace twentyOne_7202_Day_Overide_2
+    # =IF(twentyOne_7202_1>9,0,MIN(10-twentyOne_7202_1,twentyOne_7202_Day_Overide_2))
+    # Assigns the value based on the condition
+    twentyOne_7202_2 = 0  # Default value
+    if twentyOne_7202_1 > 9:
+        twentyOne_7202_2 = 0
+    else:
+        twentyOne_7202_2 = min(10 - twentyOne_7202_1, twentyOne_7202_Day_Overide_2)
+
+
+
+    #line 3a
+    # ='2020 7202'!AJ8
+    twentyOne_7202_3a = data_7202_20['data_7202_20_4']
+
+    # line 3b
+    #='2020 7202'!AJ10
+    twentyOne_7202_3b = data_7202_20['data_7202_20_6']
+
+    # Line 3c
+    # =G7+G8  which is 3a + 3b
+    twentyOne_7202_3c = twentyOne_7202_3a + twentyOne_7202_3b
+
+    # line 3d
+    # =IF(G5=0,0,10-G9)
+    # twentyOne_7202_3d = =IF(twentyOne_7202_1=0,0,10-twentyOne_7202_3c)
+    twentyOne_7202_3d = None  # Initializing the variable
+    # Assigns the value based on the condition
+    if twentyOne_7202_1 == 0:
+        twentyOne_7202_3d = 0
+    else:
+        twentyOne_7202_3d = 10 - twentyOne_7202_3c
+
+    #line 4a
+    # =MIN(G5,G10)
+    twentyOne_7202_4a = min(twentyOne_7202_1,twentyOne_7202_3d)
+
+    #line 5
+    # formula: =G10-G11
+    twentyOne_7202_5 = twentyOne_7202_3d - twentyOne_7202_4a
+
+    #Line 6a
+    # =MIN(G6,G12)
+    twentyOne_7202_6a = min(twentyOne_7202_2,twentyOne_7202_5)
+
+    # line 7a
+    # =MAX(K36:L36)
+    twentyOne_7202_7a = max(twenty_7202_20_Line_6,twentyOne_Line6)
+
+    # line 8
+    # =ROUND(G15/260,0)
+    twentyOne_7202_8 = int(round(twentyOne_7202_7a/260,0))
+
+    #line 9
+    # =MIN(G17,511)
+    twentyOne_7202_9 = min(twentyOne_7202_8, 511)
+
+    #line 10
+    # =G11*G19
+    twentyOne_7202_10 = twentyOne_7202_4a * twentyOne_7202_9
+
+    #11
+    # =ROUND(G17*0.67,0)
+    twentyOne_7202_11 = int(round(twentyOne_7202_8*0.67,0))
+
+    #12
+    # =MIN(G21,200)
+    twentyOne_7202_12 = min(twentyOne_7202_11,200)
+
+    #13
+    # =G14*G22
+    twentyOne_7202_13 = twentyOne_7202_6a*twentyOne_7202_12
+
+    #14
+    # =G23+G20
+    twentyOne_7202_14 = twentyOne_7202_13 + twentyOne_7202_10
+    twentyOne_7202_15a = Sick_Leave_1
+
+    #15b
+    # ='2020 7202'!AJ19
+    twentyOne_7202_15b = data_7202_20['data_7202_20_15']
+
+    #15c
+    # =G25+G26
+    twentyOne_7202_15c = twentyOne_7202_15a + twentyOne_7202_15b
+
+    # 16a
+    # =K22
+    twentyOne_7202_16a = Sick_Leave_2
+
+    #16b
+    # ='2020 7202'!AJ20
+    twentyOne_7202_16b = data_7202_20['data_7202_20_16']
+    #16c
+    # =G28+G29
+    twentyOne_7202_16c = twentyOne_7202_16a + twentyOne_7202_16b
+
+    #=G23+G30
+    twentyOne_7202_17a = twentyOne_7202_13 + twentyOne_7202_16c
+
+    # ='2020 7202'!AJ17
+    twentyOne_7202_17b = data_7202_20['data_7202_20_13']
+    # =G31+G33
+    twentyOne_7202_17c = twentyOne_7202_17a + twentyOne_7202_17b
+
+    # =MIN(G34,2000)
+    twentyOne_7202_18 = min(twentyOne_7202_17c, 2000)
+    # =G34-G35
+    twentyOne_7202_19 = twentyOne_7202_17c + twentyOne_7202_18
+
+    # =G20+G27+G35
+    twentyOne_7202_20a = twentyOne_7202_10 + twentyOne_7202_15c + twentyOne_7202_18
+
+    # ='2020 7202'!AJ14
+    twentyOne_7202_20b = data_7202_20['data_7202_20_10']
+
+    # =G37+G38
+    twentyOne_7202_20c = twentyOne_7202_20a + twentyOne_7202_20b
+
+    # =MIN(G39,5110)
+    twentyOne_7202_21 = min(twentyOne_7202_20c, 5110)
+
+    #=G39-G40
+    twentyOne_7202_22 = abs(twentyOne_7202_20c - twentyOne_7202_21)
+
+    #=G36+G41
+    twentyOne_7202_23 = twentyOne_7202_19 + twentyOne_7202_22
+
+
+    #=IF(G30+G27=0,G24,MAX(G24-G42,0))
+    # IF(twentyOne_7202_19+twentyOne_7202_15c=0,twentyOne_7202_14,max(twentyOne_7202_14-twentyOne_7202_23,0))
+    twentyOne_7202_24 = 0
+    if twentyOne_7202_19 + twentyOne_7202_15c == 0:
+        twentyOne_7202_24 = twentyOne_7202_14
+    else:
+        twentyOne_7202_24 = max(twentyOne_7202_14 - twentyOne_7202_23, 0)
+
+    # =MIN(SUMIF($L$7:$L$17,"Fam Leave",$O$7:$O$17)-G6,50)
+    # =min(Sick_Leave_3-twentyOne_7202_2,50)
+    twentyOne_7202_25a = min(twentyOne_7202_Day_Overide_3 - twentyOne_7202_2, 50)
+
+    #='2020 7202'!AJ32
+    twentyOne_7202_25b = data_7202_20['data_7202_20_25']
+
+    # =IF(G46=0,0,50-G47)
+    # = if(twentyOne_7202_25a=0,0,50-twentyOne_7202_25b)
+    twentyOne_7202_25c = 0 if twentyOne_7202_25a == 0 else 50 - twentyOne_7202_25b
+
+    # =MIN(G48,G46)
+    twentyOne_7202_25d = min(twentyOne_7202_25c, twentyOne_7202_25a)
+
+    # =MAX(K36:L36)
+    twentyOne_7202_26a = max(twenty_7202_20_Line_6,twentyOne_Line6)
+
+    # =ROUND(G50/260,0)
+    twentyOne_7202_27 = int(round(twentyOne_7202_26a/260,0))
+
+    #=ROUND(G51*0.67,0)
+    twentyOne_7202_28 = int(round(twentyOne_7202_27*0.67,0))
+
+    # =MIN(G53,200)
+    twentyOne_7202_29 = min(twentyOne_7202_28,200)
+    # =ROUND(G54*G49,0)
+    twentyOne_7202_30 = int(round(twentyOne_7202_29*twentyOne_7202_25d,0))
+    # =K23
+    twentyOne_7202_31a = Sick_Leave_3
+
+    # ='2020 7202'!AJ40
+    twentyOne_7202_31b = data_7202_20['data_7202_20_31']
+
+    # =G56+G57
+    twentyOne_7202_31c = twentyOne_7202_31a + twentyOne_7202_31b
+
+    # =G58+G55
+    twentyOne_7202_32a = twentyOne_7202_30 + twentyOne_7202_31c
+
+    # ='2020 7202'!AJ39
+    twentyOne_7202_32b = data_7202_20['data_7202_20_30']
+
+    # =G59+G61
+    twentyOne_7202_32c = twentyOne_7202_32a + twentyOne_7202_32b
+
+    # =MIN(G62,10000)
+    twentyOne_7202_33 = int(min(twentyOne_7202_32c,10000))
+
+    # =G62-G63
+    twentyOne_7202_34 = twentyOne_7202_32c - twentyOne_7202_33
+
+    # =MAX(G55-G64,0)
+    twentyOne_7202_35 = max(twentyOne_7202_30 - twentyOne_7202_34,0)
+
+    #=SUMIF($L$70:$L$79,"Self",$O$70:$O$79)
+    #
+    twentyOne_7202_36 = twentyOne_7202_Day_Overide_4
+
+    # =IF(G67>9,0,MIN(10-G67,SUMIF($L$70:$L$79,"Other",$O$70:$O$79)))
+    # twentyOne_7202_37 = IF (twentyOne_7202_36>9,0,MIN(10-twentyOne_7202_36,twentyOne_7202_Day_Overide_4))
+    twentyOne_7202_37 = 0
+    if twentyOne_7202_36 > 9:
+        twentyOne_7202_37 = 0
+    else:
+        twentyOne_7202_37 = min(10 - twentyOne_7202_36, twentyOne_7202_Day_Overide_4)
+
+    # =MIN(10,G67)
+    twentyOne_7202_38a = min(10,twentyOne_7202_36)
+
+    #=IF(G67=0,0,10-G69)
+    # twentyOne_7202_39 = IF (twentyOne_7202_36=0,0,10-twentyOne_7202_38a)
+    twentyOne_7202_39 = 0
+    if twentyOne_7202_36 == 0:
+        twentyOne_7202_39 = 0
+    else:
+        twentyOne_7202_39 = 10 - twentyOne_7202_38a
+
+    # =MIN(G68,G70)
+    twentyOne_7202_40a = min(twentyOne_7202_37,twentyOne_7202_39)
+
+    # =MAX(K36:L36)
+    twentyOne_7202_41a = max(twenty_7202_20_Line_6,twentyOne_Line6)
+
+    # =ROUND(G73/260,0)
+    twentyOne_7202_42 = int(round(twentyOne_7202_41a/260,0))
+
+    # =MIN(G75,511)
+    twentyOne_7202_43 = min(twentyOne_7202_42,511)
+
+    #=G69*G77
+    twentyOne_7202_44 = twentyOne_7202_43 * twentyOne_7202_38a
+
+    # =ROUND(G75*0.67,0)
+    twentyOne_7202_45 = int(round(twentyOne_7202_42*0.67,0))
+
+    #=MIN(G79,200)
+    twentyOne_7202_46 = min(twentyOne_7202_45,200)
+
+    # =G80*G72
+    twentyOne_7202_47 = twentyOne_7202_46 * twentyOne_7202_40a
+
+    # =G78+G81
+    twentyOne_7202_48 = twentyOne_7202_44 + twentyOne_7202_47
+
+    # =K83
+    twentyOne_7202_49 = Sick_Leave_1
+
+    # =K84
+    twentyOne_7202_50 = Sick_Leave_2
+
+    # =G81+G84
+    twentyOne_7202_51 = twentyOne_7202_47 + twentyOne_7202_50
+
+    # =MIN(G85,2000)
+    twentyOne_7202_52 = min(twentyOne_7202_51,2000)
+
+    # =G85-G87
+    twentyOne_7202_53 = twentyOne_7202_51 - twentyOne_7202_52
+
+    # =G78+G83+G87
+    twentyOne_7202_54 = twentyOne_7202_44 + twentyOne_7202_49 + twentyOne_7202_52
+
+    #=MIN(G89,5110)
+    twentyOne_7202_55 = min(twentyOne_7202_54, 5110)
+
+    # =G89-G90
+    twentyOne_7202_56 = twentyOne_7202_54 - twentyOne_7202_55
+
+    # =G88+G91
+    twentyOne_7202_57 = twentyOne_7202_53 + twentyOne_7202_56
+
+    # =MAX(G82-G92,0)
+    twentyOne_7202_58 = max(twentyOne_7202_48-twentyOne_7202_57,0)
+
+    # =MIN(SUMIF($L$70:$L$79,"Fam Leave",$O$70:$O$79),60)
+    # =min(twentyOne_7202_Day_Overide_6,60)
+    twentyOne_7202_59 = min(twentyOne_7202_Day_Overide_6,60)
+
+    # =MAX(K36:L36)
+    twentyOne_7202_60a =max(twenty_7202_20_Line_6,twentyOne_Line6)
+
+    # =ROUND(G97/260,0)
+    twentyOne_7202_61 = int(round(twentyOne_7202_60a/260,0))
+
+    #=ROUND(G98*0.67,0)
+    twentyOne_7202_62 =int(round(twentyOne_7202_61*0.67,0))
+
+    # =MIN(G100,200)
+    twentyOne_7202_63 = min(twentyOne_7202_62,200)
+
+    #=G96*G101
+    twentyOne_7202_64 = twentyOne_7202_59 * twentyOne_7202_63
+
+    #=K85
+    twentyOne_7202_65 = Sick_Leave_3
+
+    # =G102+G103
+    twentyOne_7202_66 = twentyOne_7202_64 + twentyOne_7202_65
+
+    # =MIN(G104,12000)
+    twentyOne_7202_67 = min(twentyOne_7202_66,12000)
+
+    # =G104-G106
+    twentyOne_7202_68 = twentyOne_7202_66 - twentyOne_7202_67
+
+    # =MAX(G102-G107,0)
+    twentyOne_7202_69 = max(twentyOne_7202_64-twentyOne_7202_68,0)
+
+
+    #=G43+G65
+    Schedule3_13b = twentyOne_7202_24+twentyOne_7202_35
+
+    #=G93+G108
+    Schedule3_13h = twentyOne_7202_58 + twentyOne_7202_69
+    
+    data_7202_21_4b = instructions_data['Zoho_21_7202_4b']
+
+    data_7202_21_6b  = instructions_data['Zoho_21_7202_6b']
+
+    data_7202_21_38b = instructions_data['Zoho_21_7202_38b']
+
+    data_7202_21_40b = instructions_data['Zoho_21_7202_40b']
+
+    data_7202_21 = {
+        "data_7202_21_1": twentyOne_7202_1,
+        "data_7202_21_2": twentyOne_7202_2,
+        "data_7202_21_3a": twentyOne_7202_3a,
+        "data_7202_21_3b": twentyOne_7202_3b,
+        "data_7202_21_3c": twentyOne_7202_3c,
+        "data_7202_21_3d": twentyOne_7202_3d,
+        "data_7202_21_4a": twentyOne_7202_4a,
+        "data_7202_21_4b": data_7202_21_4b,
+        "data_7202_21_5": twentyOne_7202_5,
+        "data_7202_21_6a": twentyOne_7202_6a,
+        "data_7202_21_6b": data_7202_21_6b,
+        "data_7202_21_7a": twentyOne_7202_7a,
+        "data_7202_21_8": twentyOne_7202_8,
+        "data_7202_21_9": twentyOne_7202_9,
+        "data_7202_21_10": twentyOne_7202_10,
+        "data_7202_21_11": twentyOne_7202_11,
+        "data_7202_21_12": twentyOne_7202_12,
+        "data_7202_21_13": twentyOne_7202_13,
+        "data_7202_21_14": twentyOne_7202_14,
+        "data_7202_21_15a": twentyOne_7202_15a,
+        "data_7202_21_15b": twentyOne_7202_15b,
+        "data_7202_21_15c": twentyOne_7202_15c,
+        "data_7202_21_16a": twentyOne_7202_16a,
+        "data_7202_21_16b": twentyOne_7202_16b,
+        "data_7202_21_16c": twentyOne_7202_16c,
+        "data_7202_21_17a": twentyOne_7202_17a,
+        "data_7202_21_17b": twentyOne_7202_17b,
+        "data_7202_21_17c": twentyOne_7202_17c,
+        "data_7202_21_18": twentyOne_7202_18,
+        "data_7202_21_19": twentyOne_7202_19,
+        "data_7202_21_20a": twentyOne_7202_20a,
+        "data_7202_21_20b": twentyOne_7202_20b,
+        "data_7202_21_20c": twentyOne_7202_20c,
+        "data_7202_21_21": twentyOne_7202_21,
+        "data_7202_21_22": twentyOne_7202_22,
+        "data_7202_21_23": twentyOne_7202_23,
+        "data_7202_21_24": twentyOne_7202_24,
+        "data_7202_21_25a": twentyOne_7202_25a,
+        "data_7202_21_25b": twentyOne_7202_25b,
+        "data_7202_21_25c": twentyOne_7202_25c,
+        "data_7202_21_25d": twentyOne_7202_25d,
+        "data_7202_21_26a": twentyOne_7202_26a,
+        "data_7202_21_27": twentyOne_7202_27,
+        "data_7202_21_28": twentyOne_7202_28,
+        "data_7202_21_29": twentyOne_7202_29,
+        "data_7202_21_30": twentyOne_7202_30,
+        "data_7202_21_31a": twentyOne_7202_31a,
+        "data_7202_21_31b": twentyOne_7202_31b,
+        "data_7202_21_31c": twentyOne_7202_31c,
+        "data_7202_21_32a": twentyOne_7202_32a,
+        "data_7202_21_32b": twentyOne_7202_32b,
+        "data_7202_21_32c": twentyOne_7202_32c,
+        "data_7202_21_33": twentyOne_7202_33,
+        "data_7202_21_34": twentyOne_7202_34,
+        "data_7202_21_35": twentyOne_7202_35,
+        "data_7202_21_36": twentyOne_7202_36,
+        "data_7202_21_37": twentyOne_7202_37,
+        "data_7202_21_38a": twentyOne_7202_38a,
+        "data_7202_21_38b": data_7202_21_38b,
+        "data_7202_21_39": twentyOne_7202_39,
+        "data_7202_21_40a": twentyOne_7202_40a,
+        "data_7202_21_40b": data_7202_21_40b,
+        "data_7202_21_41a": twentyOne_7202_41a,
+        "data_7202_21_42": twentyOne_7202_42,
+        "data_7202_21_43": twentyOne_7202_43,
+        "data_7202_21_44": twentyOne_7202_44,
+        "data_7202_21_45": twentyOne_7202_45,
+        "data_7202_21_46": twentyOne_7202_46,
+        "data_7202_21_47": twentyOne_7202_47,
+        "data_7202_21_48": twentyOne_7202_48,
+        "data_7202_21_49": twentyOne_7202_49,
+        "data_7202_21_50": twentyOne_7202_50,
+        "data_7202_21_51": twentyOne_7202_51,
+        "data_7202_21_52": twentyOne_7202_52,
+        "data_7202_21_53": twentyOne_7202_53,
+        "data_7202_21_54": twentyOne_7202_54,
+        "data_7202_21_55": twentyOne_7202_55,
+        "data_7202_21_56": twentyOne_7202_56,
+        "data_7202_21_57": twentyOne_7202_57,
+        "data_7202_21_58": twentyOne_7202_58,
+        "data_7202_21_59": twentyOne_7202_59,
+        "data_7202_21_60a": twentyOne_7202_60a,
+        "data_7202_21_61": twentyOne_7202_61,
+        "data_7202_21_62": twentyOne_7202_62,
+        "data_7202_21_63": twentyOne_7202_63,
+        "data_7202_21_64": twentyOne_7202_64,
+        "data_7202_21_65": twentyOne_7202_65,
+        "data_7202_21_66": twentyOne_7202_66,
+        "data_7202_21_67": twentyOne_7202_67,
+        "data_7202_21_68": twentyOne_7202_68,
+        "data_7202_21_69": twentyOne_7202_69,
+        "data_7202_21_sch_3_13b":  Schedule3_13b,
+        "data_7202_21_sch_3_13h": Schedule3_13h
+    }
+
+    return data_7202_21
+
+
+def get_sch_3_21_data(data_variables):
+
+    data_7202_21 = get_7202_21_data(data_variables)
+
+    twentyOne_schd3_13b = data_7202_21['data_7202_21_sch_3_13b']
+
+    twentyOne_schd3_13h = data_7202_21['data_7202_21_sch_3_13h']
+
+    twentyOne_schd3_14 = twentyOne_schd3_13b + twentyOne_schd3_13h
+
+    twentyOne_schd3_15 = twentyOne_schd3_14
+
+    data_sch_3_21 = {
+        "data_sch_3_21_13b": twentyOne_schd3_13b,
+        "data_sch_3_21_13h": twentyOne_schd3_13h,
+        "data_sch_3_21_14": twentyOne_schd3_14,
+        "data_sch_3_21_15": twentyOne_schd3_15
+    }
+
+    return data_sch_3_21
+
+
+def get_1040_21_data(data_variables):
+
+    instructions_data = get_instructions_data(data_variables)
+    data_sch_3_21 = get_sch_3_21_data(data_variables)
+
+    twentyOne_1040_1 =  instructions_data['twenty_twenty_one_wages_salaries_tips_etc']
+    twentyOne_1040_2a = instructions_data['twenty_twenty_one_tax_exempt_interest']
+    twentyOne_1040_2b = instructions_data['twenty_twenty_one_taxable_interest_income']
+    twentyOne_1040_3a = instructions_data['twenty_twenty_one_qualified_dividends']
+    twentyOne_1040_3b = instructions_data['twenty_twenty_one_ordinary_dividend_income']
+    twentyOne_1040_4a = instructions_data['twenty_twenty_one_total_IRA_distributions']
+    twentyOne_1040_4b = instructions_data['twenty_twenty_one_taxable_IRA_distributions']
+    twentyOne_1040_5a = instructions_data['twenty_twenty_one_total_pensions_and_annuities']
+    twentyOne_1040_5b = instructions_data['twenty_twenty_one_taxable_pension_annuity_amount']
+    twentyOne_1040_6a = instructions_data['twenty_twenty_one_total_social_security_benefits']
+    twentyOne_1040_6b = instructions_data['twenty_twenty_one_taxable_social_security_benefits_per_computer']
+    twentyOne_1040_7 =  instructions_data['twenty_twenty_one_capital_gain_or_loss']
+    twentyOne_1040_8 =  instructions_data['twenty_twenty_one_other_income']
+    twentyOne_1040_9 = twentyOne_1040_1 + twentyOne_1040_2b + twentyOne_1040_3b + twentyOne_1040_4b + twentyOne_1040_5b + twentyOne_1040_6b + twentyOne_1040_7 + twentyOne_1040_8
+    twentyOne_1040_10 = instructions_data['twenty_twenty_one_total_adjustments_per_computer']
+
+    # =AB43-AB44
+    twentyOne_1040_11 = abs(twentyOne_1040_9 - twentyOne_1040_10)
+    twentyOne_1040_12a = instructions_data['twenty_twenty_one_standard_deduction_per_computer']
+    twentyOne_1040_12b = instructions_data['twenty_twenty_one_non_itemized_charitable_contribution_per_computer']
+    twentyOne_1040_12c = twentyOne_1040_12a + twentyOne_1040_12b
+    twentyOne_1040_13 = instructions_data['twenty_twenty_one_qualified_business_income_deduction_computer']
+    # =AB48+AB49
+    twentyOne_1040_14 = twentyOne_1040_12c + twentyOne_1040_13
+
+    # =IF(AB45-AB50<0,"0",AB45-AB50)
+    twentyOne_1040_15 = 0
+    if twentyOne_1040_11 - twentyOne_1040_14 < 0:
+        twentyOne_1040_15 = "0"
+    else:
+        twentyOne_1040_15 = twentyOne_1040_11 - twentyOne_1040_14
+
+    twentyOne_1040_16 = instructions_data['twenty_twenty_one_tentative_tax']
+    twentyOne_1040_17 = 0
+
+    # =AB54+AB55
+    twentyOne_1040_18 = twentyOne_1040_16 + twentyOne_1040_17
+    twentyOne_1040_19 = instructions_data['twenty_twenty_one_child_and_other_dependent_credit_per_computer']
+    twentyOne_1040_20 = 0
+    # =AB57+AB58
+    twentyOne_1040_21 = twentyOne_1040_19 + twentyOne_1040_20
+
+    # =IF(AB56-AB59<0,0,AB56-AB59)
+    twentyOne_1040_22 = 0
+    if twentyOne_1040_18 - twentyOne_1040_21 < 0:
+        twentyOne_1040_22 = 0
+    else:
+        twentyOne_1040_22 = twentyOne_1040_18 - twentyOne_1040_21
+
+    twentyOne_1040_23 = instructions_data['twenty_twenty_one_SE_tax']
+
+    # =AB60+AB61
+    twentyOne_1040_24 = twentyOne_1040_22 + twentyOne_1040_23
+    twentyOne_1040_25a = 0
+    twentyOne_1040_25b = 0
+    twentyOne_1040_25c = 0
+    twentyOne_1040_25d = 0
+    twentyOne_1040_26 = instructions_data['twenty_twenty_one_applied_to_next_years_estimated_tax']
+    twentyOne_1040_27a = instructions_data['twenty_twenty_one_earned_income_credit']
+    twentyOne_1040_28 = instructions_data['twenty_twenty_one_schedule_8812_additional_child_tax_credit']
+    twentyOne_1040_29 = instructions_data['twenty_twenty_one_total_education_credit_amount_per_computer']
+    twentyOne_1040_30 = instructions_data['twenty_twenty_one_recovery_rebate_credit_per_computer']
+    twentyOne_1040_31 = data_sch_3_21['data_sch_3_21_15']
+    twentyOne_1040_32 = twentyOne_1040_27a + twentyOne_1040_28 + twentyOne_1040_29 + twentyOne_1040_30 + twentyOne_1040_31
+
+    # =AB67+AB68+AB79
+    twentyOne_1040_33 = twentyOne_1040_25d + twentyOne_1040_26 + twentyOne_1040_32
+
+    # =IF(AB80>AB62,AB80-AB62,0)
+    twentyOne_1040_34 = twentyOne_1040_33 - twentyOne_1040_24 if twentyOne_1040_33 > twentyOne_1040_24 else 0
+
+    twentyOne_1040_35a = twentyOne_1040_34
+
+    twentyOne_1040_36 = 0
+
+    # =IF(AB81=0,AB62-AB80,0)
+    twentyOne_1040_37 = 0
+    if twentyOne_1040_34 == 0:
+        result = twentyOne_1040_24 - twentyOne_1040_33
+    else:
+        result = 0
+
+    twentyOne_1040_38 = instructions_data['twenty_twenty_one_applied_to_next_years_estimated_tax']
+
+    data_1040_21 = {
+        "data_1040_21_1": twentyOne_1040_1,
+        "data_1040_21_2a": twentyOne_1040_2a,
+        "data_1040_21_3a": twentyOne_1040_3a,
+        "data_1040_21_4a": twentyOne_1040_4a,
+        "data_1040_21_5a": twentyOne_1040_5a,
+        "data_1040_21_6a": twentyOne_1040_6a,
+        "data_1040_21_7": twentyOne_1040_7,
+        "data_1040_21_8": twentyOne_1040_8,
+        "data_1040_21_9": twentyOne_1040_9,
+        "data_1040_21_10": twentyOne_1040_10,
+        "data_1040_21_11": twentyOne_1040_11,
+        "data_1040_21_12a": twentyOne_1040_12a,
+        "data_1040_21_12b": twentyOne_1040_12b,
+        "data_1040_21_12c": twentyOne_1040_12c,
+        "data_1040_21_13": twentyOne_1040_13,
+        "data_1040_21_14": twentyOne_1040_14,
+        "data_1040_21_15": twentyOne_1040_15,
+        "data_1040_21_16": twentyOne_1040_16,
+        "data_1040_21_17": twentyOne_1040_17,
+        "data_1040_21_18": twentyOne_1040_18,
+        "data_1040_21_19": twentyOne_1040_19,
+        "data_1040_21_20": twentyOne_1040_20,
+        "data_1040_21_21": twentyOne_1040_21,
+        "data_1040_21_22": twentyOne_1040_22,
+        "data_1040_21_23": twentyOne_1040_23,
+        "data_1040_21_24": twentyOne_1040_24,
+        "data_1040_21_25a": twentyOne_1040_25a,
+        "data_1040_21_25b": twentyOne_1040_25b,
+        "data_1040_21_25c": twentyOne_1040_25c,
+        "data_1040_21_25d": twentyOne_1040_25d,
+        "data_1040_21_26": twentyOne_1040_26,
+        "data_1040_21_27a": twentyOne_1040_27a,
+        "data_1040_21_28": twentyOne_1040_28,
+        "data_1040_21_29": twentyOne_1040_29,
+        "data_1040_21_30": twentyOne_1040_30,
+        "data_1040_21_31": twentyOne_1040_31,
+        "data_1040_21_32": twentyOne_1040_32,
+        "data_1040_21_33": twentyOne_1040_33,
+        "data_1040_21_34": twentyOne_1040_34,
+        "data_1040_21_35a": twentyOne_1040_35a,
+        "data_1040_21_36": twentyOne_1040_36,
+        "data_1040_21_37": twentyOne_1040_37,
+        "data_1040_21_38": twentyOne_1040_38
+    }
+
+    return data_1040_21
+
+
+
+def get_1040x_21_data(data_variables):
+    #1040X Extra Data Variables
+    data_sch_3_21 = get_sch_3_21_data(data_variables)
+    data_1040_21 = get_1040_21_data(data_variables)
+
+    twentyOne_Orig_1040_28 = data_1040_21['data_1040_21_28']
+    twentyOne_Orig_1040_29 = data_1040_21['data_1040_21_29']
+    twentyOne_Orig_1040_30 = data_1040_21['data_1040_21_30']
+    twentyOne_Orig_1040_31 = data_sch_3_21['data_sch_3_21_13h']
+    twentyOne_Orig_1040_37 = 0 if data_1040_21['data_1040_21_37'] == 0 else data_1040_21['data_1040_21_37']
+    Orig_1040_twentyOne_38 = 0 if data_1040_21['data_1040_21_37'] <= 0 else data_1040_21['data_1040_21_38']
+
+    twentyOne_1040x_11a = data_1040_21['data_1040_21_24']
+    twentyOne_1040x_11c = twentyOne_1040x_11a
+    twentyOne_1040x_12a = data_1040_21['data_1040_21_25d']
+    twentyOne_1040x_12c = twentyOne_1040x_12a
+    twentyOne_1040x_13a = data_1040_21['data_1040_21_26']
+    twentyOne_1040x_13c = twentyOne_1040x_13a
+    twentyOne_1040x_14a = data_1040_21['data_1040_21_27a']
+    twentyOne_1040x_14c = twentyOne_1040x_14a
+    twentyOne_1040x_15a = data_1040_21['data_1040_21_28'] + data_1040_21['data_1040_21_29'] + data_1040_21['data_1040_21_30']
+    twentyOne_1040x_15b = twentyOne_Orig_1040_31
+    twentyOne_1040x_15c = twentyOne_1040x_15a + twentyOne_1040x_15b
+
+    # =IF(J44-J45+J49<=0,0,J44-J45+J49)
+    twentyOne_1040x_16 = 0 if twentyOne_Orig_1040_37 - Orig_1040_twentyOne_38 <= 0 else twentyOne_Orig_1040_37 - Orig_1040_twentyOne_38
+
+    twentyOne_1040x_17 = twentyOne_1040x_12c + twentyOne_1040x_13c + twentyOne_1040x_14c + twentyOne_1040x_15c
+
+    # twenty_1040_18 = 0 if twenty1040_34 - Total_2020_Credit <= 0 else twenty1040_34 - Total_2020_Credit
+    twentyOne_1040x_18 = abs(data_1040_21['data_1040_21_34'] - data_1040_21['data_1040_21_31'])
+    # =S29-S30
+    twentyOne_1040x_19 = abs(twentyOne_1040x_17 - twentyOne_1040x_18)
+
+    # =IF(S23>S31,S23-S31,0)
+    twentyOne_1040x_20 = twentyOne_1040x_11c - twentyOne_1040x_19 if twentyOne_1040x_11c > twentyOne_1040x_19 else 0
+
+    # =IF(S23<S31,S31-S23,0)
+    twentyOne_1040x_21 = twentyOne_1040x_19 - twentyOne_1040x_11c if twentyOne_1040x_11c < twentyOne_1040x_19 else 0
+    # Define twenty_1040_2
+    twentyOne_1040x_22 = 0 if twentyOne_1040x_21 <= 0 else twentyOne_1040x_21
+
+    data_1040x_21 = {
+        "data_1040x_21_original_1": '',
+        "data_1040x_21_correct_1": '',
+        "data_1040x_21_original_2": '',
+        "data_1040x_21_correct_2": '',
+        "data_1040x_21_original_3": '',
+        "data_1040x_21_correct_3": '',
+        "data_1040x_21_original_4a": '',
+        "data_1040x_21_correct_4a": '',
+        "data_1040x_21_original_4b": '',
+        "data_1040x_21_correct_4b": '',
+        "data_1040x_21_original_5": '',
+        "data_1040x_21_correct_5": '',
+        "data_1040x_21_original_6": '',
+        "data_1040x_21_correct_6": '',
+        "data_1040x_21_original_7": '',
+        "data_1040x_21_correct_7": '',
+        "data_1040x_21_original_8": '',
+        "data_1040x_21_correct_8": '',
+        "data_1040x_21_original_9": '',
+        "data_1040x_21_correct_9": '',
+        "data_1040x_21_original_10": '',
+        "data_1040x_21_correct_10": '',
+        "data_1040x_21_original_11": twentyOne_1040x_11a,
+        "data_1040x_21_correct_11": twentyOne_1040x_11c,
+        "data_1040x_21_original_12": twentyOne_1040x_12a,
+        "data_1040x_21_correct_12": twentyOne_1040x_12c,
+        "data_1040x_21_original_13": twentyOne_1040x_13a,
+        "data_1040x_21_correct_13": twentyOne_1040x_13c,
+        "data_1040x_21_original_14": twentyOne_1040x_14a,
+        "data_1040x_21_correct_14": twentyOne_1040x_14c,
+        "data_1040x_21_original_15": twentyOne_1040x_15a,
+        "data_1040x_21_correct_15": twentyOne_1040x_15c,
+        "data_1040x_21_change_15": twentyOne_1040x_15b,
+        "data_1040x_21_correct_16": twentyOne_1040x_16,
+        "data_1040x_21_correct_17": twentyOne_1040x_17,
+        "data_1040x_21_correct_18": twentyOne_1040x_18,
+        "data_1040x_21_correct_19": twentyOne_1040x_19,
+        "data_1040x_21_correct_20": twentyOne_1040x_20,
+        "data_1040x_21_correct_21": twentyOne_1040x_21,
+        "data_1040x_21_correct_22": twentyOne_1040x_22,
+        "data_1040x_21_23": '',
+        "data_1040x_21_28": twentyOne_Orig_1040_28,
+        "data_1040x_21_29": twentyOne_Orig_1040_29,
+        "data_1040x_21_30": twentyOne_Orig_1040_30,
+        "data_1040x_21_31": twentyOne_Orig_1040_31,
+        "data_1040x_21_37": twentyOne_Orig_1040_37,
+        "data_1040x_21_38": Orig_1040_twentyOne_38,
+        "data_1040x_21_org_sch_3_10": ''
+    }
+
+
+    return data_1040x_21
+
+

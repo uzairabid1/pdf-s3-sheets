@@ -497,14 +497,14 @@ def fill_calculation_sheet():
             last_name = final_result.get('items', [])[0].get('Last_Name', '')
             email = final_result.get('items', [])[0].get('Email', '')
 
-            # response_email_exists = make_get_request(
-            #     f"https://xyrm-sqqj-hx6t.n7c.xano.io/api:zFwSjuSC/has_email_21_1040x?email={email}")
-            response_email_exists_2020 = make_get_request(f"https://xyrm-sqqj-hx6t.n7c.xano.io/api:zFwSjuSC/email_exists_2020_7202?email={email}")
+            response_email_exists = make_get_request(
+                f"https://xyrm-sqqj-hx6t.n7c.xano.io/api:zFwSjuSC/has_email_21_1040x?email={email}")
+            # response_email_exists_2020 = make_get_request(f"https://xyrm-sqqj-hx6t.n7c.xano.io/api:zFwSjuSC/email_exists_2020_7202?email={email}")
 
-            # email_exists = response_email_exists.json()
-            email_exists_20 = response_email_exists_2020.json()
+            email_exists = response_email_exists.json()
+            # email_exists_20 = response_email_exists_2020.json()
 
-            if email_exists_20 == True:
+            if email_exists == True:
                 print(f"Skipping {page},{email} already exists")
                 page += 1
                 continue
@@ -529,105 +529,97 @@ def fill_calculation_sheet():
             # new_7202_21_38b = data_variables[0]['new_intake_data']['data_new_7202_21_38b']
             # new_7202_21_40b = data_variables[0]['new_intake_data']['data_new_7202_21_40b']
             
-            print(f"Processing year 2020 page={page}")
+            # print(f"Processing year 2020 page={page}")
 
-            data_7202_20 = get_7202_20_data(data_variables)
-            payload_7202_20 = {
-                    "First_Name": first_name,
-                    "Last_Name": last_name,
-                    "Email": email,
-                    "result": data_7202_20
-                }
+            # data_7202_20 = get_7202_20_data(data_variables)
+            # payload_7202_20 = {
+            #         "First_Name": first_name,
+            #         "Last_Name": last_name,
+            #         "Email": email,
+            #         "result": data_7202_20
+            #     }
 
-            requests.post(db_7202_20_url, json=payload_7202_20)
+            # requests.post(db_7202_20_url, json=payload_7202_20)
 
-            data_sch_3_20 = get_sch_3_20_data(data_variables)
+            # data_sch_3_20 = get_sch_3_20_data(data_variables)
 
-            payload_sch_3_20 = {
-                    "First_Name": first_name,
-                    "Last_Name": last_name,
-                    "Email": email,
-                    "result": data_sch_3_20
-                }
+            # payload_sch_3_20 = {
+            #         "First_Name": first_name,
+            #         "Last_Name": last_name,
+            #         "Email": email,
+            #         "result": data_sch_3_20
+            #     }
 
-            requests.post(db_sch_3_20_url, json=payload_sch_3_20)
+            # requests.post(db_sch_3_20_url, json=payload_sch_3_20)
 
-            data_1040_20 = get_1040_20_data(data_variables)
+            # data_1040_20 = get_1040_20_data(data_variables)
 
-            payload_1040_20 = {
-                    "First_Name": first_name,
-                    "Last_Name": last_name,
-                    "Email": email,
-                    "result": data_1040_20
-                }
+            # payload_1040_20 = {
+            #         "First_Name": first_name,
+            #         "Last_Name": last_name,
+            #         "Email": email,
+            #         "result": data_1040_20
+            #     }
 
-            requests.post(db_1040_20_url, json=payload_1040_20)
+            # requests.post(db_1040_20_url, json=payload_1040_20)
 
-            data_1040x_20 = get_1040x_20_data(data_variables)
+            # data_1040x_20 = get_1040x_20_data(data_variables)
 
-            payload_1040x_20 = {
-                    "First_Name": first_name,
-                    "Last_Name": last_name,
-                    "Email": email,
-                    "result": data_1040x_20
-                }
+            # payload_1040x_20 = {
+            #         "First_Name": first_name,
+            #         "Last_Name": last_name,
+            #         "Email": email,
+            #         "result": data_1040x_20
+            #     }
 
-            requests.post(db_1040x_20_url, json=payload_1040x_20)
+            # requests.post(db_1040x_20_url, json=payload_1040x_20)
 
             
-            # print(f"Processing year 2021 page={page}")
-            # data_7202_21 = get_7202_21_data(sheet_name)
+            print(f"Processing year 2021 page={page}")
+            data_7202_21 = get_7202_21_data(data_variables)
 
-            # payload_7202_21 = {
-            #         "First_Name": first_name,
-            #         "Last_Name": last_name,
-            #         "Email": email,
-            #         "result": data_7202_21,
-            #         "old_7202_21_4b": old_7202_21_4b,
-            #         "old_7202_21_6b": old_7202_21_6b,
-            #         "old_7202_21_38": old_7202_21_38,
-            #         "old_7202_21_40": old_7202_21_40,
-            #         "new_7202_21_4b": new_7202_21_4b,
-            #         "new_7202_21_6b": new_7202_21_6b,
-            #         "new_7202_21_38b": new_7202_21_38b,
-            #         "new_7202_21_40b": new_7202_21_40b
-            #     }
+            payload_7202_21 = {
+                    "First_Name": first_name,
+                    "Last_Name": last_name,
+                    "Email": email,
+                    "result": data_7202_21
+                }
 
-            # requests.post(db_7202_21_url, json=payload_7202_21)
+            requests.post(db_7202_21_url, json=payload_7202_21)
 
-            # data_sch_3_21 = get_sch_3_21_data(sheet_name)
+            data_sch_3_21 = get_sch_3_21_data(data_variables)
 
-            # payload_sch_3_21 = {
-            #         "First_Name": first_name,
-            #         "Last_Name": last_name,
-            #         "Email": email,
-            #         "result": data_sch_3_21
-            #     }
+            payload_sch_3_21 = {
+                    "First_Name": first_name,
+                    "Last_Name": last_name,
+                    "Email": email,
+                    "result": data_sch_3_21
+                }
 
-            # requests.post(db_sch_3_21_url, json=payload_sch_3_21)
+            requests.post(db_sch_3_21_url, json=payload_sch_3_21)
 
-            # data_1040_21 = get_1040_21_data(sheet_name)
+            data_1040_21 = get_1040_21_data(data_variables)
 
-            # payload_1040_21 = {
-            #         "First_Name": first_name,
-            #         "Last_Name": last_name,
-            #         "Email": email,
-            #         "result": data_1040_21
-            #     }
+            payload_1040_21 = {
+                    "First_Name": first_name,
+                    "Last_Name": last_name,
+                    "Email": email,
+                    "result": data_1040_21
+                }
 
-            # requests.post(db_1040_21_url, json=payload_1040_21)
+            requests.post(db_1040_21_url, json=payload_1040_21)
 
-            # data_1040x_21 = get_1040x_21_data(sheet_name)
+            data_1040x_21 = get_1040x_21_data(data_variables)
 
-            # payload_1040x_21 = {
-            #     "First_Name": first_name,
-            #         "Last_Name": last_name,
-            #         "Email": email,
-            #         "result": data_1040x_21
-            #     }
+            payload_1040x_21 = {
+                    "First_Name": first_name,
+                    "Last_Name": last_name,
+                    "Email": email,
+                    "result": data_1040x_21
+                }
 
-            # requests.post(db_1040x_21_url, json=payload_1040x_21)
-
+            requests.post(db_1040x_21_url, json=payload_1040x_21)
+            print(f'page {page} completed')
             page += 1
 
     except requests.exceptions.RequestException as e:

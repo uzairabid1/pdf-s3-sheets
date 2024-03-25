@@ -260,6 +260,10 @@ def get_instructions_data(data_variables):
     if twenty_EIC_prior_year_earned_income is None:
         twenty_EIC_prior_year_earned_income = 0
 
+    twenty_recovery_rebate_credit_per_computer = int(data_variables[0]['2021']['RECOVERY REBATE CREDIT PER COMPUTER'])
+    if twenty_recovery_rebate_credit_per_computer is None:
+        twenty_recovery_rebate_credit_per_computer = 0
+
             
 
     # Data for 2021 
@@ -478,7 +482,10 @@ def get_instructions_data(data_variables):
     twenty_twenty_one_EIC_prior_year_earned_income = int(data_variables[0]['2021']['EIC PRIOR YEAR EARNED INCOME'])
     if twenty_twenty_one_EIC_prior_year_earned_income is None:
         twenty_twenty_one_EIC_prior_year_earned_income = 0
-
+    
+    twenty_twenty_one_recovery_rebate_credit_per_computer = int(data_variables[0]['2021']['RECOVERY REBATE CREDIT PER COMPUTER'])
+    if twenty_twenty_one_recovery_rebate_credit_per_computer is None:
+        twenty_twenty_one_recovery_rebate_credit_per_computer = 0
 
 
     # Data from Zoho
@@ -620,62 +627,62 @@ def get_instructions_data(data_variables):
 
     Zoho_21_7202_38b =	"04/01 04/02 04/03 04/04 04/05 04/06/ 04/07 04/08 04/09 04/10"
     if Gov_April_1_2021_through_September_30_2021 == 0:
-        Zoho_21_7202_38b = ""
+        Zoho_21_7202_5b = ""
     elif Gov_April_1_2021_through_September_30_2021 == 1:
-        Zoho_21_7202_38b = "04/01"
+        Zoho_21_7202_5b = "04/01"
     elif Gov_April_1_2021_through_September_30_2021 == 2:
-        Zoho_21_7202_38b = "04/01 04/02"
+        Zoho_21_7202_5b = "04/01 04/02"
     elif Gov_April_1_2021_through_September_30_2021 == 3:
-        Zoho_21_7202_38b = "04/01 04/02 04/03"
+        Zoho_21_7202_5b = "04/01 04/02 04/03"
     elif Gov_April_1_2021_through_September_30_2021 == 4:
-        Zoho_21_7202_38b = "04/01 04/02 04/03 04/04"
+        Zoho_21_7202_5b = "04/01 04/02 04/03 04/04"
     elif Gov_April_1_2021_through_September_30_2021 == 5:
-        Zoho_21_7202_38b = "04/01 04/02 04/03 04/04 04/05"
+        Zoho_21_7202_5b = "04/01 04/02 04/03 04/04 04/05"
     elif Gov_April_1_2021_through_September_30_2021 == 6:
-        Zoho_21_7202_38b = "04/01 04/02 04/03 04/04 04/05 04/06"
+        Zoho_21_7202_5b = "04/01 04/02 04/03 04/04 04/05 04/06"
     elif Gov_April_1_2021_through_September_30_2021 == 7:
-        Zoho_21_7202_38b = "04/01 04/02 04/03 04/04 04/05 04/06 04/07"
+        Zoho_21_7202_5b = "04/01 04/02 04/03 04/04 04/05 04/06 04/07"
     elif Gov_April_1_2021_through_September_30_2021 == 8:
-        Zoho_21_7202_38b = "04/01 04/02 04/03 04/04 04/05 04/06 04/07 04/08"
+        Zoho_21_7202_5b = "04/01 04/02 04/03 04/04 04/05 04/06 04/07 04/08"
     elif Gov_April_1_2021_through_September_30_2021 == 9:
-        Zoho_21_7202_38b = "04/01 04/02 04/03 04/04 04/05 04/06 04/07 04/08 04/09"
+        Zoho_21_7202_5b = "04/01 04/02 04/03 04/04 04/05 04/06 04/07 04/08 04/09"
     elif Gov_April_1_2021_through_September_30_2021 == 10:
-        Zoho_21_7202_38b = "04/01 04/02 04/03 04/04 04/05 04/06 04/07 04/08 04/09 04/10"
+        Zoho_21_7202_5b = "04/01 04/02 04/03 04/04 04/05 04/06 04/07 04/08 04/09 04/10"
     else:
-        Zoho_21_7202_38b = ""  # handle cases where Gov_April_1_2021_through_September_30_2021 is out of range
+        Zoho_21_7202_5b = ""  # handle cases where Gov_April_1_2021_through_September_30_2021 is out of range
 
-    print(Zoho_21_7202_38b)
+    print(Zoho_21_7202_5b)
 
     Zoho_21_7202_40b =	"04/11 04/12 04/13 04/14 04/15 04/16/ 04/17 04/18 04/19 04/20"
     # Assuming Child_April_1_2021_through_September_30_2021 holds a numeric value
     Child_April_1_2021_through_September_30_2021 = 4  # Example value
 
     if Child_April_1_2021_through_September_30_2021 == 0:
-        Zoho_21_7202_48b = ""
+        Zoho_21_7202_6b = ""
     elif Child_April_1_2021_through_September_30_2021 == 1:
-        Zoho_21_7202_48b = "04/11"
+        Zoho_21_7202_6b = "04/11"
     elif Child_April_1_2021_through_September_30_2021 == 2:
-        Zoho_21_7202_48b = "04/11 04/12"
+        Zoho_21_7202_6b = "04/11 04/12"
     elif Child_April_1_2021_through_September_30_2021 == 3:
-        Zoho_21_7202_48b = "04/11 04/12 04/13"
+        Zoho_21_7202_6b = "04/11 04/12 04/13"
     elif Child_April_1_2021_through_September_30_2021 == 4:
-        Zoho_21_7202_48b = "04/11 04/12 04/13 04/14"
+        Zoho_21_7202_6b = "04/11 04/12 04/13 04/14"
     elif Child_April_1_2021_through_September_30_2021 == 5:
-        Zoho_21_7202_48b = "04/11 04/12 04/13 04/14 04/15"
+        Zoho_21_7202_6b = "04/11 04/12 04/13 04/14 04/15"
     elif Child_April_1_2021_through_September_30_2021 == 6:
-        Zoho_21_7202_48b = "04/11 04/12 04/13 04/14 04/15 04/16"
+        Zoho_21_7202_6b = "04/11 04/12 04/13 04/14 04/15 04/16"
     elif Child_April_1_2021_through_September_30_2021 == 7:
-        Zoho_21_7202_48b = "04/11 04/12 04/13 04/14 04/15 04/16 04/17"
+        Zoho_21_7202_6b = "04/11 04/12 04/13 04/14 04/15 04/16 04/17"
     elif Child_April_1_2021_through_September_30_2021 == 8:
-        Zoho_21_7202_48b = "04/11 04/12 04/13 04/14 04/15 04/16 04/17 04/18"
+        Zoho_21_7202_6b = "04/11 04/12 04/13 04/14 04/15 04/16 04/17 04/18"
     elif Child_April_1_2021_through_September_30_2021 == 9:
-        Zoho_21_7202_48b = "04/11 04/12 04/13 04/14 04/15 04/16 04/17 04/18 04/19"
+        Zoho_21_7202_6b = "04/11 04/12 04/13 04/14 04/15 04/16 04/17 04/18 04/19"
     elif Child_April_1_2021_through_September_30_2021 == 10:
-        Zoho_21_7202_48b = "04/11 04/12 04/13 04/14 04/15 04/16 04/17 04/18 04/19 04/20"
+        Zoho_21_7202_6b = "04/11 04/12 04/13 04/14 04/15 04/16 04/17 04/18 04/19 04/20"
     else:
-        Zoho_21_7202_48b = ""  # handle cases where Child_April_1_2021_through_September_30_2021 is out of range
+        Zoho_21_7202_6b = ""  # handle cases where Child_April_1_2021_through_September_30_2021 is out of range
 
-    print(Zoho_21_7202_48b)
+    print(Zoho_21_7202_6b)
 
 
 
@@ -1014,6 +1021,7 @@ def get_instructions_data(data_variables):
         'twenty_earned_income_credit_nontaxable_combat_pay': twenty_earned_income_credit_nontaxable_combat_pay,
         'twenty_max_deferred_tax_per_computer': twenty_max_deferred_tax_per_computer,
         'twenty_EIC_prior_year_earned_income': twenty_EIC_prior_year_earned_income,   
+        'twenty_recovery_rebate_credit_per_computer': twenty_recovery_rebate_credit_per_computer,
         'twenty_twenty_one_qualified_business_income_deduction_computer': twenty_twenty_one_qualified_business_income_deduction_computer,
         'twenty_twenty_one_self_employment_tax_deduction_per_computer': twenty_twenty_one_self_employment_tax_deduction_per_computer,
         'twenty_twenty_one_adjusted_gross_income': twenty_twenty_one_adjusted_gross_income,
@@ -1067,7 +1075,8 @@ def get_instructions_data(data_variables):
         'twenty_twenty_one_applied_to_next_years_estimated_tax': twenty_twenty_one_applied_to_next_years_estimated_tax,
         'twenty_twenty_one_earned_income_credit_nontaxable_combat_pay': twenty_twenty_one_earned_income_credit_nontaxable_combat_pay,
         'twenty_twenty_one_max_deferred_tax_per_computer': twenty_twenty_one_max_deferred_tax_per_computer,
-        'twenty_twenty_one_EIC_prior_year_earned_income': twenty_twenty_one_EIC_prior_year_earned_income,       
+        'twenty_twenty_one_EIC_prior_year_earned_income': twenty_twenty_one_EIC_prior_year_earned_income,
+        'twenty_twenty_one_recovery_rebate_credit_per_computer': twenty_twenty_one_recovery_rebate_credit_per_computer,       
         'Child_April_1_2020_through_December_31_2020': Child_April_1_2020_through_December_31_2020,
         'Email': Email,
         'Child_January_1_2021_through_March_31_2021': Child_January_1_2021_through_March_31_2021,
@@ -1090,6 +1099,6 @@ def get_instructions_data(data_variables):
 
 
     return instructions_data
-    # print(New_Intake_Dates_21_7202_40b)
+
 
 
