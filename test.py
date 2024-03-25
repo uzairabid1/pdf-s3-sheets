@@ -14,12 +14,7 @@ from PyPDF2 import PdfFileMerger
 import math
 
 
-s3_access_key='AKIA6JCJSXCO2MTZUJXG'
-s3_secret_key='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'
-s3_bucket_name='setcpro-automate-boring'
-s3_bucket_region ='us-east-2'
 
-API_KEY = "ben@automateboring.net_MuC2b1kLoT6q59O4CygKR64aS0oUN8v6h9kTdb43vV7WKNpv1M30a9L9PKW57W8M2qkXkU4DP67CuZ9lL1I27ZC4FF7H9H61bkG062L1bUZT7kpH233cJHi3dudENR3ckELQ5DE59wPrR34ckq77655499"
 
 BASE_URL = "https://api.pdf.co/v1"
 
@@ -29,7 +24,6 @@ DestinationFile = ".\\result.pdf"
 
 Async = "False"
 
-BASE_URL_XANO = "https://xyrm-sqqj-hx6t.n7c.xano.io"
 
 def combine_fields(data_1040_20,data_1040x_20,data_7202_20,data_sch_3_20):
 

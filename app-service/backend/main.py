@@ -407,7 +407,6 @@ def update_taxCredit_21():
 
         try:
             cell = sheet.find(email)
-            time.sleep(0.2)
             row_index = cell.row
         except:
             print(f"Email {email} not found in the sheet.")
@@ -446,7 +445,6 @@ def update_taxCredit_20():
             continue
         try:
             cell = sheet.find(email)
-            time.sleep(0.2)
             row_index = cell.row
         except:
             print(f"Email {email} not found in the sheet.")
@@ -753,5 +751,8 @@ def fill_pdf_20():
         return {"message": "error"}
 
     return {"message":f"filled and updated {pdf_count} pdfs"}       
+
+
+
 if __name__ == '__main__':
     app.run(debug=True)
