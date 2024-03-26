@@ -42,6 +42,7 @@ pdf_co_key = os.getenv('pdf_co_key')
 PDF_BASE_URL = "https://api.pdf.co/v1"
 
 template_20_pdf = "https://setcpro-automate-boring.s3.us-east-2.amazonaws.com/form_2020_merged_final_output.pdf"
+template_21_pdf = "https://setcpro-automate-boring.s3.us-east-2.amazonaws.com/f1040-2021_merged.pdf"
 
 gsheet_scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
 gsheet_creds = ServiceAccountCredentials.from_json_keyfile_name("credentials.json", gsheet_scope)
@@ -744,7 +745,103 @@ def fill_pdf_20():
 
     return {"message":f"filled and updated {pdf_count} pdfs"}       
 
+@app.route('/fill_pdf_21', methods=["POST"])
+def fillPDFForm21():
+    sheet_name = 'SETCPRO-D1-March-Child'
+    try:
+        data = request.json
+        page = data['page']
+        per_page = data['per_page']
+        offset = data['offset']
+    except KeyError:
+        return {"message": "Required data not provided in JSON request"}, 400
 
+    @retry(
+        stop=stop_after_attempt(10), 
+        wait=wait_exponential(multiplier=1, min=1, max=20)
+    )
+    def make_get_request(url):
+        response = requests.get(url)
+        response.raise_for_status()
+        return response
+
+    
+    sheet = gsheet_client.open(sheet_name).get_worksheet(0)  
+
+    pdf_count = 0     
+
+    try:
+        total_count_response = make_get_request("https://xyrm-sqqj-hx6t.n7c.xano.io/api:zFwSjuSC/get_users_count")
+        total_count = total_count_response.json()
+
+        total_pages = math.ceil(total_count / per_page)
+
+        while page <= total_pages:
+            final_result_response = make_get_request(
+                f"https://xyrm-sqqj-hx6t.n7c.xano.io/api:zFwSjuSC/get_users?page={page}&per_page={per_page}&offset={offset}")
+            final_result = final_result_response.json()
+
+            first_name = final_result.get('items', [])[0].get('First_Name', '')
+            last_name = final_result.get('items', [])[0].get('Last_Name', '')
+            email = final_result.get('items', [])[0].get('Email', '')
+
+            destinationFile = f"{first_name.replace(' ','_')}_{last_name.replace(' ','_')}_filled_pdf_1.pdf"
+
+            print(email)
+    
+            try:
+                email_cell = sheet.find(email)
+                pdf_2_value = sheet.cell(email_cell.row, 5).value
+            except:
+                page+=1
+                continue
+            if not pdf_2_value:
+                response_1040 =  requests.get(f"https://xyrm-sqqj-hx6t.n7c.xano.io/api:Dga0jXwg/get_1040_21_email?email={email}")
+                response_1040x = requests.get(f"https://xyrm-sqqj-hx6t.n7c.xano.io/api:Dga0jXwg/get_1040x_21_email?email={email}")
+                response_7202 =  requests.get(f"https://xyrm-sqqj-hx6t.n7c.xano.io/api:Dga0jXwg/get_7202_21_email?email={email}")
+                response_sch_3 = requests.get(f"https://xyrm-sqqj-hx6t.n7c.xano.io/api:Dga0jXwg/get_sch_3_21_email?email={email}")
+
+                data_variables_1040_21 = response_1040.json()
+                data_variables_1040x_21 = response_1040x.json()
+                data_variables_7202_21 = response_7202.json()
+                data_variables_sch_3_21 = response_sch_3.json()
+                
+                try:
+                    FieldsStrings = combine_fields_21(data_variables_1040_21, data_variables_1040x_21, data_variables_7202_21, data_variables_sch_3_21)
+                except:
+                    print('combine error, skipping')
+                    page+=1
+                    continue
+
+                parameters = {}
+                parameters["name"] = os.path.basename(destinationFile)
+                parameters["url"] = template_21_pdf
+                parameters["fieldsString"] = FieldsStrings
+                parameters["async"] = "False"
+
+                url = "{}/pdf/edit/add".format(PDF_BASE_URL)
+
+                response = requests.post(url, data=parameters, headers={"x-api-key": pdf_co_key})
+                if response.status_code == 200:
+                    json_data = response.json()
+
+                    if not json_data["error"]:
+                        resultFileUrl = json_data["url"]
+                        s3_url = upload_pdf_to_s3(resultFileUrl, os.path.basename(destinationFile))
+                        sheet.update_cell(email_cell.row,5,s3_url)
+                        pdf_count += 1
+                        print(f"pdf 2 updated for {email}")
+                    else:
+                        print(json_data["message"])
+                else:
+                    print(f"Request error: {response.status_code} {response.reason}")
+            else:
+                print(f"PDF 2 value exists for {email}. Skipping.")
+            page+=1
+    except:
+        return {"message": "error"}
+
+    return {"message":f"filled and updated {pdf_count} pdfs"}
 
 if __name__ == '__main__':
     app.run(debug=True)
