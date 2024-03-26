@@ -498,82 +498,66 @@ def fill_calculation_sheet():
             last_name = final_result.get('items', [])[0].get('Last_Name', '')
             email = final_result.get('items', [])[0].get('Email', '')
 
+            
             response_email_exists = make_get_request(
                 f"https://xyrm-sqqj-hx6t.n7c.xano.io/api:zFwSjuSC/has_email_21_1040x?email={email}")
-            # response_email_exists_2020 = make_get_request(f"https://xyrm-sqqj-hx6t.n7c.xano.io/api:zFwSjuSC/email_exists_2020_7202?email={email}")
+            response_email_exists_2020 = make_get_request(f"https://xyrm-sqqj-hx6t.n7c.xano.io/api:zFwSjuSC/email_exists_2020_7202?email={email}")
 
             email_exists = response_email_exists.json()
-            # email_exists_20 = response_email_exists_2020.json()
+            email_exists_20 = response_email_exists_2020.json()
 
-            if email_exists == True:
+            if email_exists == True or email_exists_20:
                 print(f"Skipping {page},{email} already exists")
                 page += 1
                 continue
 
             data_variables = extract_data_keys_and_values(final_result)
-            
-            child_april = data_variables[0]['old_intake_data']['Child_April_1_2020_through_December_31_2020']
 
- 
-            if child_april == '':
-                print(f"Skipping {page},{email} child april doesnt exist")
-                page += 1
-                continue
+          
+            print(f"Processing year 2020 page={page}")
 
-            # old_7202_21_4b = data_variables[0]['old_intake_dates']['data_7202_21_4b']
-            # old_7202_21_6b = data_variables[0]['old_intake_dates']['data_7202_21_6b']
-            # old_7202_21_38 = data_variables[0]['old_intake_dates']['data_7202_21_38']
-            # old_7202_21_40 = data_variables[0]['old_intake_dates']['data_7202_21_40']
+            data_7202_20 = get_7202_20_data(data_variables)
+            payload_7202_20 = {
+                    "First_Name": first_name,
+                    "Last_Name": last_name,
+                    "Email": email,
+                    "result": data_7202_20
+                }
 
-            # new_7202_21_4b = data_variables[0]['new_intake_data']['data_new_7202_21_4b']
-            # new_7202_21_6b = data_variables[0]['new_intake_data']['data_new_7202_21_6b']
-            # new_7202_21_38b = data_variables[0]['new_intake_data']['data_new_7202_21_38b']
-            # new_7202_21_40b = data_variables[0]['new_intake_data']['data_new_7202_21_40b']
-            
-            # print(f"Processing year 2020 page={page}")
+            requests.post(db_7202_20_url, json=payload_7202_20)
 
-            # data_7202_20 = get_7202_20_data(data_variables)
-            # payload_7202_20 = {
-            #         "First_Name": first_name,
-            #         "Last_Name": last_name,
-            #         "Email": email,
-            #         "result": data_7202_20
-            #     }
+            data_sch_3_20 = get_sch_3_20_data(data_variables)
 
-            # requests.post(db_7202_20_url, json=payload_7202_20)
+            payload_sch_3_20 = {
+                    "First_Name": first_name,
+                    "Last_Name": last_name,
+                    "Email": email,
+                    "result": data_sch_3_20
+                }
 
-            # data_sch_3_20 = get_sch_3_20_data(data_variables)
+            requests.post(db_sch_3_20_url, json=payload_sch_3_20)
 
-            # payload_sch_3_20 = {
-            #         "First_Name": first_name,
-            #         "Last_Name": last_name,
-            #         "Email": email,
-            #         "result": data_sch_3_20
-            #     }
+            data_1040_20 = get_1040_20_data(data_variables)
 
-            # requests.post(db_sch_3_20_url, json=payload_sch_3_20)
+            payload_1040_20 = {
+                    "First_Name": first_name,
+                    "Last_Name": last_name,
+                    "Email": email,
+                    "result": data_1040_20
+                }
 
-            # data_1040_20 = get_1040_20_data(data_variables)
+            requests.post(db_1040_20_url, json=payload_1040_20)
 
-            # payload_1040_20 = {
-            #         "First_Name": first_name,
-            #         "Last_Name": last_name,
-            #         "Email": email,
-            #         "result": data_1040_20
-            #     }
+            data_1040x_20 = get_1040x_20_data(data_variables)
 
-            # requests.post(db_1040_20_url, json=payload_1040_20)
+            payload_1040x_20 = {
+                    "First_Name": first_name,
+                    "Last_Name": last_name,
+                    "Email": email,
+                    "result": data_1040x_20
+                }
 
-            # data_1040x_20 = get_1040x_20_data(data_variables)
-
-            # payload_1040x_20 = {
-            #         "First_Name": first_name,
-            #         "Last_Name": last_name,
-            #         "Email": email,
-            #         "result": data_1040x_20
-            #     }
-
-            # requests.post(db_1040x_20_url, json=payload_1040x_20)
+            requests.post(db_1040x_20_url, json=payload_1040x_20)
 
             
             print(f"Processing year 2021 page={page}")
@@ -770,76 +754,70 @@ def fillPDFForm21():
 
     pdf_count = 0     
 
-    try:
-        total_count_response = make_get_request("https://xyrm-sqqj-hx6t.n7c.xano.io/api:zFwSjuSC/get_users_count")
-        total_count = total_count_response.json()
 
-        total_pages = math.ceil(total_count / per_page)
+    total_count_response = make_get_request("https://xyrm-sqqj-hx6t.n7c.xano.io/api:zFwSjuSC/get_users_count")
+    total_count = total_count_response.json()
 
-        while page <= total_pages:
-            final_result_response = make_get_request(
-                f"https://xyrm-sqqj-hx6t.n7c.xano.io/api:zFwSjuSC/get_users?page={page}&per_page={per_page}&offset={offset}")
-            final_result = final_result_response.json()
+    total_pages = math.ceil(total_count / per_page)
 
-            first_name = final_result.get('items', [])[0].get('First_Name', '')
-            last_name = final_result.get('items', [])[0].get('Last_Name', '')
-            email = final_result.get('items', [])[0].get('Email', '')
+    while page <= total_pages:
+        final_result_response = make_get_request(
+            f"https://xyrm-sqqj-hx6t.n7c.xano.io/api:zFwSjuSC/get_users?page={page}&per_page={per_page}&offset={offset}")
+        final_result = final_result_response.json()
 
-            destinationFile = f"{first_name.replace(' ','_')}_{last_name.replace(' ','_')}_filled_pdf_1.pdf"
+        first_name = final_result.get('items', [])[0].get('First_Name', '')
+        last_name = final_result.get('items', [])[0].get('Last_Name', '')
+        email = final_result.get('items', [])[0].get('Email', '')
 
-            print(email)
-    
+        destinationFile = f"{first_name.replace(' ','_')}_{last_name.replace(' ','_')}_filled_pdf_1.pdf"
+
+        print(email)
+
+        try:
+            email_cell = sheet.find(email)
+            pdf_2_value = sheet.cell(email_cell.row, 5).value
+        except:
+            page+=1
+            continue
+        if not pdf_2_value:
+            response_1040 =  requests.get(f"https://xyrm-sqqj-hx6t.n7c.xano.io/api:Dga0jXwg/get_1040_21_email?email={email}")
+            response_1040x = requests.get(f"https://xyrm-sqqj-hx6t.n7c.xano.io/api:Dga0jXwg/get_1040x_21_email?email={email}")
+            response_7202 =  requests.get(f"https://xyrm-sqqj-hx6t.n7c.xano.io/api:Dga0jXwg/get_7202_21_email?email={email}")
+            response_sch_3 = requests.get(f"https://xyrm-sqqj-hx6t.n7c.xano.io/api:Dga0jXwg/get_sch_3_21_email?email={email}")
+
+            data_variables_1040_21 = response_1040.json()
+            data_variables_1040x_21 = response_1040x.json()
+            data_variables_7202_21 = response_7202.json()
+            data_variables_sch_3_21 = response_sch_3.json()
+            
             try:
-                email_cell = sheet.find(email)
-                pdf_2_value = sheet.cell(email_cell.row, 5).value
+                FieldsStrings = combine_fields_21(data_variables_1040_21, data_variables_1040x_21, data_variables_7202_21, data_variables_sch_3_21)
             except:
+                print('combine error, skipping')
                 page+=1
                 continue
-            if not pdf_2_value:
-                response_1040 =  requests.get(f"https://xyrm-sqqj-hx6t.n7c.xano.io/api:Dga0jXwg/get_1040_21_email?email={email}")
-                response_1040x = requests.get(f"https://xyrm-sqqj-hx6t.n7c.xano.io/api:Dga0jXwg/get_1040x_21_email?email={email}")
-                response_7202 =  requests.get(f"https://xyrm-sqqj-hx6t.n7c.xano.io/api:Dga0jXwg/get_7202_21_email?email={email}")
-                response_sch_3 = requests.get(f"https://xyrm-sqqj-hx6t.n7c.xano.io/api:Dga0jXwg/get_sch_3_21_email?email={email}")
 
-                data_variables_1040_21 = response_1040.json()
-                data_variables_1040x_21 = response_1040x.json()
-                data_variables_7202_21 = response_7202.json()
-                data_variables_sch_3_21 = response_sch_3.json()
-                
-                try:
-                    FieldsStrings = combine_fields_21(data_variables_1040_21, data_variables_1040x_21, data_variables_7202_21, data_variables_sch_3_21)
-                except:
-                    print('combine error, skipping')
-                    page+=1
-                    continue
+            parameters = {}
+            parameters["name"] = os.path.basename(destinationFile)
+            parameters["url"] = template_21_pdf
+            parameters["fieldsString"] = FieldsStrings
+            parameters["async"] = "False"
 
-                parameters = {}
-                parameters["name"] = os.path.basename(destinationFile)
-                parameters["url"] = template_21_pdf
-                parameters["fieldsString"] = FieldsStrings
-                parameters["async"] = "False"
+            url = "{}/pdf/edit/add".format(PDF_BASE_URL)
 
-                url = "{}/pdf/edit/add".format(PDF_BASE_URL)
+            response = requests.post(url, data=parameters, headers={"x-api-key": pdf_co_key})
+            json_data = response.json()
 
-                response = requests.post(url, data=parameters, headers={"x-api-key": pdf_co_key})
-                if response.status_code == 200:
-                    json_data = response.json()
+            print(json_data)
 
-                    if not json_data["error"]:
-                        resultFileUrl = json_data["url"]
-                        s3_url = upload_pdf_to_s3(resultFileUrl, os.path.basename(destinationFile))
-                        sheet.update_cell(email_cell.row,5,s3_url)
-                        pdf_count += 1
-                        print(f"pdf 2 updated for {email}")
-                    else:
-                        print(json_data["message"])
-                else:
-                    print(f"Request error: {response.status_code} {response.reason}")
-            else:
-                print(f"PDF 2 value exists for {email}. Skipping.")
-            page+=1
-    except:
-        return {"message": "error"}
+            resultFileUrl = json_data["url"]
+            s3_url = upload_pdf_to_s3(resultFileUrl, os.path.basename(destinationFile))
+            sheet.update_cell(email_cell.row,5,s3_url)
+            pdf_count += 1
+            print(f"pdf 2 updated for {email}")
+        else:
+            print(f"PDF 2 value exists for {email}. Skipping.")
+        page+=1
 
     return {"message":f"filled and updated {pdf_count} pdfs"}
 

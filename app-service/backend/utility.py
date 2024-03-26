@@ -346,6 +346,7 @@ def extract_data_keys_and_values(data):
 def get_7202_20_data(data_variables):
 
     instructions_data =  get_instructions_data(data_variables)
+
     twenty_7202_Day_Overide_1 = int(instructions_data['Gov_April_1_2020_through_December_31_2020'])
     # pull the date variable from Gov_April_1_2020_through_December_3
     # AL7
@@ -660,6 +661,7 @@ def get_7202_20_data(data_variables):
     # AJ49
     Total_2020_Credit =AJ46+AJ30
 
+
     data_7202_20 = {
         "data_7202_20_1": AJ5,
         "data_7202_20_2": AJ6,
@@ -696,7 +698,15 @@ def get_7202_20_data(data_variables):
         "data_7202_20_33": AJ43,
         "data_7202_20_34": AJ44,
         "data_7202_20_35": AJ46,
-        "data_7202_20_total_credit": Total_2020_Credit
+        "data_7202_20_total_credit": Total_2020_Credit,
+        "twenty_7202_20_Line_6": twenty_7202_20_Line_6,
+        "twenty_7202_20_Line_4c_result": twenty_7202_20_Line_4c_result,
+        "twenty_7202_20_Line_4c": twenty_7202_20_Line_4c,
+        "twenty_7202_20_Line_5a": twenty_7202_20_Line_5a,
+        "twenty_7202_20_Line_5b_result": twenty_7202_20_Line_5b_result,
+        "twenty_7202_20_Line_5b": twenty_7202_20_Line_5b,
+        "twenty_7202_20_Line_6_result": twenty_7202_20_Line_6_result,
+        "twenty_7202_20_Line_6": twenty_7202_20_Line_6
     }  
 
     return data_7202_20
@@ -725,7 +735,7 @@ def get_1040_20_data(data_variables):
     #AB35
     # =Instructions!M72 = twenty_wages_salaries_tips_etc
     instructions_data = get_instructions_data(data_variables)
-
+    data_7202 = get_7202_20_data(data_variables)
     sch_3_data = get_sch_3_20_data(data_variables)
 
     twenty1040_1 = int(instructions_data['twenty_wages_salaries_tips_etc'])
@@ -768,11 +778,17 @@ def get_1040_20_data(data_variables):
     twenty1040_16 = int(instructions_data['twenty_tentative_tax'])
     twenty1040_17 = 0
     twenty1040_18 = twenty1040_16 + twenty1040_17
-    twenty1040_19 = 0
+    twenty1040_19 = int(instructions_data['twenty_child_and_other_dependent_credit_per_computer'])
     twenty1040_20 = int(sch_3_data['data_sch_3_20_7']) if 'data_sch_3_20_7' in sch_3_data else 0
     twenty1040_21 = twenty1040_19 + twenty1040_20
     # Assigns the result of the formula to twenty1040_22
-    twenty1040_22 = max(twenty1040_18 - twenty1040_21, 0)
+    # twenty1040_22 = max(twenty1040_18 - twenty1040_21, 0)
+    twenty1040_22 = 0
+    if (twenty1040_18 - twenty1040_21) < 0:
+        twenty1040_22 = 0
+    else:
+        twenty1040_22 = twenty1040_18 - twenty1040_21
+
     twenty1040_23 = int(instructions_data['twenty_SE_tax'])
     twenty1040_24 = twenty1040_23 + twenty1040_22
     twenty1040_25a = 0
@@ -792,6 +808,43 @@ def get_1040_20_data(data_variables):
     twenty1040_35a = twenty1040_34
     twenty1040_37 = twenty1040_24 - twenty1040_33 if twenty1040_34 == 0 else 0
     twenty1040_38 = int(instructions_data['twenty_estimated_tax_penalty'])
+
+    # =IF(AB77-'2020 7202'!AJ49<=0,"N/A",AB77-'2020 7202'!AJ49)
+    # this is the right varibale on 34
+    twenty1040_37b = 0
+    if twenty1040_37b - data_7202['data_7202_20_total_credit'] <= 0:
+        twenty1040_37b = "N/A"
+    else:
+        twenty1040_37b = twenty1040_37b - data_7202['data_7202_20_total_credit']
+
+    # this is on the right of 37 
+    twenty1040_34b = 0
+    if twenty1040_37b == "N/A":
+        twenty1040_34b = abs(twenty1040_24 - twenty1040_33 + data_7202['data_7202_20_total_credit'] + twenty1040_38)
+    else:
+        twenty1040_34b = 0   
+
+    print(twenty1040_34b)
+    print(twenty1040_37b)
+
+    #print(twenty1040_18)
+    #print(twenty1040_19)
+    #print(twenty1040_20)
+    #print(twenty1040_21)
+    #print(twenty1040_22)
+    #print(twenty1040_23)
+    #print(twenty1040_24)
+    #print(twenty1040_32)
+    #print(twenty1040_33)
+    #print(twenty1040_34)
+    #print(twenty1040_35a)
+    # print("37b",  twenty1040_37b)
+    # print("34b",  twenty1040_34b)
+    # print(twenty1040_23)     
+    # print(twenty1040_24)
+    # print(twenty1040_33)
+    # print(data_7202['data_7202_20_total_credit'])
+    # print(twenty1040_38)
 
     data_1040_20 = {
         "data_1040_20_1": twenty1040_1,
@@ -838,8 +891,10 @@ def get_1040_20_data(data_variables):
         "data_1040_20_32": twenty1040_32,
         "data_1040_20_33": twenty1040_33,
         "data_1040_20_34": twenty1040_34,
+        "data_1040_20_34b": twenty1040_34b,
         "data_1040_20_35a": twenty1040_35a,
         "data_1040_20_37": twenty1040_37,
+        "data_1040_20_37b": twenty1040_37b,
         "data_1040_20_38": twenty1040_38,
     }
 
@@ -883,6 +938,14 @@ def get_1040x_20_data(data_variables):
 
     twenty_1040_21 = twenty_1040_19 - twenty_1040_11b if twenty_1040_11b < twenty_1040_19 else 0
     twenty_1040_22 = twenty_1040_21 if twenty_1040_21 > 0 else 0
+
+
+    cal_check_20 = False
+    if twenty_1040_15b == twenty_1040_21 and twenty_1040_15b  == twenty_1040_22:
+        cal_check_20 = True
+    else:
+        pass
+        
     data_1040x_20 = {
         "data_1040x_20_orginal_1": '',
         "data_1040x_20_correct_1": '',
@@ -932,6 +995,7 @@ def get_1040x_20_data(data_variables):
         "data_1040x_20_37": Orig_1040_37,
         "data_1040x_20_38": Orig_1040_38,
         "data_1040x_20_org_sch_3_9": '',
+        "cal_check_20": cal_check_20
     }
 
     return data_1040x_20
@@ -1579,7 +1643,7 @@ def get_7202_21_data(data_variables):
 
     #line 5
     # formula: =G10-G11
-    twentyOne_7202_5 = twentyOne_7202_3d - twentyOne_7202_4a
+    twentyOne_7202_5 = abs(twentyOne_7202_3d - twentyOne_7202_4a)
 
     #Line 6a
     # =MIN(G6,G12)
@@ -1985,6 +2049,8 @@ def get_1040_21_data(data_variables):
 
     instructions_data = get_instructions_data(data_variables)
     data_sch_3_21 = get_sch_3_21_data(data_variables)
+    data_7202_21 = get_7202_21_data(data_variables)
+
 
     twentyOne_1040_1 =  instructions_data['twenty_twenty_one_wages_salaries_tips_etc']
     twentyOne_1040_2a = instructions_data['twenty_twenty_one_tax_exempt_interest']
@@ -2064,11 +2130,25 @@ def get_1040_21_data(data_variables):
     # =IF(AB81=0,AB62-AB80,0)
     twentyOne_1040_37 = 0
     if twentyOne_1040_34 == 0:
-        result = twentyOne_1040_24 - twentyOne_1040_33
+        twentyOne_1040_37 = twentyOne_1040_24 - twentyOne_1040_33
     else:
-        result = 0
-
-    twentyOne_1040_38 = instructions_data['twenty_twenty_one_applied_to_next_years_estimated_tax']
+        twentyOne_1040_37 = 0
+    
+    twentyOne_1040_38 = instructions_data['twenty_twenty_one_estimated_tax_penalty']
+    
+    # 34b
+    # =IF(AB81-'2021 7202'!H111-'2021 7202'!H112<=0,"N/A",AB81-'2021 7202'!H111-'2021 7202'!H112)
+    # this is wrong: data_twentyOne_schd3_14['data_twentyOne_schd3_14']
+    twentyOne_1040_34b = 0
+    if twentyOne_1040_34 - data_sch_3_21['data_sch_3_21_14']<= 0:
+        twentyOne_1040_34b = "N/A"
+    else:
+        twentyOne_1040_34b = twentyOne_1040_34 - data_sch_3_21['data_sch_3_21_14']
+    
+    if twentyOne_1040_34b == "N/A":
+        twentyOne_1040_37b = twentyOne_1040_24 - twentyOne_1040_33 + data_7202_21['data_7202_21_sch_3_13b'] + data_7202_21['data_7202_21_sch_3_13h'] + twentyOne_1040_38
+    else:
+        twentyOne_1040_37b = 0
 
     data_1040_21 = {
         "data_1040_21_1": twentyOne_1040_1,
@@ -2110,14 +2190,15 @@ def get_1040_21_data(data_variables):
         "data_1040_21_32": twentyOne_1040_32,
         "data_1040_21_33": twentyOne_1040_33,
         "data_1040_21_34": twentyOne_1040_34,
+        "data_1040_21_34b": twentyOne_1040_34b,
         "data_1040_21_35a": twentyOne_1040_35a,
         "data_1040_21_36": twentyOne_1040_36,
         "data_1040_21_37": twentyOne_1040_37,
+        "data_1040_21_37b": twentyOne_1040_37b,
         "data_1040_21_38": twentyOne_1040_38
     }
 
     return data_1040_21
-
 
 
 def get_1040x_21_data(data_variables):
@@ -2128,9 +2209,9 @@ def get_1040x_21_data(data_variables):
     twentyOne_Orig_1040_28 = data_1040_21['data_1040_21_28']
     twentyOne_Orig_1040_29 = data_1040_21['data_1040_21_29']
     twentyOne_Orig_1040_30 = data_1040_21['data_1040_21_30']
-    twentyOne_Orig_1040_31 = data_sch_3_21['data_sch_3_21_13h']
-    twentyOne_Orig_1040_37 = 0 if data_1040_21['data_1040_21_37'] == 0 else data_1040_21['data_1040_21_37']
-    Orig_1040_twentyOne_38 = 0 if data_1040_21['data_1040_21_37'] <= 0 else data_1040_21['data_1040_21_38']
+    twentyOne_Orig_1040_31 = data_sch_3_21['data_sch_3_21_14']
+    twentyOne_Orig_1040_37 = data_1040_21['data_1040_21_37b']
+    Orig_1040_twentyOne_38 = data_1040_21['data_1040_21_38']
 
     twentyOne_1040x_11a = data_1040_21['data_1040_21_24']
     twentyOne_1040x_11c = twentyOne_1040x_11a
@@ -2145,12 +2226,16 @@ def get_1040x_21_data(data_variables):
     twentyOne_1040x_15c = twentyOne_1040x_15a + twentyOne_1040x_15b
 
     # =IF(J44-J45+J49<=0,0,J44-J45+J49)
+    if twentyOne_Orig_1040_37 - Orig_1040_twentyOne_38 <= 0:
+        twentyOne_1040x_16 = 0
+    else:
+        twentyOne_1040x_16 = twentyOne_Orig_1040_37 - Orig_1040_twentyOne_38
     twentyOne_1040x_16 = 0 if twentyOne_Orig_1040_37 - Orig_1040_twentyOne_38 <= 0 else twentyOne_Orig_1040_37 - Orig_1040_twentyOne_38
 
     twentyOne_1040x_17 = twentyOne_1040x_12c + twentyOne_1040x_13c + twentyOne_1040x_14c + twentyOne_1040x_15c
 
     # twenty_1040_18 = 0 if twenty1040_34 - Total_2020_Credit <= 0 else twenty1040_34 - Total_2020_Credit
-    twentyOne_1040x_18 = abs(data_1040_21['data_1040_21_34'] - data_1040_21['data_1040_21_31'])
+    twentyOne_1040x_18 = data_1040_21['data_1040_21_34'] - data_1040_21['data_1040_21_31']
     # =S29-S30
     twentyOne_1040x_19 = abs(twentyOne_1040x_17 - twentyOne_1040x_18)
 
@@ -2161,6 +2246,12 @@ def get_1040x_21_data(data_variables):
     twentyOne_1040x_21 = twentyOne_1040x_19 - twentyOne_1040x_11c if twentyOne_1040x_11c < twentyOne_1040x_19 else 0
     # Define twenty_1040_2
     twentyOne_1040x_22 = 0 if twentyOne_1040x_21 <= 0 else twentyOne_1040x_21
+
+    cal_check_21 = False
+    if twentyOne_1040x_15b == twentyOne_1040x_21 and twentyOne_1040x_15b  == twentyOne_1040x_22:
+        cal_check_21 = True
+    else:
+        pass
 
     data_1040x_21 = {
         "data_1040x_21_original_1": '',
@@ -2198,7 +2289,7 @@ def get_1040x_21_data(data_variables):
         "data_1040x_21_change_15": twentyOne_1040x_15b,
         "data_1040x_21_correct_16": twentyOne_1040x_16,
         "data_1040x_21_correct_17": twentyOne_1040x_17,
-        "data_1040x_21_correct_18": twentyOne_1040x_18,
+        "data_1040x_21_correct_18": abs(twentyOne_1040x_18),
         "data_1040x_21_correct_19": twentyOne_1040x_19,
         "data_1040x_21_correct_20": twentyOne_1040x_20,
         "data_1040x_21_correct_21": twentyOne_1040x_21,
@@ -2210,7 +2301,8 @@ def get_1040x_21_data(data_variables):
         "data_1040x_21_31": twentyOne_Orig_1040_31,
         "data_1040x_21_37": twentyOne_Orig_1040_37,
         "data_1040x_21_38": Orig_1040_twentyOne_38,
-        "data_1040x_21_org_sch_3_10": ''
+        "data_1040x_21_org_sch_3_10": '',
+        "cal_check_21": cal_check_21
     }
 
 
