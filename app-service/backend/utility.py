@@ -210,7 +210,7 @@ def extract_data_keys_and_values(data):
                 "ACCOUNT BALANCE",
                 "ACCRUED INTEREST",
                 "FILING STATUS",
-                "ADJUSTED GROSS INCOME",
+                "SE TAXABLE INCOME TAXPAYER",
                 "TAXABLE INCOME",
                 "TAX PER RETURN",
                 ]
