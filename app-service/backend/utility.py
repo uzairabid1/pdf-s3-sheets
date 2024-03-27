@@ -224,15 +224,18 @@ def extract_data_keys_and_values(data):
 
         try:
             for data_val in item.get('result', {}).get('2019_ACTR', {}).get('Data', [])[0].get('DataValues', ''):
-                if data_val.get('DataKey', '') == 'SE TAXABLE INCOME TAXPAYER':
-                    amount = data_val.get('DataValue', '0').replace('$', '').replace(',', '').replace('-', '0')
-                    if amount.replace('.', '').isdigit():
-                        data_2019_reca_list["SE TAXABLE INCOME TAXPAYER"] = int(float(amount))
-                    else:
-                        try:
+                try:
+                    if data_val.get('DataKey', '') == 'SE TAXABLE INCOME TAXPAYER':
+                        amount = data_val.get('DataValue', '0').replace('$', '').replace(',', '').replace('-', '0')
+                        if amount.replace('.', '').isdigit():
                             data_2019_reca_list["SE TAXABLE INCOME TAXPAYER"] = int(float(amount))
-                        except:
-                            data_2019_reca_list["SE TAXABLE INCOME TAXPAYER"] = amount
+                        else:
+                            try:
+                                data_2019_reca_list["SE TAXABLE INCOME TAXPAYER"] = int(float(amount))
+                            except:
+                                data_2019_reca_list["SE TAXABLE INCOME TAXPAYER"] = amount
+                except:
+                    data_2019_reca_list["SE TAXABLE INCOME TAXPAYER"] = ''
         except Exception as e:
             print(f"Error processing 2019 credit: {e}")
 
@@ -363,7 +366,7 @@ def get_7202_20_data(data_variables):
     AL9 = int(twenty_7202_Day_Overide_3)
 
     # this is the 2019 income variable
-    twenty_7202_2019 = int(instructions_data['nineteen_ADJUSTED_GROSS_INCOME'])
+    twenty_7202_2019 = int(instructions_data['nineteen_SE_TAXABLE_INCOME_TAXPAYER'])
 
     # this is the 2020 income variables
     twenty_7202_20Schedule_SE_Line_3 = int(instructions_data['twenty_SE_income_per_computer'])
@@ -1533,7 +1536,7 @@ def get_7202_21_data(data_variables):
 
 
     # this is the 2019 income variable
-    twenty_7202_2019 = int(instructions_data['nineteen_ADJUSTED_GROSS_INCOME'])
+    twenty_7202_2019 = int(instructions_data['nineteen_SE_TAXABLE_INCOME_TAXPAYER'])
 
     # this is the 2020 income variables
     twenty_7202_20Schedule_SE_Line_3 = int(instructions_data['twenty_SE_income_per_computer'])

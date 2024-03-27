@@ -2,10 +2,12 @@
 # Instructions is a copy of the instructions sheet in the google doc.
 # This page contains all the data to merge into the calculations. 
 def get_instructions_data(data_variables):
-    nineteen_ADJUSTED_GROSS_INCOME = int(data_variables[0]['2019']['SE TAXABLE INCOME TAXPAYER'])
+    nineteen_SE_TAXABLE_INCOME_TAXPAYER = int(data_variables[0]['2019']['SE TAXABLE INCOME TAXPAYER'])
     # Check if the variable is null, if so, assign it a default value of 0
-    if nineteen_ADJUSTED_GROSS_INCOME is None:
-        nineteen_ADJUSTED_GROSS_INCOME = 0
+    if nineteen_SE_TAXABLE_INCOME_TAXPAYER is None:
+        nineteen_SE_TAXABLE_INCOME_TAXPAYER = 0
+
+    
 
     nineteen_FILING_STATUS = data_variables[0]['2019']['FILING STATUS']
     # Check if the variable is null, if so, assign it a default value of 0
@@ -959,7 +961,7 @@ def get_instructions_data(data_variables):
 
 
     instructions_data = {
-        'nineteen_ADJUSTED_GROSS_INCOME': nineteen_ADJUSTED_GROSS_INCOME,
+        'nineteen_SE_TAXABLE_INCOME_TAXPAYER': nineteen_SE_TAXABLE_INCOME_TAXPAYER,
         'nineteen_FILING_STATUS': nineteen_FILING_STATUS,
         'nineteen_credit_to_your_account': nineteen_credit_to_your_account,
         'nineteen_account_balance': nineteen_account_balance,
