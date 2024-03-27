@@ -2,7 +2,10 @@
 # Instructions is a copy of the instructions sheet in the google doc.
 # This page contains all the data to merge into the calculations. 
 def get_instructions_data(data_variables):
-    nineteen_SE_TAXABLE_INCOME_TAXPAYER = int(data_variables[0]['2019']['SE TAXABLE INCOME TAXPAYER'])
+    if data_variables[0]['2019']['SE TAXABLE INCOME TAXPAYER'] == '':
+        nineteen_SE_TAXABLE_INCOME_TAXPAYER = 0
+    else:
+        nineteen_SE_TAXABLE_INCOME_TAXPAYER = int(data_variables[0]['2019']['SE TAXABLE INCOME TAXPAYER'])
     # Check if the variable is null, if so, assign it a default value of 0
     if nineteen_SE_TAXABLE_INCOME_TAXPAYER is None:
         nineteen_SE_TAXABLE_INCOME_TAXPAYER = 0

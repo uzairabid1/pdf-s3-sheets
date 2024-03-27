@@ -226,7 +226,7 @@ def extract_data_keys_and_values(data):
             for data_val in item.get('result', {}).get('2019_ACTR', {}).get('Data', [])[0].get('DataValues', ''):
                 try:
                     if data_val.get('DataKey', '') == 'SE TAXABLE INCOME TAXPAYER':
-                        amount = data_val.get('DataValue', '0').replace('$', '').replace(',', '').replace('-', '0')
+                        amount = data_val.get('DataValue', 0).replace('$', '').replace(',', '')
                         if amount.replace('.', '').isdigit():
                             data_2019_reca_list["SE TAXABLE INCOME TAXPAYER"] = int(float(amount))
                         else:
@@ -235,7 +235,7 @@ def extract_data_keys_and_values(data):
                             except:
                                 data_2019_reca_list["SE TAXABLE INCOME TAXPAYER"] = amount
                 except:
-                    data_2019_reca_list["SE TAXABLE INCOME TAXPAYER"] = 0
+                    data_2019_reca_list["SE TAXABLE INCOME TAXPAYER"] = 0  # Set to 0 if any exception occurs
         except Exception as e:
             print(f"Error processing 2019 credit: {e}")
 
@@ -243,7 +243,7 @@ def extract_data_keys_and_values(data):
         try:
             for data_val in item.get('result', {}).get('2019_RECA', {}).get('Data', [])[0].get('Transactions', ''):
                 if data_val.get('Desc', '') == 'Credit to your account':
-                    amount = data_val.get('Amount', '0').replace('$', '').replace(',', '').replace('-', '0')
+                    amount = data_val.get('Amount', '0').replace('$', '').replace(',', '')
                     if amount.replace('.', '').isdigit():
                         data_2019_reca_list["Credit to your account"] = int(float(amount))
                     else:
