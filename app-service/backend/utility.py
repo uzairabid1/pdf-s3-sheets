@@ -53,52 +53,14 @@ def upload_pdf_to_s3_2(pdf_content, pdf_file_name):
 def extract_data_keys_and_values(data):
     extracted_data = []
 
-    for item in data.get('items', []):        
+    for item in data.get("items",[]):        
         #old data processing
         
         first_name = item.get('First_Name')
-        last_name= item.get('Last_Name')
+        last_name = item.get('Last_Name')
         email = item.get('Email')
         print(email)
         try:
-            old_data_response = requests.get(f"https://ltt.aip.global.bizopsaip.com/flow/api/flow-rest-selfauth/getTaxCaculation?Email={email}")
-            tax_data = old_data_response.json()
-            tax_data = tax_data['taxCaculationReturn']
-            intake_date = json.loads(tax_data['calculateInput']['longText'])
-            
-            Child_April_1_2020_through_December_31_2020 = intake_date.get('zohoReturn','').get('Child_April_1_2020_through_December_31_2020','')
-            Child_January_1_2021_through_March_31_2021 = intake_date.get('zohoReturn','').get('Child_January_1_2021_through_March_31_2021','')
-            Gov_April_1_2021_through_September_30_2021 = intake_date.get('zohoReturn','').get('Gov_April_1_2021_through_September_30_2021','')
-            Gov_January_1_2021_through_March_31_2021 = intake_date.get('zohoReturn','').get('Gov_January_1_2021_through_March_31_2021','')
-            Gov_April_1_2020_through_December_31_2020 = intake_date.get('zohoReturn','').get('Gov_April_1_2020_through_December_31_2020','')
-            Family_January_1_2021_through_March_31_2021 = intake_date.get('zohoReturn','').get('Family_January_1_2021_through_March_31_2021','')
-            Family_April_1_2020_through_December_31_2020 = intake_date.get('zohoReturn','').get('Family_April_1_2020_through_December_31_2020','')
-            Child_April_1_2021_through_September_30_2021 = intake_date.get('zohoReturn','').get('Child_April_1_2021_through_September_30_2021','')
-            Family_April_1_2021_through_September_30_2021 = intake_date.get('zohoReturn','').get('Family_April_1_2021_through_September_30_2021','')
-            clientId = intake_date.get('zohoReturn','').get('ClientId','')
-            status = intake_date.get('zohoReturn','').get('Status','')
-
-            old_intake_data = {
-                "Child_April_1_2020_through_December_31_2020": Child_April_1_2020_through_December_31_2020,
-                "Email": email,
-                "Child_January_1_2021_through_March_31_2021": Child_January_1_2021_through_March_31_2021,
-                "Gov_April_1_2021_through_September_30_2021": Gov_April_1_2021_through_September_30_2021,
-                "Gov_January_1_2021_through_March_31_2021": Gov_January_1_2021_through_March_31_2021,
-                "Gov_April_1_2020_through_December_31_2020": Gov_April_1_2020_through_December_31_2020,
-                "Family_January_1_2021_through_March_31_2021": Family_January_1_2021_through_March_31_2021,
-                "Family_April_1_2020_through_December_31_2020": Family_April_1_2020_through_December_31_2020,
-                "Child_April_1_2021_through_September_30_2021": Child_April_1_2021_through_September_30_2021,
-                "Family_April_1_2021_through_September_30_2021": Family_April_1_2021_through_September_30_2021,
-                "First_Name": first_name,
-                "Last_Name": last_name,
-                "ClientId": clientId,
-                "Status": status
-            }
-
-        except Exception as e:
-            print(f"Error processing data for email {email}: {e}")
-
-            try:
                 df = pd.read_csv("Deals_2024_03_18-1.csv")
                 print(df)
                 row = df[df['Email'] == email].iloc[0]
@@ -152,7 +114,7 @@ def extract_data_keys_and_values(data):
                         "Status": status
                     }
 
-            except Exception as e:
+        except Exception as e:
                 print(f"Error reading CSV data for email {email}: {e}")
                 df = pd.read_csv("Deals_2024_03_18-1.csv")
                 row = df[df['Email'] == email].iloc[0]
@@ -260,37 +222,62 @@ def extract_data_keys_and_values(data):
             data_2020_reca_list[key] = '0'
             data_2021_reca_list[key] = '0'
 
+        try:
+            for data_val in item.get('result', {}).get('2019_ACTR', {}).get('Data', [])[0].get('DataValues', ''):
+                if data_val.get('DataKey', '') == 'SE TAXABLE INCOME TAXPAYER':
+                    amount = data_val.get('DataValue', '0').replace('$', '').replace(',', '').replace('-', '0')
+                    if amount.replace('.', '').isdigit():
+                        data_2019_reca_list["SE TAXABLE INCOME TAXPAYER"] = int(float(amount))
+                    else:
+                        try:
+                            data_2019_reca_list["SE TAXABLE INCOME TAXPAYER"] = int(float(amount))
+                        except:
+                            data_2019_reca_list["SE TAXABLE INCOME TAXPAYER"] = amount
+        except Exception as e:
+            print(f"Error processing 2019 credit: {e}")
+
 
         try:
-            for data_val in json.loads(item.get('result', {})).get('2019_RECA', {}).get('Data', [])[0].get('Transactions', ''):
+            for data_val in item.get('result', {}).get('2019_RECA', {}).get('Data', [])[0].get('Transactions', ''):
                 if data_val.get('Desc', '') == 'Credit to your account':
                     amount = data_val.get('Amount', '0').replace('$', '').replace(',', '').replace('-', '0')
                     if amount.replace('.', '').isdigit():
                         data_2019_reca_list["Credit to your account"] = int(float(amount))
                     else:
-                        data_2019_reca_list["Credit to your account"] = amount
+                        try:
+                            data_2019_reca_list["Credit to your account"] = int(float(amount))
+                        except:
+                            data_2019_reca_list["Credit to your account"] = amount
         except Exception as e:
             print(f"Error processing 2020 credit: {e}")
 
         try:
             for data_val in item.get('result', {}).get('2020_RECA', {}).get('Data', [])[0].get('Transactions', ''):
                 if data_val.get('Desc', '') == 'Credit to your account':
-                    amount = data_val.get('Amount', '0').replace('$', '').replace(',', '').replace('-', '0')
+                    amount = data_val.get('Amount', '0').replace('$', '').replace(',', '')
                     if amount.replace('.', '').isdigit():
                         data_2020_reca_list["Credit to your account"] = int(float(amount))
                     else:
-                        data_2020_reca_list["Credit to your account"] = amount
+                        try:
+                            data_2020_reca_list["Credit to your account"] = int(float(amount))
+                        except:
+                            data_2020_reca_list["Credit to your account"] = amount
         except Exception as e:
             print(f"Error processing 2020 credit: {e}")
 
         try:
             for data_val in item.get('result', {}).get('2021_RECA', {}).get('Data', [])[0].get('Transactions', ''):
                 if data_val.get('Desc', '') == 'Credit to your account':
-                    amount = data_val.get('Amount', '0').replace('$', '').replace(',', '').replace('-', '0')
+                    amount = data_val.get('Amount', '0').replace('$', '').replace(',', '')
+                    if '-' in amount:
+                        data_2021_reca_list["Credit to your account"] = int(float(amount))                    
                     if amount.replace('.', '').isdigit():
                         data_2021_reca_list["Credit to your account"] = int(float(amount))
                     else:
-                        data_2021_reca_list["Credit to your account"] = amount
+                        try:
+                            data_2021_reca_list["Credit to your account"] = int(float(amount))
+                        except:
+                            data_2021_reca_list["Credit to your account"] = amount
         except Exception as e:
             print(f"Error processing 2021 credit: {e}")
 
@@ -299,11 +286,16 @@ def extract_data_keys_and_values(data):
             for data_val in item.get('result', {}).get('2019_RECA', {}).get('Data', [])[0].get('DataValues', ''):
                 key = data_val.get('DataKey', '')
                 if key in data_variables_19:
-                    value = data_val.get('DataValue', '0').replace('$', '').replace(',', '').replace('-', '0')
+                    value = data_val.get('DataValue', '0').replace('$', '').replace(',', '')
+                    if '-' in value:
+                        data_2019_reca_list[key] = int(float(value))
                     if value.replace('.', '').isdigit():
                         data_2019_reca_list[key] = int(float(value))
                     else:
-                        data_2019_reca_list[key] = value
+                        try:
+                            data_2019_reca_list[key] = int(float(value))
+                        except:
+                            data_2019_reca_list[key] = value
         except Exception as e:
             print(f"Error processing 2020 data values: {e}")
 
@@ -311,11 +303,16 @@ def extract_data_keys_and_values(data):
             for data_val in item.get('result', {}).get('2020_RECA', {}).get('Data', [])[0].get('DataValues', ''):
                 key = data_val.get('DataKey', '')
                 if key in data_variables:
-                    value = data_val.get('DataValue', '0').replace('$', '').replace(',', '').replace('-', '0')
+                    value = data_val.get('DataValue', '0').replace('$', '').replace(',', '')
+                    if '-' in value:
+                        data_2020_reca_list[key] = int(float(value))
                     if value.replace('.', '').isdigit():
                         data_2020_reca_list[key] = int(float(value))
                     else:
-                        data_2020_reca_list[key] = value
+                        try:
+                            data_2020_reca_list[key] = int(float(value))
+                        except:
+                            data_2020_reca_list[key] = value
         except Exception as e:
             print(f"Error processing 2020 data values: {e}")
 
@@ -323,11 +320,16 @@ def extract_data_keys_and_values(data):
             for data_val in item.get('result', {}).get('2021_RECA', {}).get('Data', [])[0].get('DataValues', ''):
                 key = data_val.get('DataKey', '')
                 if key in data_variables:
-                    value = data_val.get('DataValue', '0').replace('$', '').replace(',', '').replace('-', '0')
+                    value = data_val.get('DataValue', '0').replace('$', '').replace(',', '')
+                    if '-' in value:
+                        data_2021_reca_list[key] = int(float(value))
                     if value.replace('.', '').isdigit():
                         data_2021_reca_list[key] = int(float(value))
                     else:
-                        data_2021_reca_list[key] = value
+                        try:
+                            data_2021_reca_list[key] = int(float(value))
+                        except:
+                            data_2021_reca_list[key] = value
         except Exception as e:
             print(f"Error processing 2021 data values: {e}")
 
@@ -714,8 +716,8 @@ def get_7202_20_data(data_variables):
 def get_sch_3_20_data(data_variables):
     twenty_schd3_7 = 0
     
-
-    twenty_schd3_12b = get_7202_20_data(data_variables)['data_7202_20_total_credit']
+    data_7202_20 = get_7202_20_data(data_variables)
+    twenty_schd3_12b = data_7202_20['data_7202_20_total_credit']
 
     twenty_schd3_12f = twenty_schd3_12b
 
@@ -772,7 +774,12 @@ def get_1040_20_data(data_variables):
 
     twenty1040_11 = abs(twenty1040_9 - twenty1040_10c)
     twenty1040_12 = int(instructions_data['twenty_standard_deduction_per_computer'])
+    
+    # Needs to be an Absolute value not treated as a negative  Mar 27 still treated as -
     twenty1040_13 = int(instructions_data['twenty_business_income_or_loss_schedule_C'])
+    
+    # Needs to be an Absolute value not treated as a negative Mar 27 still treated as - 
+
     twenty1040_14 = twenty1040_12 + twenty1040_13
     twenty1040_15 = max(0, twenty1040_11 - twenty1040_14)
     twenty1040_16 = int(instructions_data['twenty_tentative_tax'])
@@ -800,7 +807,8 @@ def get_1040_20_data(data_variables):
     twenty1040_28 = int(instructions_data['twenty_schedule_8812_additional_child_tax_credit']) if 'twenty_schedule_8812_additional_child_tax_credit' in instructions_data else 0
     twenty1040_29 = int(instructions_data['twenty_total_education_credit_amount_per_computer']) if 'twenty_total_education_credit_amount_per_computer' in instructions_data else 0
     twenty1040_30 = int(instructions_data['twenty_recovery_rebate_credit_per_computer']) if 'twenty_recovery_rebate_credit_per_computer' in instructions_data else 0
-    twenty1040_31 = int(sch_3_data['data_sch_3_20_13']) if 'data_sch_3_20_13' in sch_3_data else 0
+    print(sch_3_data['data_sch_3_20_13'])
+    twenty1040_31 = int(sch_3_data['data_sch_3_20_13'])
 
     twenty1040_32 = twenty1040_27 + twenty1040_28 + twenty1040_29 + twenty1040_30 + twenty1040_31
     twenty1040_33 = twenty1040_25d + twenty1040_32 + twenty1040_26
@@ -824,8 +832,9 @@ def get_1040_20_data(data_variables):
     else:
         twenty1040_34b = 0   
 
-    print(twenty1040_34b)
-    print(twenty1040_37b)
+    temp = twenty1040_34b
+    twenty1040_34b = twenty1040_37b
+    twenty1040_37b = temp
 
     #print(twenty1040_18)
     #print(twenty1040_19)
@@ -910,7 +919,7 @@ def get_1040x_20_data(data_variables):
     Orig_1040_29 = data_1040_20['data_1040_20_29']
     Orig_1040_30 = data_1040_20['data_1040_20_30']
     Orig_1040_31 = data_sch_3['data_sch_3_20_13']
-    Orig_1040_37 = 0 if data_1040_20['data_1040_20_37'] == 0 else data_1040_20['data_1040_20_37']
+    Orig_1040_37 = data_1040_20['data_1040_20_37b']
     Orig_1040_38 = 0 if data_1040_20['data_1040_20_37'] <= 0 else data_1040_20['data_1040_20_38']
 
     twenty_1040_11a = data_1040_20['data_1040_20_24']
@@ -925,6 +934,7 @@ def get_1040x_20_data(data_variables):
     twenty_1040_15b = Orig_1040_31
     twenty_1040_15c = twenty_1040_15a + twenty_1040_15b
     twenty_1040_16 = 0 if Orig_1040_37 - Orig_1040_38 <= 0 else Orig_1040_37 - Orig_1040_38
+
     twenty_1040_17 = twenty_1040_12b + twenty_1040_13b + twenty_1040_14b + twenty_1040_15c + twenty_1040_16
     #2020 1040'!AI77 is on the right side of 34 hence why 34b
     # =IF('2020 1040'!AI77="N/A",0,'2020 1040'!AI77)
@@ -1534,7 +1544,6 @@ def get_7202_21_data(data_variables):
     # Applying the formula
     AL24result = int(round(AL24 * 0.9235 if AL24 > 0 else AL24, 0))
     twenty_7202_20_Line_4a = AL24result
-    print(AL24result)
 
     twenty_7202_20_Line_4b = 0
     # was AL26
@@ -2232,10 +2241,13 @@ def get_1040x_21_data(data_variables):
         twentyOne_1040x_16 = twentyOne_Orig_1040_37 - Orig_1040_twentyOne_38
     twentyOne_1040x_16 = 0 if twentyOne_Orig_1040_37 - Orig_1040_twentyOne_38 <= 0 else twentyOne_Orig_1040_37 - Orig_1040_twentyOne_38
 
-    twentyOne_1040x_17 = twentyOne_1040x_12c + twentyOne_1040x_13c + twentyOne_1040x_14c + twentyOne_1040x_15c
+    twentyOne_1040x_17 = twentyOne_1040x_12c + twentyOne_1040x_13c + twentyOne_1040x_14c + twentyOne_1040x_15c + twentyOne_1040x_16
 
     # twenty_1040_18 = 0 if twenty1040_34 - Total_2020_Credit <= 0 else twenty1040_34 - Total_2020_Credit
-    twentyOne_1040x_18 = data_1040_21['data_1040_21_34'] - data_1040_21['data_1040_21_31']
+    if data_1040_21['data_1040_21_34b'] == "N/A":
+        twentyOne_1040x_18 = 0
+    else:
+        twentyOne_1040x_18 = data_1040_21['data_1040_21_34b'] - data_1040_21['data_1040_21_31']
     # =S29-S30
     twentyOne_1040x_19 = abs(twentyOne_1040x_17 - twentyOne_1040x_18)
 
@@ -2304,6 +2316,9 @@ def get_1040x_21_data(data_variables):
         "data_1040x_21_org_sch_3_10": '',
         "cal_check_21": cal_check_21
     }
+
+
+    return data_1040x_21
 
 
     return data_1040x_21

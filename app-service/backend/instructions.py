@@ -2,7 +2,7 @@
 # Instructions is a copy of the instructions sheet in the google doc.
 # This page contains all the data to merge into the calculations. 
 def get_instructions_data(data_variables):
-    nineteen_ADJUSTED_GROSS_INCOME = int(data_variables[0]['2019']['ADJUSTED GROSS INCOME'])
+    nineteen_ADJUSTED_GROSS_INCOME = int(data_variables[0]['2019']['SE TAXABLE INCOME TAXPAYER'])
     # Check if the variable is null, if so, assign it a default value of 0
     if nineteen_ADJUSTED_GROSS_INCOME is None:
         nineteen_ADJUSTED_GROSS_INCOME = 0
