@@ -235,7 +235,7 @@ def extract_data_keys_and_values(data):
                             except:
                                 data_2019_reca_list["SE TAXABLE INCOME TAXPAYER"] = amount
                 except:
-                    data_2019_reca_list["SE TAXABLE INCOME TAXPAYER"] = ''
+                    data_2019_reca_list["SE TAXABLE INCOME TAXPAYER"] = 0
         except Exception as e:
             print(f"Error processing 2019 credit: {e}")
 
