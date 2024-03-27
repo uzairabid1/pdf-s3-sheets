@@ -676,70 +676,62 @@ def fill_pdf_20():
             destinationFile = f"{first_name.replace(' ','_')}_{last_name.replace(' ','_')}_filled_pdf_1.pdf"
 
             print(email)
-
-            email_exists_7202_response = requests.get(f"https://xyrm-sqqj-hx6t.n7c.xano.io/api:zFwSjuSC/email_exists_2020_7202?email={email}")
-            email_exists_1040_response= requests.get(f"https://xyrm-sqqj-hx6t.n7c.xano.io/api:zFwSjuSC/email_exists_2020_1040?email={email}")
-            email_exists_1040x_response = requests.get(f"https://xyrm-sqqj-hx6t.n7c.xano.io/api:zFwSjuSC/email_exists_1040x?email={email}")
-            email_exists_sch_3_response = requests.get(f"https://xyrm-sqqj-hx6t.n7c.xano.io/api:zFwSjuSC/email_exists_2020_sch_3?email={email}")
-
-            email_exists_7202 = email_exists_7202_response.json()
-            email_exists_1040 = email_exists_1040_response.json()
-            email_exists_1040x = email_exists_1040x_response.json()
-            email_exists_sch_3 = email_exists_sch_3_response.json()
-
-            if email_exists_1040 and email_exists_1040x and email_exists_7202 and email_exists_sch_3:
-                try:
-                    email_cell = sheet.find(email)
-                    pdf_1_value = sheet.cell(email_cell.row, 4).value
-                except:
-                    page+=1
-                    continue
-                if not pdf_1_value:
-                    response_1040 =  requests.get(f"https://xyrm-sqqj-hx6t.n7c.xano.io/api:Dga0jXwg/get_1040_20_email?email={email}")
-                    response_1040x = requests.get(f"https://xyrm-sqqj-hx6t.n7c.xano.io/api:Dga0jXwg/get_1040x_20_email?email={email}")
-                    response_7202 =  requests.get(f"https://xyrm-sqqj-hx6t.n7c.xano.io/api:Dga0jXwg/get_7202_email?email={email}")
-                    response_sch_3 = requests.get(f"https://xyrm-sqqj-hx6t.n7c.xano.io/api:Dga0jXwg/get_sch_3_20_email?email={email}")
-
-                    data_variables_1040_20 = response_1040.json()
-                    data_variables_1040x_20 = response_1040x.json()
-                    data_variables_7202_20 = response_7202.json()
-                    data_variables_sch_3_20 = response_sch_3.json()
-                    
-                    try:
-                        FieldsStrings = combine_fields(data_variables_1040_20, data_variables_1040x_20, data_variables_7202_20, data_variables_sch_3_20)
-                    except:
-                        print('combine error, skipping')
-                        page+=1
-                        continue
-
-                    parameters = {}
-                    parameters["name"] = os.path.basename(destinationFile)
-                    parameters["url"] = template_20_pdf
-                    parameters["fieldsString"] = FieldsStrings
-                    parameters["async"] = "False"
-
-                    url = "{}/pdf/edit/add".format(PDF_BASE_URL)
-
-                    response = requests.post(url, data=parameters, headers={"x-api-key": pdf_co_key})
-                    if response.status_code == 200:
-                        json_data = response.json()
-
-                        if not json_data["error"]:
-                            resultFileUrl = json_data["url"]
-                            s3_url = upload_pdf_to_s3(resultFileUrl, os.path.basename(destinationFile))
-                            sheet.update_cell(email_cell.row,4,s3_url)
-                            pdf_count += 1
-                            print(f"pdf 1 updated for {email}")
-                        else:
-                            print(json_data["message"])
-                    else:
-                        print(f"Request error: {response.status_code} {response.reason}")
-                else:
-                    print(f"PDF 1 value exists for {email}. Skipping.")
-            else:
-                print(f'skipping {email}')
+            
+            try:
+                email_cell = sheet.find(email)
+                pdf_1_value = sheet.cell(email_cell.row, 4).value
+            except:
                 page+=1
                 continue
+            if not pdf_1_value:
+                response_1040x = requests.get(f"https://xyrm-sqqj-hx6t.n7c.xano.io/api:Dga0jXwg/get_1040x_20_email?email={email}")
+                data_variables_1040x_20 = response_1040x.json()
+
+                if data_variables_1040x_20['result']['cal_check_20'] == False:
+                    print("cal check 20 is false")
+                    page+=1
+                    continue
+
+
+                response_1040 =  requests.get(f"https://xyrm-sqqj-hx6t.n7c.xano.io/api:Dga0jXwg/get_1040_20_email?email={email}")
+                response_7202 =  requests.get(f"https://xyrm-sqqj-hx6t.n7c.xano.io/api:Dga0jXwg/get_7202_email?email={email}")
+                response_sch_3 = requests.get(f"https://xyrm-sqqj-hx6t.n7c.xano.io/api:Dga0jXwg/get_sch_3_20_email?email={email}")
+
+                data_variables_1040_20 = response_1040.json()
+                data_variables_7202_20 = response_7202.json()
+                data_variables_sch_3_20 = response_sch_3.json()
+                
+                try:
+                    FieldsStrings = combine_fields(data_variables_1040_20, data_variables_1040x_20, data_variables_7202_20, data_variables_sch_3_20)
+                except:
+                    print('combine error, skipping')
+                    page+=1
+                    continue
+
+                parameters = {}
+                parameters["name"] = os.path.basename(destinationFile)
+                parameters["url"] = template_20_pdf
+                parameters["fieldsString"] = FieldsStrings
+                parameters["async"] = "False"
+
+                url = "{}/pdf/edit/add".format(PDF_BASE_URL)
+
+                response = requests.post(url, data=parameters, headers={"x-api-key": pdf_co_key})
+                if response.status_code == 200:
+                    json_data = response.json()
+
+                    if not json_data["error"]:
+                        resultFileUrl = json_data["url"]
+                        s3_url = upload_pdf_to_s3(resultFileUrl, os.path.basename(destinationFile))
+                        sheet.update_cell(email_cell.row,4,s3_url)
+                        pdf_count += 1
+                        print(f"pdf 1 updated for {email}")
+                    else:
+                        print(json_data["message"])
+                else:
+                    print(f"Request error: {response.status_code} {response.reason}")
+            else:
+                print(f"PDF 1 value exists for {email}. Skipping.")
             page+=1
     except:
         return {"message": "error"}
@@ -797,13 +789,19 @@ def fillPDFForm21():
             page+=1
             continue
         if not pdf_2_value:
-            response_1040 =  requests.get(f"https://xyrm-sqqj-hx6t.n7c.xano.io/api:Dga0jXwg/get_1040_21_email?email={email}")
             response_1040x = requests.get(f"https://xyrm-sqqj-hx6t.n7c.xano.io/api:Dga0jXwg/get_1040x_21_email?email={email}")
+            data_variables_1040x_21 = response_1040x.json()
+            
+            if data_variables_1040x_21['result']['cal_check_21'] == False:
+                print("cal check 21 is false")
+                page+=1
+                continue
+            
+            response_1040 =  requests.get(f"https://xyrm-sqqj-hx6t.n7c.xano.io/api:Dga0jXwg/get_1040_21_email?email={email}")
             response_7202 =  requests.get(f"https://xyrm-sqqj-hx6t.n7c.xano.io/api:Dga0jXwg/get_7202_21_email?email={email}")
             response_sch_3 = requests.get(f"https://xyrm-sqqj-hx6t.n7c.xano.io/api:Dga0jXwg/get_sch_3_21_email?email={email}")
 
             data_variables_1040_21 = response_1040.json()
-            data_variables_1040x_21 = response_1040x.json()
             data_variables_7202_21 = response_7202.json()
             data_variables_sch_3_21 = response_sch_3.json()
             
