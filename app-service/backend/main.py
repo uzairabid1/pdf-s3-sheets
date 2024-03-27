@@ -405,7 +405,7 @@ def update_taxCredit_21():
     for user in data:
         email = user.get("Email")
         value_correct_22 = user.get("result", {}).get("data_1040x_21_correct_22")
-
+        cal_check_flag = user.get("result",{}).get("cal_check_21",'')
         try:
             cell = sheet.find(email)
             row_index = cell.row
@@ -423,6 +423,14 @@ def update_taxCredit_21():
             total_updated += 1  # Increment the counter
         else:
             print(f"Total Credit 21 already has a value for {email}")
+
+        cal_check_flag_cell = sheet.cell(row_index, sheet.find("21 Cal Check").col)
+        if not cal_check_flag_cell.value:
+            sheet.update_cell(row_index, cal_check_flag_cell.col, cal_check_flag)
+            print(f"Cal check 21 updated for {email}")
+            total_updated += 1  # Increment the counter
+        else:
+            print(f"Cal check 21 already has a value for {email}")
 
     return jsonify({"message": f"Total Credits updated successfully: {total_updated}"})
 
@@ -442,6 +450,7 @@ def update_taxCredit_20():
         email = user.get("Email")
         try:
             value_correct_22 = user.get("result", {}).get("data_1040x_20_correct_22",'-')
+            cal_check_flag = user.get("result",{}).get("cal_check_20",'') 
         except:
             continue
         try:
@@ -461,6 +470,14 @@ def update_taxCredit_20():
             total_updated += 1  # Increment the counter
         else:
             print(f"Total Credit 20 already has a value for {email}")
+
+        cal_check_flag_cell = sheet.cell(row_index, sheet.find("20 Cal Check").col)
+        if not cal_check_flag_cell.value:
+            sheet.update_cell(row_index, cal_check_flag_cell.col, cal_check_flag)
+            print(f"Cal check 20 updated for {email}")
+            total_updated += 1  # Increment the counter
+        else:
+            print(f"Cal check 20 already has a value for {email}")
 
     return jsonify({"message": f"Total Credits updated successfully: {total_updated}"})
 
