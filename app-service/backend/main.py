@@ -42,7 +42,7 @@ pdf_co_key = os.getenv('pdf_co_key')
 PDF_BASE_URL = "https://api.pdf.co/v1"
 
 template_20_pdf = "https://setcpro-automate-boring.s3.us-east-2.amazonaws.com/form_2020_merged_final_output.pdf"
-template_21_pdf = "https://setcpro-automate-boring.s3.us-east-2.amazonaws.com/f1040-2021_merged.pdf"
+template_21_pdf = "https://setcpro-automate-boring.s3.us-east-2.amazonaws.com/form_2021_merged_final_output_3.pdf"
 
 gsheet_scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
 gsheet_creds = ServiceAccountCredentials.from_json_keyfile_name("credentials.json", gsheet_scope)

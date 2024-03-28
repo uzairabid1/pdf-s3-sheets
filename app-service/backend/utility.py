@@ -1203,22 +1203,30 @@ def combine_fields(data_1040_20,data_1040x_20,data_7202_20,data_sch_3_20):
 
     for key, value in pdf_fields_1040_20.items():
         val = data_variables_1040_20.get(key, "")
-
+        if isinstance(val,int):
+            if val < 0:
+                val = f"({str(val).replace('-','')})"
         combined_values.append(f"{value};{val}")
 
     for key, value in pdf_fields_1040x_20.items():
         val = data_variables_1040x_20.get(key, "")
-
+        if isinstance(val,int):
+            if val < 0:
+                val = f"({str(val).replace('-','')})"
         combined_values.append(f"{value};{val}")
 
     for key, value in pdf_fields_7202_20.items():
         val = data_variables_7202_20.get(key, "")
-
+        if isinstance(val,int):
+            if val < 0:
+                val = f"({str(val).replace('-','')})"
         combined_values.append(f"{value};{val}")
 
     for key, value in pdf_fields_sch_3_20.items():
         val = data_variables_sch_3_20.get(key, "")
-
+        if isinstance(val,int):
+            if val < 0:
+                val = f"({str(val).replace('-','')})"
         combined_values.append(f"{value};{val}")
 
     return "|".join(combined_values)
@@ -1490,21 +1498,33 @@ def combine_fields_21(data_1040_21,data_1040x_21,data_7202_21,data_sch_3_21):
     for key, value in pdf_fields_1040_21.items():
         val = data_variables_1040_21.get(key, "")
 
+        if isinstance(val,int):
+            if val < 0:
+                val = f"({str(val).replace('-','')})"
+
         combined_values.append(f"{value};{val}")
 
     for key, value in pdf_fields_1040x_21.items():
         val = data_variables_1040x_21.get(key, "")
 
+        if isinstance(val,int):
+            if val < 0:
+                val = f"({str(val).replace('-','')})"
+
         combined_values.append(f"{value};{val}")
 
     for key, value in pdf_fields_7202_21.items():
         val = data_variables_7202_21.get(key, "")
-
+        if isinstance(val,int):
+            if val < 0:
+                val = f"({str(val).replace('-','')})"
         combined_values.append(f"{value};{val}")
 
     for key, value in pdf_fields_sch_3_21.items():
         val = data_variables_sch_3_21.get(key, "")
-
+        if isinstance(val,int):
+            if val < 0:
+                val = f"({str(val).replace('-','')})"
         combined_values.append(f"{value};{val}")
     
     print(combined_values)
